@@ -319,11 +319,10 @@
     console.log(direccion);
     // Validar si es otra tienda
     if (existingPairs && existingPairs.length > 0) {
-    
       const exists = existingPairs.some(
-  pair =>
-    pair[0].trim().toLowerCase() === tienda.trim().toLowerCase()
-);
+       pair =>
+        pair[0].trim().toLowerCase() === tienda.trim().toLowerCase()
+      );
       console.log(exists);
       if (!exists) {
         const choice = confirm('¿Deseas agregar este servicio a otra tienda por $50? Si aceptas, se agregará el producto al carrito y se sumará los $50 a los servicios agregados.');
