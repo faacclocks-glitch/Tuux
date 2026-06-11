@@ -323,18 +323,18 @@ def confirmar_pedido():
     url = f"https://wa.me/{numero}?text={mensaje_codificado}"
 
     # Enviar copia del pedido por correo
-    try:
-        order_info_email = {
-            'items': items,
-            'total': total_a_pagar,
-            'direccion': direccion if delivery_selected else 'Punto de entrega',
-            'detalles': mensaje,
-            'delivery_type': delivery_type,
-            'urgent': urgent_selected,
-        }
-        send_order_email(order_info_email, recipient_email='faac_clocks@hotmail.com')
-    except Exception as e:
-        print('Error enviando copia de pedido por email:', e)
+    #try:
+    #    order_info_email = {
+    #        'items': items,
+    #        'total': total_a_pagar,
+    #        'direccion': direccion if delivery_selected else 'Punto de entrega',
+    #        'detalles': mensaje,
+    #        'delivery_type': delivery_type,
+    #        'urgent': urgent_selected,
+    #    }
+    #    send_order_email(order_info_email, recipient_email='faac_clocks@hotmail.com')
+   # except Exception as e:
+    #    print('Error enviando copia de pedido por email:', e)
 
     return redirect(url)
 
