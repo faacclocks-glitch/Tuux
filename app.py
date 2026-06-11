@@ -453,25 +453,7 @@ def market_request():
             return jsonify({'ok': False, 'error': message}), 400
         flash(message)
         return redirect(url_for('marketlist'))
-    new_pair = (tienda, direccion)
-    existing_pairs = get_cart_store_keys()
-    confirm_switch = request.form.get('confirm_switch', '0') == '1'
-    if existing_pairs and new_pair not in existing_pairs and not confirm_switch:
-        session['market_request'] = {
-            'nombre': nombre,
-            'celular': celular,
-            'municipio': municipio,
-            'tienda': tienda,
-            'direccion': direccion,
-            'producto': producto,
-            'cantidad': int(cantidad),
-            'detalles': detalles,
-        }
-        message = '¿Deseas agregar el servicio a otra tienda por $50? Confirma para agregarlo al carrito o sigue en Marketlist si no quieres.'
-        if wants_json:
-            return jsonify({'ok': False, 'error': message}), 400
-        flash(message)
-        return redirect(url_for('marketlist'))
+    
     cart = get_cart()
     cart.append({
         'custom': True,
