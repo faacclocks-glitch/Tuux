@@ -1,0 +1,689 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  body {
+    background-image: url("{{ url_for('static', filename='carrito.jpg') }}");
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    background-attachment: fixed;
+    background-position: right;
+    background-color: white;
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  h1 {
+    color: black;
+    font-size: 2.2rem; /* Escalado para móvil */
+    margin: 20px 16px;
+  }
+
+  @media (min-width: 768px) {
+    h1 { font-size: 3rem; margin-left: 30px; }
+  }
+
+  p {
+    color: black;
+    font-size: 1.1rem;
+    margin: 10px 16px;
+  }
+
+  @media (min-width: 768px) {
+    p { font-size: 1.2rem; margin-left: 30px; }
+  }
+
+  /* CORRECCIÓN: Tarjeta de producto adaptable */
+  .product {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 245, 225, 0.7);
+    backdrop-filter: blur(12px);
+    padding: 18px;
+    border-radius: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.65);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    margin: 0 16px 16px 16px; /* Centrado interno en móvil */
+    color: #2f3b45;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .item-badge {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: linear-gradient(135deg, #ff6b6b, #f95d86);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.16);
+  }
+  .item-type-badge {
+    display: inline-block;
+    margin-top: 10px;
+    background: rgba(0, 179, 179, 0.12);
+    color: #0c4d55;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  .cart-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 12px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #104e8b, #3dd6c6);
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 700;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.16);
+  }
+
+  @media (min-width: 768px) {
+    .product {
+      margin-left: 30px;
+      max-width: 769px;
+    }
+  }
+
+  .product.disintegrate {
+    animation: disintegrate 0.45s ease forwards;
+  }
+
+  @keyframes disintegrate {
+    0% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+    35% {
+      opacity: 0.7;
+      transform: translateY(-10px) rotate(-2deg) scale(0.98);
+      filter: blur(1px);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-40px) rotate(-12deg) scale(0.85);
+      filter: blur(4px);
+    }
+  }
+
+  .product.disintegrate::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.55), transparent 24%),
+      radial-gradient(circle at 80% 30%, rgba(255,255,255,0.4), transparent 18%),
+      radial-gradient(circle at 50% 80%, rgba(255,255,255,0.3), transparent 20%);
+    opacity: 0.85;
+    mix-blend-mode: screen;
+  }
+
+  .store-group {
+    margin-bottom: 28px;
+  }
+
+  .store-group h2 {
+    margin: 0 16px 12px 16px;
+    color: #0b3d91;
+    font-size: 1.4rem;
+  }
+
+  @media (min-width: 768px) {
+    .store-group h2 { margin-left: 30px; font-size: 1.6rem; }
+  }
+
+  .product:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+  }
+
+  .product strong {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+  }
+
+  @media (min-width: 768px) {
+    .product strong { font-size: 1.3rem; }
+  }
+
+  .product .meta {
+    line-height: 1.5;
+    color: #4a4a4a;
+    margin-bottom: 10px;
+  }
+
+  /* CORRECCIÓN: Botón adaptable al ancho en móviles */
+  button {
+    font-size: 1.1rem;
+    padding: 12px 18px;
+    background: linear-gradient(90deg, #00B3B3, #3DD6C6);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s;
+    margin: 20px 16px 30px 16px;
+    width: calc(100% - 32px); /* Ancho completo simulado en móvil */
+    box-sizing: border-box;
+
+  }
+
+  @media (min-width: 768px) {
+    button {
+      margin-left: 30px;
+      margin-top: 20px;
+      margin-bottom: 30px;
+      width: auto;
+    }
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(16, 78, 139, 0.16);
+    background: linear-gradient(90deg, #3DD6C6, #104E8B);
+  }
+
+  label {
+    color: black;
+    font-size: 1.2rem;
+    margin: 20px 16px 10px 16px;
+    display: block; /* Forzado a bloque para controlar el flujo */
+  }
+
+  @media (min-width: 768px) {
+    label { margin-left: 30px; display: inline-block; }
+  }
+
+  /* CORRECCIÓN: Selector estilizado y más grande para dedos en pantallas táctiles */
+  select {
+    color: black;
+    font-size: 1rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    width: calc(100% - 32px);
+    margin: 0 16px;
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 768px) {
+    select { width: auto; margin-left: 10px; }
+  }
+
+  /* CORRECCIÓN: Contenedor de opciones de envío responsivo */
+  .delivery-options {
+    margin: 16px;
+    color: black;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 24px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 768px) {
+    .delivery-options {
+      margin-left: 30px;
+      margin-top: 10px;
+      padding: 24px;
+      max-width: 760px;
+    }
+  }
+
+  .delivery-options h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #2c3e50;
+  }
+
+  @media (min-width: 768px) {
+    .delivery-options h2 { font-size: 1.7rem; }
+  }
+
+  .delivery-options p.subtitle {
+    margin: 6px 0 0 0;
+    color: #555;
+    font-size: 1rem;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Reajustado el mínimo */
+    gap: 16px;
+    margin-top: 18px;
+    width: 100%;
+  }
+
+  .option-card {
+    display: block;
+    background: linear-gradient(135deg, #fff5e1, #ffe5c3);
+    border-radius: 20px;
+    padding: 18px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    color: #2f3b45;
+    box-sizing: border-box;
+  }
+
+  .option-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .option-card.selected {
+    border-color: #f39c12;
+    box-shadow: 0 18px 40px rgba(243, 156, 18, 0.28);
+    background: linear-gradient(135deg, #fff4cf, #ffda98);
+    transform: translateY(-2px);
+  }
+
+  .option-card.selected::after {
+    content: '✔';
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #f39c12;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 800;
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.25);
+  }
+
+  .option-card input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .option-card .icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    display: inline-block;
+  }
+
+  .option-card .title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .option-card .description {
+    color: #4a4a4a;
+    font-size: 0.96rem;
+    line-height: 1.4;
+  }
+
+  .option-card .price {
+    margin-top: 12px;
+    font-weight: 700;
+    color: #d35400;
+  }
+
+  .price-summary {
+    display: grid;
+    gap: 8px;
+    margin-top: 20px;
+    font-size: 1rem;
+  }
+
+  .price-summary strong {
+    color: #2c3e50;
+  }
+
+  .min-purchase-warning {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: rgba(255, 235, 205, 0.95);
+    border: 1px solid #f1c40f;
+    color: #8a6d1b;
+    font-weight: 700;
+    box-shadow: 0 10px 24px rgba(241, 196, 15, 0.12);
+  }
+
+  /* Barras y botones superiores */
+  .nav { 
+    margin-bottom: 16px; 
+    color: gray; 
+    text-transform: capitalize; 
+    margin: 0 16px 16px 16px; 
+  }
+
+  @media (min-width: 768px) {
+    .nav { margin-left: 30px; }
+  }
+
+  .nav a,
+  .nav-link {
+    color: white;
+    font-size: 1.1rem;
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #00B3B3, #3DD6C6);
+    transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease, color 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  @media (min-width: 768px) {
+    .nav a, .nav-link { font-size: 1.2rem; margin-left: 30px; }
+  }
+
+  .nav a:hover,
+  .nav-link:hover {
+    background: linear-gradient(90deg, #3DD6C6, #104E8B);
+    box-shadow: 0 10px 24px rgba(16, 78, 139, 0.18);
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  .top-buttons {
+    display: flex;
+    gap: 12px;
+    margin: 20px 16px;
+  }
+
+  @media (min-width: 768px) {
+    .top-buttons { margin-left: 30px; margin-bottom: 20px; }
+  }
+
+  .top-buttons a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: linear-gradient(90deg, #00B3B3, #3DD6C6);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    position: relative;
+  }
+
+  .top-buttons a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(16, 78, 139, 0.18);
+    background: linear-gradient(90deg, #3DD6C6, #104E8B);
+  }
+
+  .top-buttons a span {
+    color: white !important;
+  }
+
+  .cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #0D1B3D;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+
+  
+  <div class="top-buttons">
+    <a href="{{ url_for('marketlist', step=2) }}">Seguir comprando</a>
+  </div>
+{% block alerts %}{% endblock %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for mensaje in messages %}
+      <div class="alert">{{ mensaje }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+  <h1>Carrito</h1>
+  {% if grouped_items %}
+    {% for tienda_nombre, tienda_items in grouped_items.items() %}
+      <div class="store-group">
+        <h2>{{ tienda_nombre }}</h2>
+        {% for item in tienda_items %}
+          <div class="product">
+            <span class="item-badge">x{{ item.cantidad }}</span>
+            {% if item.custom %}
+              <strong>{{ item.producto }}</strong>
+            {% else %}
+              <strong>{{ item.producto.nombre }}</strong>
+            {% endif %}
+            <div class="meta">
+              
+              {% if item.detalles %}
+                Detalles: {{ item.detalles }}
+              {% endif %}
+            </div>
+            <form method="post" action="{{ url_for('remove_from_cart', item_index=item.item_index) }}" style="display:inline; margin-left:12px;">
+              <button type="submit" class="remove-button">Eliminar</button>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    {% if switch_fee %}
+      <p><strong>Tarifa por tienda extra: ${{ switch_fee }}</strong></p>
+    {% endif %}
+    <form method="post" action="{{ url_for('confirmar_pedido') }}" onsubmit="return validateDeliveryOptions()">
+      <div class="delivery-options">
+        <h2>Opciones de entrega</h2>
+        <p class="subtitle">¡Dale estilo a tu pedido con una entrega rápida o elige el punto más cómodo!</p>
+
+        <div class="card-grid">
+          <label class="option-card" for="urgentOption" id="urgentCard">
+            <input type="checkbox" name="urgent" value="1" id="urgentOption">
+            <span class="icon">⚡</span>
+            <div class="title">Entrega urgente</div>
+            <div class="description">Recíbelo en 24-48 horas. Ideal para aquello que necesitas de inmediato.</div>
+            <div class="price">+ $50</div>
+          </label>
+
+          <label class="option-card" for="deliveryOption" id="deliveryCard">
+            <input type="radio" name="delivery_type" value="delivery" id="deliveryOption">
+            <span class="icon">🏍️</span>
+            <div class="title">Entrega a domicilio</div>
+            <div class="description">Te llevamos tu pedido directo hasta la puerta. Comodidad total.</div>
+            <div class="price">+ $50 aprox</div>
+          </label>
+
+          <label class="option-card" for="pickupOption" id="pickupCard">
+            <input type="radio" name="delivery_type" value="pickup" id="pickupOption">
+            <span class="icon">📍</span>
+            <div class="title">Punto de entrega</div>
+            <div class="description">Recoge tu pedido en el punto más cercano sin costo extra.</div>
+            <div class="price">Incluido</div>
+          </label>
+        </div>
+
+        <div class="price-summary">
+          <p><strong>Tarifa por entrega:</strong> $<span id="totalWithOptions">{{ product_total }}</span></p>
+          <!--<p><strong>Costo por servicio:</strong> $<span id="serviceFee">0</span></p>-->
+          <!--<p><strong>Total a pagar:</strong> $<span id="totalPayable">{{ total }}</span></p>-->
+        </div>
+
+        <div id="minimumWarning" class="min-purchase-warning" style="display:none;">
+          Compra mínima $250. Agrega más productos para continuar.
+        </div>
+      </div>
+      <button type="submit" id="confirmButton">✅ Confirmar pedido por whatsapp</button>
+    </form>
+    <script>
+      const productTotal = Number({{ product_total }});
+      const switchFee = Number({{ switch_fee }});
+      const urgentOption = document.getElementById('urgentOption');
+      const deliveryOption = document.getElementById('deliveryOption');
+      const pickupOption = document.getElementById('pickupOption');
+      const urgentCard = document.getElementById('urgentCard');
+      const deliveryCard = document.getElementById('deliveryCard');
+      const pickupCard = document.getElementById('pickupCard');
+      const totalWithOptionsEl = document.getElementById('totalWithOptions');
+      const serviceFeeEl = document.getElementById('serviceFee');
+      const totalPayableEl = document.getElementById('totalPayable');
+      const confirmButton = document.getElementById('confirmButton');
+
+      function calculateServiceFee(subtotal) {
+        if (subtotal >= 1000) return 220;
+        if (subtotal >= 500) return 150;
+        if (subtotal >= 250) return 125;
+        return 0;
+      }
+
+      function updateTotalWithOptions() {
+        let newTotal = productTotal;
+        if (urgentOption.checked) {
+          newTotal += 50;
+        }
+        if (deliveryOption.checked) {
+          newTotal += 50;
+        }
+        totalWithOptionsEl.textContent = newTotal;
+
+        const serviceFee = calculateServiceFee(newTotal);
+        if (serviceFeeEl) {
+          serviceFeeEl.textContent = serviceFee;
+        }
+        if (totalPayableEl) {
+          totalPayableEl.textContent = newTotal + serviceFee + switchFee;
+        }
+      }
+
+      const tieneCustom = {{ 'true' if tiene_custom else 'false' }};
+
+      function validateDeliveryOptions() {
+        if (productTotal < 250 && !tieneCustom) {
+          alert('El pedido mínimo es $250. Agrega más productos al carrito.');
+          return false;
+        }
+        if (!deliveryOption.checked && !pickupOption.checked) {
+          if (urgentOption.checked) {
+            alert('Elige servicio a domicilio o punto de entrega');
+          } else {
+            alert('Selecciona una opción de entrega');
+          }
+          return false;
+        }
+        return true;
+      }
+
+      function canAutoSend() {
+        if (productTotal < 250 && !tieneCustom) {
+          return false;
+        }
+        if (!deliveryOption.checked && !pickupOption.checked) {
+          return false;
+        }
+        return true;
+      }
+
+      function autoSubmitIfReady() {
+        if (!canAutoSend()) return;
+        if (confirmButton && !confirmButton.disabled) {
+          confirmButton.click();
+        } else {
+          const autoForm = document.querySelector('form[action*="confirmar_pedido"]');
+          if (autoForm) {
+            autoForm.submit();
+          }
+        }
+      }
+
+      function updateMinimumWarning() {
+        const warning = document.getElementById('minimumWarning');
+        const confirmButton = document.getElementById('confirmButton');
+        if (productTotal < 250 && !tieneCustom) {
+          warning.style.display = 'block';
+          confirmButton.disabled = true;
+          confirmButton.style.opacity = '0.65';
+          confirmButton.style.cursor = 'not-allowed';
+        } else {
+          warning.style.display = 'none';
+          confirmButton.disabled = false;
+          confirmButton.style.opacity = '1';
+          confirmButton.style.cursor = 'pointer';
+        }
+      }
+
+      urgentOption.addEventListener('change', function() {
+       updateTotalWithOptions();
+       toggleCardSelection(urgentCard, urgentOption.checked);
+      });
+
+      deliveryOption.addEventListener('change', function() {
+       updateTotalWithOptions();
+       if (deliveryOption.checked) {
+      deliveryCard.classList.add('selected');
+      pickupCard.classList.remove('selected');
+       }
+      });
+
+      pickupOption.addEventListener('change', function() {
+  updateTotalWithOptions();
+
+  if (pickupOption.checked) {
+    pickupCard.classList.add('selected');
+    deliveryCard.classList.remove('selected');
+  }
+});
+
+       function toggleCardSelection(card, isSelected) {
+        if (isSelected) {
+          card.classList.add('selected');
+        } else {
+          card.classList.remove('selected');
+        }
+       }
+
+      updateTotalWithOptions();
+      toggleCardSelection(urgentCard, urgentOption.checked);
+      toggleCardSelection(deliveryCard, deliveryOption.checked);
+      toggleCardSelection(pickupCard, pickupOption.checked);
+      updateMinimumWarning();
+
+      document.querySelectorAll('.remove-button').forEach(button => {
+        button.addEventListener('click', function(event) {
+          event.preventDefault();
+          const form = button.closest('form');
+          const productCard = button.closest('.product');
+          if (!form || !productCard) return;
+          productCard.classList.add('disintegrate');
+          button.disabled = true;
+          setTimeout(() => {
+            form.submit();
+          }, 420);
+        });
+      });
+
+      toggleCardSelection(urgentCard, urgentOption.checked);
+      toggleCardSelection(deliveryCard, deliveryOption.checked);
+      toggleCardSelection(pickupCard, pickupOption.checked);
+      updateTotalWithOptions();
+      updateMinimumWarning();
+    </script>
+  {% else %}
+    <p>El carrito está vacío.</p>
+  {% endif %}
+{% endblock %}

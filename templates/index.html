@@ -1,0 +1,481 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+
+<style>
+
+  body {
+    background-image: url("{{ url_for('static', filename='inicio.jpg') }}");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    color: #f5f5f5;
+  }
+
+  /* ERROR CORREGIDO: "negro" no existe en CSS, se cambia por black o #000 */
+  h1 {
+    color: white;
+    font-size: 2.4rem; /* Un poco más escalonado para pantallas medianas */
+    margin: 20px 16px;
+  } 
+  
+  @media (min-width: 768px) {
+    h1 { font-size: 3rem; margin-left: 30px; }
+  }
+  
+  p {
+    color: #f0f8ff;
+    font-size: 1.3rem; /* Tamaño más estándar y cómodo para lectura base */
+    margin: 10px 16px;
+  }
+
+  @media (min-width: 768px) {
+    p { font-size: 1.7rem; margin-left: 30px; }
+  }
+
+  p.subtitle-main {
+    font-size: 1.6rem;
+    font-weight: bold;
+    background: linear-gradient(90deg, #00B3B3, #3DD6C6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-top: 15px;
+  }
+
+  @media (min-width: 768px) {
+    p.subtitle-main { font-size: 1.9rem; }
+  }
+
+  p.description-main {
+    font-size: 1.4rem;
+    font-style: italic;
+    color: #e6f7ff;
+    margin-top: 15px;
+  }
+
+  @media (min-width: 768px) {
+    p.description-main { font-size: 1.8rem; }
+  }
+
+  /* CORRECCIÓN: Fila hero adaptable (flex-wrap para móviles) */
+  .hero-row {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 20px 16px;
+    max-width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    .hero-row {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      margin-left: 30px;
+      max-width: calc(100% - 60px);
+    }
+  }
+
+  /* Los nav-links ya no necesitan empujarse a la fuerza */
+  .hero-row .nav-link {
+    margin-left: 0;
+  }
+
+  .title-box .nav-link {
+    margin-left: 0;
+    margin-top: 15px;
+  }
+
+  /* CORRECCIÓN: Contenedor de tarjetas optimizado */
+  .intro-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin: 20px 16px;
+    max-width: 1000px;
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 768px) {
+    .intro-card-container { margin-left: 30px; }
+  }
+
+  /* CORRECCIÓN: Cuadrícula responsiva (Pasa de 1 a 4 columnas según pantalla) */
+  .intro-card-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    width: 100%;
+  }
+
+  .intro-card {
+    
+    background: rgba(10, 20, 60, 0.9);
+    border: 2px solid #19d3d3;
+    padding: 18px;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    color: white;
+    box-shadow: 0 12px 25px rgba(16, 78, 139, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .intro-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 30px rgba(16, 78, 139, 0.14);
+  }
+
+  .intro-card-icon {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
+
+  .intro-card-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .intro-card-text {
+    font-size: 1rem;
+    color: #e6f7ff;
+    line-height: 1.4;
+  }
+
+  h2 {
+    color: #f8fbff;
+    font-size: 1.6rem;
+    margin: 0;
+    position: relative;
+    display: inline-block;
+  }
+
+  @media (min-width: 768px) {
+    h2 { font-size: 2rem; }
+  }
+
+  /* CORRECCIÓN: Caja de título adaptable */
+  .title-box {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 10px;
+    background: rgba(0, 179, 179, 0.08);
+    border: 1px solid rgba(0, 179, 179, 0.25);
+    border-radius: 20px;
+    padding: 18px 22px;
+    margin: 40px 16px 20px 16px;
+    max-width: calc(100% - 32px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 768px) {
+    .title-box {
+      margin-left: 30px;
+      max-width: fit-content;
+    }
+  }
+
+  .steps-footer {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .title-box::after {
+    content: "";
+    width: 100%;
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #00B3B3, #3DD6C6, #104E8B);
+    margin-top: 6px;
+  }
+
+  h2.benefits-title,
+  h2.fun-title {
+    background: linear-gradient(90deg, #00B3B3, #3DD6C6, #104E8B);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  @media (min-width: 768px) {
+    h2.benefits-title, h2.fun-title { font-size: 2.3rem; }
+  }
+
+  h2.fun-title {
+    letter-spacing: 2px;
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  ul {
+    color: #f0f8ff;
+    font-size: 1.2rem;
+    margin-left: 20px;
+    padding-left: 20px;
+    list-style: none;
+  }
+
+  @media (min-width: 768px) {
+    ul { font-size: 1.5rem; margin-left: 60px; }
+  }
+
+  li {
+    margin-bottom: 15px;
+    padding-left: 10px;
+    font-weight: bold;
+    color: #e6f7ff;
+    transition: all 0.3s ease;
+  }
+
+  li:hover {
+    color: #00B3B3;
+    transform: translateX(10px);
+  }
+
+  /* CORRECCIÓN: Contenedor de pasos (Scroll horizontal automático en móvil si no caben) */
+  .steps-container {
+    display: flex;
+    gap: 20px;
+    margin: 30px 16px;
+    justify-content: flex-start;
+    align-items: stretch;
+    overflow-x: auto; /* Permite scroll manual de los pasos si la pantalla es muy chica */
+    padding-bottom: 15px; /* Espacio para la barra de scroll móvil */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  @media (min-width: 768px) {
+    .steps-container {
+      margin-left: 30px;
+      gap: 30px;
+      overflow-x: visible; /* Elimina el scroll en pantallas grandes */
+    }
+  }
+
+  .step {
+    background: rgba(10, 20, 60, 0.9);
+    border: 2px solid #19d3d3;
+    padding: 25px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* Evita que los pasos se aplasten en móvil */
+  }
+
+  .step-number {
+    color: #00B3B3;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  .step-title {
+    color: #eef6ff;
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .step-description {
+    color: #f4fbff;
+    font-size: 1.2rem;
+  }
+
+  /* Links de navegación */
+  .nav a,
+  .nav-link {
+    color: white;
+    font-size: 1.1rem;
+    margin-left: 16px;
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #00B3B3, #3DD6C6);
+    transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease, color 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    box-sizing: border-box;
+    margin-bottom: 60px;
+  }
+
+  @media (min-width: 768px) {
+    .nav a, .nav-link { font-size: 1.2rem; margin-left: 30px; }
+  }
+
+  .nav a:hover,
+  .nav-link:hover {
+    background: linear-gradient(90deg, #3DD6C6, #104E8B);
+    box-shadow: 0 10px 24px rgba(16, 78, 139, 0.18);
+    color: white;
+    transform: translateY(-2px);
+  }
+</style>
+
+  <div class="hero-row">
+    <h1>BIENVENIDO A TU'UX</h1>
+  </div>
+
+  <div class="intro-card-container">
+    <div>
+      <p class="subtitle-main">Compramos en Mérida y entregamos en Calkiní.</p>
+      
+    </div>
+
+    <div class="intro-card-row">
+      <div class="intro-card">
+        <div class="intro-card-icon">🛒</div>
+        <div class="intro-card-title">Encarga productos</div>
+        <div class="intro-card-text">Tu lista o producto llega sin salir de casa.</div>
+      </div>
+      <div class="intro-card">
+        <div class="intro-card-icon">🏪</div>
+        <div class="intro-card-title">Supermercado</div>
+        <div class="intro-card-text">Compramos en Mérida lo que necesitas al mejor precio.</div>
+      </div>
+      <div class="intro-card">
+        <div class="intro-card-icon">💊</div>
+        <div class="intro-card-title">Farmacia</div>
+        <div class="intro-card-text">Medicinas y productos de cuidado directo a Calkiní.</div>
+      </div>
+      <div class="intro-card">
+        <div class="intro-card-icon">✨</div>
+        <div class="intro-card-title">Pedidos especiales</div>
+        <div class="intro-card-text">Traemos artículos difíciles de encontrar sin que viajes.</div>
+      </div>
+    </div>
+  </div>
+  <div class="title-box">
+    <h2 class="benefits-title">💡 ¿Por qué Tu'ux?</h2>
+    <ul>
+      <li>✓ Evitas viajar a Mérida</li>
+      <li>✓ Ahorras tiempo y pasajes</li>
+      <li>✓ Puedes conseguir productos que no hay en Calkiní</li>
+      <li>✓ Servicio para familias, emprendedores y personas mayores</li>
+    </ul>
+  </div>
+
+  <div class="title-box">
+    <h2 class="benefits-title">Servicio confiable</h2>
+    <ul>
+      <li>✓ Atención por WhatsApp al 5588182650</li>
+      <li>✓ Entregas en Calkiní</li>
+      <li>✓ Compras en supermercados y farmacias</li>
+      <li>✓ Servicio personalizado</li>
+    </ul>
+  </div>
+
+  <div class="title-box">
+    <h2 class="benefits-title">¿Cómo pagarás?</h2>
+    <ul>
+      <li>✓ Transferencia bancaria</li>
+      <li>✓ Efectivo contra entrega</li>
+    </ul>
+  </div>
+
+  
+  
+
+  <div class="title-box">
+    <h2 class="fun-title">🙋 ¿Cómo funciona?</h2>
+  </div>
+  <div class="steps-container">
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-title"></div>
+      <div class="step-description">Mandas tu lista o producto</div>
+    </div>
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-title"></div>
+      <div class="step-description">Compramos en Mérida</div>
+    </div>
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-title"></div>
+      <div class="step-description">Recibes en Calkiní</div>
+    </div>
+  </div>
+  
+  <div class="title-box">
+    <h2 class="fun-title">💲 ¿Cuánto me va a costar?</h2>
+  </div>
+  <div class="steps-container">
+    <div class="step">
+      <div class="step-number">Pedido pequeño</div>
+      <div class="step-title">Compra de $250 a $499</div>
+      <div class="step-description">Servicio tu´ux: $125</div>
+    </div>
+    <div class="step">
+      <div class="step-number">Pedido mediano</div>
+      <div class="step-title">Compra de $500 a $999</div>
+      <div class="step-description">Servicio tu´ux: $150</div>
+    </div>
+    <div class="step">
+      <div class="step-number">Pedido grande</div>
+      <div class="step-title">Compra de $1000 a $2000</div>
+      <div class="step-description">Servicio tu´ux: $220</div>
+    </div>
+  </div>
+  <div class="hero-row">
+    <h1>TIENDAS</h1>
+   </div>
+   <div class="intro-card-container">
+    <div class="intro-card-row">
+      <div class="intro-card">
+         <div class="intro-card-icon">🛒</div>
+         <div class="intro-card-title">OFFICE DEPOT</div>
+         <div class="intro-card-text">Tu lista o producto llega sin salir de casa.</div>
+      </div>
+      <div class="intro-card">
+         <div class="intro-card-icon">🏪</div>
+         <div class="intro-card-title">LIVERPOOL</div>
+         <div class="intro-card-text">Compramos en Mérida lo que necesitas al mejor precio.</div>
+      </div>
+      <div class="intro-card">
+         <div class="intro-card-icon">💊</div>
+         <div class="intro-card-title">FARMAVALUE</div>
+         <div class="intro-card-text">Medicinas y productos de cuidado directo a Calkiní.</div>
+      </div>
+      <div class="intro-card">
+         <div class="intro-card-icon">✨</div>
+         <div class="intro-card-title">COSTCO</div>
+         <div class="intro-card-text">Traemos artículos difíciles de encontrar sin que viajes.</div>
+      </div>
+    </div>
+   </div>
+
+  <div class="title-box">
+    <h2 class="benefits-title">¿Horarios de Entregas?</h2>
+    <ul>
+      <li>✓ Entregas lunes y viernes de 9:00am a 12:00pm</li>
+      <li>✓ Seguimiento de pedidos en tiempo real</li>
+      <li>✓ Envío urgente llega en 24-48hrs</li>
+    </ul>
+  </div>
+
+  <div class="steps-footer" style="margin-left: 30px; margin-top: 20px;">
+    <a href="{{ url_for('marketlist') }}" class="nav-link">🛒 Realizar compra</a>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  body {
+    background-image: url("{{ url_for('static', filename='vendedor.jpg') }}");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  p{
+    color: black;
+    font-size: 1.2rem; /* 1.2rem equivale más o menos a 19px, ideal para una lectura cómoda */
+    margin-left: 15px;
+  }
+</style>
+
+  <div style="padding: 0px; max-width: 760px; color: black;">
+    <h1 style="font-size: 3rem; margin-bottom: 20px; margin-left: 15px;">Página en construcción</h1>
+    <p style="font-size: 1.2rem; line-height: 1.6; margin-bottom: 24px;">Gracias por crear tu cuenta como vendedor. Esta sección aún está en desarrollo.</p>
+    <p style="font-size: 1.2rem; margin-top: 400px; margin-bottom: 24px;">Mientras tanto, puedes volver a <a href="{{ url_for('login') }}" style="color: #a3d8ff; text-decoration: underline;">iniciar sesión</a> o explorar el <a href="{{ url_for('market') }}" style="color: #a3d8ff; text-decoration: underline;">mercado</a> si ya tienes sesión activa.</p>
+    <div style="padding: 20px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;">
+      <strong>Estado:</strong> En construcción
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  .nav a,
+  .nav-link {
+    color: white;
+    font-size: 1.2rem;
+    margin-left: 30px;
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #00B3B3, #3DD6C6);
+    transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease, color 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .nav a:hover,
+  .nav-link:hover {
+    background: linear-gradient(90deg, #3DD6C6, #104E8B);
+    box-shadow: 0 10px 24px rgba(16, 78, 139, 0.18);
+    color: white;
+    transform: translateY(-2px);
+    cursor: pointer;
+  }
+
+  .nav {
+    margin-bottom: 16px;
+    color: gray;
+    text-transform: capitalize;
+    margin-left: 30px;
+  }
+
+  h1 {
+    color: black;
+    margin-left: 30px;
+  }
+
+  p {
+    color: black;
+    font-size: 1.2rem;
+    margin-left: 30px;
+  }
+
+  .product {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    margin-left: 30px;
+    color: white;
+  }
+
+
+  label {
+    color: black;
+    font-size: 1.1rem;
+    display: block;
+    margin-bottom: 8px;
+    margin-top: 12px;
+    font-weight: bold;
+  }
+
+
+  textarea {
+    resize: vertical;
+  }
+
+
+
+  .hidden-field {
+    display: none;
+  }
+</style>
+
+
+<h1>Artículos</h1>
+{% if order and order.get('items') %}
+  {% set order_items = order.get('items') %}
+{% else %}
+  {% set order_items = items %}
+{% endif %}
+{% if order and order.get('total') is not none %}
+  {% set order_total = order.get('total') %}
+{% else %}
+  {% set order_total = total %}
+{% endif %}
+{% if order_items %}
+  <ul>
+    {% for item in order_items %}
+      <li>
+        {{ item.product_name }} x{{ item.cantidad }} — ${{ item.subtotal }} (Tienda: {{ item.store_name or '—' }})
+      </li>
+    {% endfor %}
+  </ul>
+  <p><strong>Total:</strong> ${{ order_total }}</p>
+{% else %}
+  <p>No hay artículos en el pedido.</p>
+  
+{% endif %}
+
+<div class="nav">
+  <a href="{{ url_for('market') }}">← Volver al mercado</a>
+</div>
+
+{% endblock %}

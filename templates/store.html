@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  body {
+    background-image: url("{{ url_for('static', filename='tienda.jpg') }}");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  h1 {
+    color: black;
+    font-size: 3rem;
+    margin-left: 30px;
+  }
+
+  p {
+    color: black;
+    font-size: 1.2rem; /* 1.2rem equivale más o menos a 19px, ideal para una lectura cómoda */
+    margin-left: 30px;
+  }
+
+  a {
+    color: blue;
+    font-size: 1.2rem; /* 1.2rem equivale más o menos a 19px, ideal para una lectura cómoda */
+    margin-left: 30px;
+    text-decoration: underline;
+  }
+
+  .nav a,
+  .nav-link {
+    color: white;
+    font-size: 1.2rem; /* 1.2rem equivale más o menos a 19px, ideal para una lectura cómoda */
+    margin-left: 30px;
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #00B3B3, #3DD6C6);
+    transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease, color 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+   .nav a:hover,
+   .nav-link:hover {
+     background: linear-gradient(90deg, #3DD6C6, #104E8B);
+     box-shadow: 0 10px 24px rgba(16, 78, 139, 0.18);
+     color: white;
+     transform: translateY(-2px);
+     cursor: pointer;
+   }
+  .product {
+    background: rgba(255, 245, 225, 0.75);
+    backdrop-filter: blur(10px);
+    padding: 16px;
+    border-radius: 18px;
+    border: 2px solid rgba(255,255,255,0.65);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+    margin-left: 30px;
+    color: #2f3b45;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    max-width: 760px;
+  }
+
+  .product:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 38px rgba(0,0,0,0.12);
+  }
+
+  button {
+    font-size: 1.1rem;
+    padding: 10px 18px;
+    margin-top: 10px;
+    margin-left: 30px;
+    align-self: flex-start;
+    background: linear-gradient(90deg, #00B3B3, #3DD6C6);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s;
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(16, 78, 139, 0.16);
+    background: linear-gradient(90deg, #3DD6C6, #104E8B);
+  }
+
+  .quantity-control {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.12);
+    background: rgba(255,255,255,0.95);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+    margin-right: 12px;
+  }
+
+  .quantity-control button {
+    width: 38px;
+    height: 38px;
+    border: none;
+    background: #F2F4F7;
+    color: #104E8B;
+    font-size: 1.3rem;
+    line-height: 1;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease, transform 0.12s ease;
+    margin-left: 0px;
+    margin-top: 0px;
+  }
+
+  .quantity-control button:hover {
+    background: #00B3B3;
+    color: white;
+    transform: translateY(-1px);
+  }
+
+  .quantity-control input {
+    width: 2.2rem;
+    min-width: 2.2rem;
+    padding: 0;
+    border: none;
+    text-align: center;
+    font-size: 1rem;
+    background: transparent;
+    outline: none;
+    color: #2f3b45;
+    -moz-appearance: textfield;
+    appearance: textfield;
+    cursor: default;
+  }
+
+  .quantity-control input::-webkit-outer-spin-button,
+  .quantity-control input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+</style>
+  <h1>{{ tienda.nombre }} - {{ tienda.giro }}</h1>
+  <p>{{ tienda.direccion }} · {{ tienda.celular }}</p>
+  
+  {% for producto in tienda.productos %}
+    <div class="product">
+      <strong>{{ producto.nombre }}</strong><br>
+      Precio: ${{ producto.precio }} · Stock: {{ producto.unidades }}<br>
+      <form method="post" action="{{ url_for('add_to_cart', store_id=store_id, product_id=loop.index0) }}" class="quantity-form">
+        <div class="quantity-control">
+          <button type="button" class="decrement">−</button>
+          <input type="number" name="cantidad" value="1" min="1" readonly>
+          <button type="button" class="increment">+</button>
+        </div>
+        <button type="submit">Agregar al carrito</button>
+      </form>
+    </div>
+  
+  {% endfor %}
+
+  <a href="{{ url_for('market') }}" class="nav-link">Volver al Mercado</a>
+
+<script>
+  document.querySelectorAll('.quantity-form').forEach(function(form) {
+    const decrement = form.querySelector('.decrement');
+    const increment = form.querySelector('.increment');
+    const input = form.querySelector('input[name="cantidad"]');
+
+    decrement.addEventListener('click', function() {
+      let value = parseInt(input.value, 10) || 1;
+      if (value > 1) {
+        input.value = value - 1;
+      }
+    });
+
+    increment.addEventListener('click', function() {
+      let value = parseInt(input.value, 10) || 1;
+      input.value = value + 1;
+    });
+  });
+</script>
+{% endblock %}

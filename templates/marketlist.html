@@ -1,0 +1,363 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  body {
+    background-image: url("{{ url_for('static', filename='marketlist.jpg') }}");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% auto;
+    background-position: center;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+  }
+
+  /* Contenedor principal corregido para móviles */
+  .store-request {
+    background: #f5f3ef;
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    padding: 20px; /* Reducido ligeramente para dar aire en móviles */
+    box-shadow: 0 14px 34px rgba(0,0,0,0.08);
+    max-width: 820px;
+    margin: 16px auto; /* Centrado en pantalla y con márgenes externos sanos */
+    color:#2f3b45;
+    box-sizing: border-box;
+  }
+
+  h2 {
+    color: black;
+    font-size: 1.5rem; /* Un poco más pequeño para que no rompa en dos líneas en pantallas chicas */
+    margin: 10px 0 20px 0;
+  }
+
+  /* Estructura del formulario limpia */
+  form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .form-step {
+    display: none;
+  }
+
+  .form-step.active {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-step.active.full {
+    grid-template-columns: 1fr;
+  }
+
+  /* Full width para ciertos campos */
+  form > .full-width {
+    grid-column: 1 / -1;
+  }
+
+  /* Quitamos el margin-left global y usamos el ancho del formulario */
+  label {
+    color: black;
+    font-size: 1rem;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  /* CORRECCIÓN CLAVE: Todos los inputs y textareas se adaptan al contenedor sin salirse */
+  input[type="text"],
+  input[type="number"],
+  textarea {
+    color: black;
+    font-size: 1rem;
+    padding: 10px 12px; /* Añadido relleno interno para que no se pegue el texto */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 100%; /* Ocupa todo el ancho disponible del contenedor */
+    max-width: 100%; 
+    box-sizing: border-box; /* Crucial para que el padding no sume tamaño extra */
+  }
+
+  textarea {
+    resize: vertical; /* Permite estirar solo hacia abajo */
+  }
+
+  .button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  button {
+    font-size: 1.1rem;
+    padding: 12px 20px;
+    background: linear-gradient(90deg, #00B3B3, #3DD6C6);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s;
+    flex: 1;
+  }
+
+  button.secondary {
+    background: linear-gradient(90deg, #999, #666);
+  }
+
+  button.secondary:hover {
+    background: linear-gradient(90deg, #666, #444);
+  }
+
+  @media (min-width: 480px) {
+    button {
+      flex: 0 1 auto;
+    }
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(16, 78, 139, 0.16);
+    background: linear-gradient(90deg, #3DD6C6, #104E8B);
+  }
+
+  strong { 
+    color: gray; 
+    font-size: 1.2rem; 
+  }
+
+  /* Botones superiores corregidos */
+  .top-buttons {
+    display: flex;
+    gap: 12px;
+    margin: 20px 16px; /* Ajustado al margen del contenedor */
+  }
+
+  .top-buttons a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: linear-gradient(90deg, #00B3B3, #3DD6C6);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    position: relative;
+  }
+
+  .top-buttons a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(16, 78, 139, 0.18);
+    background: linear-gradient(90deg, #3DD6C6, #104E8B);
+  }
+
+  .cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #0D1B3D;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+
+
+<!-- top-buttons removed: inicio and carrito links deleted -->
+
+{% block alerts %}{% endblock %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for mensaje in messages %}
+      <div class="alert">{{ mensaje }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<section class="store-request">
+  <h2>Pedido personalizado</h2>
+  <form method="post" action="{{ url_for('market_request') }}" id="multiStepForm" onsubmit="return false;">
+    <!-- Paso 1: Datos Personales -->
+    <div class="form-step active full">
+      <div>
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" value="{{ market_request.nombre if market_request else '' }}" required>
+      </div>
+
+      <div>
+        <label for="municipio">Municipio:</label>
+        <input type="text" id="municipio" name="municipio" value="{{ market_request.municipio if market_request else '' }}" required>
+      </div>
+
+      <div>
+        <label for="celular">Celular:</label>
+        <input type="text" id="celular" name="celular" value="{{ market_request.celular if market_request else '' }}" required>
+      </div>
+    </div>
+
+    <!-- Paso 2: Datos del Pedido -->
+    <div class="form-step full">
+      <div>
+        <label for="tienda">¿Dónde quieres que compremos?:</label>
+        <input type="text" id="tienda" name="tienda" value="{{ market_request.tienda if market_request else '' }}" required>
+      </div>
+
+      <div>
+        <label for="direccion">¿Dirección de la tienda?:</label>
+        <input type="text" id="direccion" name="direccion" value="{{ market_request.direccion if market_request else '' }}" required>
+      </div>
+
+      <div class="full-width">
+        <label for="producto">¿Qué necesitas que compremos?:</label>
+        <input type="text" id="producto" name="producto" value="{{ market_request.producto if market_request else '' }}" required>
+      </div>
+
+      <div>
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" id="cantidad" name="cantidad" min="1" value="{{ market_request.cantidad if market_request else '1' }}" required>
+      </div>
+
+      <div class="full-width">
+        <label for="detalles">Detalles:</label>
+        <textarea id="detalles" name="detalles" rows="3">{{ market_request.detalles if market_request else '' }}</textarea>
+      </div>
+    </div>
+
+    <input type="hidden" name="confirm_switch" id="confirm_switch" value="0">
+
+    <!-- Botones -->
+    <div class="button-group">
+      <button type="button" id="backBtn" class="secondary" style="display:none;">Atrás</button>
+      <button type="button" id="nextBtn" class="secondary">Siguiente</button>
+      <button type="button" id="submitBtn" style="display:none;">Agregar al carrito</button>
+    </div>
+  </form>
+
+  <div id="successMessage" style="display:none; margin-top: 20px; padding: 15px; background: #d4edda; color: #155724; border-radius: 8px; text-align: center; font-size: 1.1rem;">
+    ✓ Producto agregado al carrito
+  </div>
+</section>
+
+<script>
+  const existingPairs = {{ cart_store_keys|tojson }};
+  const form = document.getElementById('multiStepForm');
+  const steps = document.querySelectorAll('.form-step');
+  const nextBtn = document.getElementById('nextBtn');
+  const backBtn = document.getElementById('backBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  const successMessage = document.getElementById('successMessage');
+  let currentStep = {{ initial_step - 1 }};
+
+  function showStep(step) {
+    steps.forEach((s, index) => {
+      s.classList.toggle('active', index === step);
+    });
+    
+    // Actualizar botones
+    if (step === 0) {
+      backBtn.style.display = 'none';
+      nextBtn.style.display = 'block';
+      submitBtn.style.display = 'none';
+    } else {
+      backBtn.style.display = 'block';
+      nextBtn.style.display = 'none';
+      submitBtn.style.display = 'block';
+    }
+  }
+
+  nextBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    // Validar paso 1
+    const nombre = document.getElementById('nombre').value.trim();
+    const municipio = document.getElementById('municipio').value.trim();
+    const celular = document.getElementById('celular').value.trim();
+    
+    if (!nombre || !municipio || !celular) {
+      alert('Por favor completa todos los campos requeridos');
+      return;
+    }
+    
+    currentStep = 1;
+    showStep(currentStep);
+  });
+
+  backBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    currentStep = 0;
+    showStep(currentStep);
+  });
+
+  submitBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    const tienda = document.getElementById('tienda').value.trim();
+    const direccion = document.getElementById('direccion').value.trim();
+    const producto = document.getElementById('producto').value.trim();
+    const cantidad = document.getElementById('cantidad').value.trim();
+    
+    if (!tienda || !direccion || !producto || !cantidad) {
+      alert('Por favor completa todos los campos requeridos');
+      return;
+    }
+    
+    // Construir FormData
+    const formData = new FormData(form);
+    
+    // Validar si es otra tienda
+    if (existingPairs && existingPairs.length > 0) {
+      const exists = existingPairs.some(pair => pair[0] === tienda && pair[1] === direccion);
+      if (!exists) {
+        const choice = confirm('¿Deseas agregar este servicio a otra tienda por $50? Si aceptas, se agregará el producto al carrito y se sumará los $50 a los servicios agregados.');
+        if (!choice) {
+          return;
+        }
+        formData.set('confirm_switch', '1');
+      }
+    }
+    
+    // Enviar con fetch
+    fetch(form.action, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (!data.ok) {
+        const message = data.error || 'Hubo un error al agregar el producto';
+        alert(message);
+        return;
+      }
+
+      // Limpiar campos del paso 2
+      document.getElementById('producto').value = '';
+      document.getElementById('cantidad').value = '1';
+      document.getElementById('detalles').value = '';
+      
+      // Mostrar mensaje de éxito
+      successMessage.style.display = 'block';
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Hubo un error al agregar el producto');
+    });
+  });
+
+  showStep(currentStep);
+</script>
+
+{% endblock %}

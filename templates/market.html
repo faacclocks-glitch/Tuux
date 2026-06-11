@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block content %}
+
+  
+  <h1>Tiendas</h1>
+
+  <style>
+  body {
+    background-image: url("{{ url_for('static', filename='tiendas.jpg') }}");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+
+  h1 {
+    color: black;
+    font-size: 3rem;
+    margin-left: 30px;
+  }
+
+  p {
+    color: black;
+    font-size: 1.5rem;
+    margin-left: 30px;
+  }
+  
+  button {
+    font-size: 1.2rem;
+    padding: 10px 18px;
+    margin-left:30px;
+    margin-top: 10px;
+    background: linear-gradient(90deg, #00B3B3, #3DD6C6);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s;
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(16, 78, 139, 0.16);
+    background: linear-gradient(90deg, #3DD6C6, #104E8B);
+  }
+
+  .nav { margin-bottom: 16px; color: #555555; text-transform: capitalize; margin-left: 30px }
+  .nav a,
+  .nav-link {
+    color: white;
+    font-size: 1.2rem;
+    margin-left: 30px;
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #00B3B3, #3DD6C6);
+    transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease, color 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .nav a:hover,
+  .nav-link:hover {
+    background: linear-gradient(90deg, #3DD6C6, #104E8B);
+    box-shadow: 0 10px 24px rgba(16, 78, 139, 0.18);
+    color: white;
+    transform: translateY(-2px);
+    cursor: pointer;
+  }
+  /* Este es el contenedor que activa la cuadrícula */
+  .grid-tiendas {
+    display: grid;
+    /* Crea columnas automáticas con un tamaño mínimo de 280px */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    /* Espacio de separación entre las tarjetas */
+    gap: 20px;
+    padding: 20px;
+  }
+
+  /* Estilos opcionales para que las tarjetas de las tiendas se vean mejor */
+  .store {
+    background: rgba(255, 245, 225, 0.75);
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    padding: 18px;
+    border: 2px solid rgba(255,255,255,0.65);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #2f3b45;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .store:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 36px rgba(0,0,0,0.12);
+  }
+
+  .store h2 {
+    color: gray;
+    font-size: 1.8rem;
+    margin-top: 0;
+  } 
+
+  .store p {
+    color: #2f3b45;
+    font-size: 1rem;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  .store {
+    text-decoration: none;
+  }
+
+  .store, .store * {
+    text-decoration: none !important;
+  }
+
+  .store a {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+  }
+
+  .store:hover a {
+    color: inherit;
+  }
+</style>
+
+<!-- Añadimos este contenedor alrededor de tu bucle -->
+<div class="grid-tiendas">
+  {% for tienda in tiendas %}
+    <a class="store" href="{{ url_for('store', store_id=loop.index0) }}">
+      <h2>{{ loop.index }}. {{ tienda.nombre }}</h2>
+      <p>📍 {{ tienda.direccion }}</p>
+      <p>🎯 {{ tienda.giro }}</p>
+    </a>
+  {% endfor %}
+</div>
+
+<form method="post" action="{{ url_for('market_request') }}">
+  <p>Encontraste lo que buscabas?</p>
+  <button type="submit">Personaliza tu pedido</button>
+</form>
+
+{% endblock %}

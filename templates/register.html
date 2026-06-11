@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  h1 {
+    color: white;
+    font-size: 3rem;
+    margin-left: 30px;
+  } 
+  
+  label {
+    color: white;
+    font-size: 1.2rem; /* 1.2rem equivale más o menos a 19px, ideal para una lectura cómoda */
+    margin-left: 30px;
+    margin-bottom: 10px;
+  }
+
+  input {
+    color: negro;
+    font-size: 1.2rem; /* 1.2rem equivale más o menos a 19px, ideal para una lectura cómoda */
+    margin-left: 0px;
+  }
+
+  button {
+    font-size: 1.1rem;
+    padding: 10px 18px;
+    margin-left:30px;
+    margin-top: 10px;
+    background: linear-gradient(90deg, #00B3B3, #3DD6C6);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s;
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(16, 78, 139, 0.16);
+    background: linear-gradient(90deg, #3DD6C6, #104E8B);
+  }
+
+  fieldset {
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 8px;
+    padding: 15px;
+    width: 35%;
+  }
+
+  legend {
+    color: white;
+    font-size: 1.2rem;
+  }
+
+  fieldset label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  fieldset input[type="radio"] {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+
+  .error-message {
+    color: #ff6b6b;
+    font-size: 1rem;
+    margin-left: 30px;
+    margin-top: 5px;
+    display: none;
+  }
+
+</style>
+
+  <h1></h1>
+  <form method="post">
+    <fieldset style="border: none; margin-left: 30px; margin-bottom: 20px;">
+      <legend style="color: white; font-size: 1.3rem; margin-bottom: 10px;">¿Qué tipo de cuenta deseas crear?</legend>
+      <label style="display: block; margin-bottom: 15px;">
+        <input type="radio" name="tipo_usuario" value="cliente" required style="margin-right: 10px;"> Cliente
+      </label>
+      <label style="display: block;">
+        <input type="radio" name="tipo_usuario" value="vendedor" required style="margin-right: 10px;"> Vendedor
+      </label>
+    </fieldset>
+    
+    <label>Nombre del usuario:<br><input name="username" value="{{ request.form.get('username') or '' }}" required></label>
+    <label>Correo electrónico:<br><input type="email" name="email" value="{{ request.form.get('email') or '' }}" required></label>
+    <label>Número de celular:<br><input type="tel" name="celular" value="{{ request.form.get('celular') or '' }}" required></label>
+    <label>Contraseña:<br><input type="password" name="password" required></label>
+    <label>Confirmar contraseña:<br><input type="password" name="password2" id="password2" required></label>
+    <div class="error-message" id="errorMessage">⚠️ Las contraseñas no coinciden</div>
+    <button type="submit" id="submitBtn">Registrarse</button>
+  </form>
+
+  <script>
+    const form = document.querySelector('form');
+    const password = document.querySelector('input[name="password"]');
+    const password2 = document.getElementById('password2');
+    const submitBtn = document.getElementById('submitBtn');
+    const errorMessage = document.getElementById('errorMessage');
+
+    function validarContraseñas() {
+      if (password.value && password2.value && password.value !== password2.value) {
+        errorMessage.style.display = 'block';
+        submitBtn.disabled = true;
+        return false;
+      } else {
+        errorMessage.style.display = 'none';
+        submitBtn.disabled = false;
+        return true;
+      }
+    }
+
+    password.addEventListener('input', validarContraseñas);
+    password2.addEventListener('input', validarContraseñas);
+
+    form.addEventListener('submit', function(e) {
+      if (!validarContraseñas()) {
+        e.preventDefault();
+      }
+    });
+  </script>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi página con imagen</title>
+    <style>
+        body {
+            /* Carga la imagen desde la carpeta static */
+            background-image: url("{{ url_for('static', filename='registrarse.jpg') }}");
+            
+            /* Evita que la imagen se repita como mosaico */
+            background-repeat: no-repeat;
+            
+            /* Fija la imagen para que no se mueva al hacer scroll */
+            background-attachment: fixed;
+            
+            /* Escala la imagen para cubrir toda la pantalla sin deformarse */
+            background-size: cover;
+            
+            /* Centra la imagen en la pantalla */
+            background-position: center;
+            
+            /* Asegura que el cuerpo ocupe el alto total de la ventana */
+            margin: 0;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- El contenido de tu página va aquí y flotará sobre la imagen de fondo -->
+
+</body>
+</html>
+
+{% endblock %}
