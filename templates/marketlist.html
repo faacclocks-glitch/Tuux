@@ -313,9 +313,13 @@
     
     // Construir FormData
     const formData = new FormData(form);
-    
+
+    console.log(existingPairs);
+    console.log(tienda);
+    console.log(direccion);
     // Validar si es otra tienda
     if (existingPairs && existingPairs.length > 0) {
+      console.log(exists);
       const exists = existingPairs.some(pair => pair[0] === tienda && pair[1] === direccion);
       if (!exists) {
         const choice = confirm('¿Deseas agregar este servicio a otra tienda por $50? Si aceptas, se agregará el producto al carrito y se sumará los $50 a los servicios agregados.');
