@@ -181,7 +181,9 @@
 
   <!-- Contador -->
   <span class="cart-count">
-    {{ cart_count }}
+    {% if cart_count > 0 %}
+    <span class="cart-badge">{{ cart_count }}</span>
+    {% endif %}
   </span>
 
 </a>
