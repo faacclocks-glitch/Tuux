@@ -785,15 +785,10 @@ def favicon():
 @app.context_processor
 def cart_counter():
 
-    carrito = session.get("cart", {})
+    carrito = session.get("cart", [])
 
-    total_items = sum(
-        item.get("quantity", 1)
-        for item in carrito.values()
-    )
-
-    return dict(cart_count=total_items)
-
+    return dict(cart_count=len(carrito))
+    
 def ensure_order_tables():
     conn = proyecto._connect()
     with conn:
