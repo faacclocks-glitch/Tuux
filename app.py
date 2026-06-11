@@ -314,7 +314,7 @@ def confirmar_pedido():
             mensaje += "- Mi compra excede el límite permitido"
 
     # Enviar siempre al número fijo de WhatsApp
-    numero = "5588182650"
+    numero = "525588182650"
     
     # Asegurarse de que el número solo contiene dígitos
     numero = ''.join(filter(str.isdigit, numero))
