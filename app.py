@@ -71,8 +71,8 @@ def get_cart_store_keys():
             tienda = get_store(item.get('store_id'))
             if tienda:
                 groups.add((getattr(tienda, 'nombre', '').strip(), getattr(tienda, 'direccion', '').strip()))
-                print(get_cart())
-                print(groups)
+    print(get_cart())
+    print(groups)
     return list(groups)
 
 
