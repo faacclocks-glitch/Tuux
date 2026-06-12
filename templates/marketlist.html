@@ -311,14 +311,8 @@
 
       if (!exists) {
 
-        const choice = confirm(
-          '¿Deseas agregar este servicio a otra tienda por $50?'
-        );
-
-        if (!choice) {
-          return;
-        }
-
+        alert('Se agregarán $50 por otra tienda');
+        
         formData.set('confirm_switch', '1');
       }
     }
