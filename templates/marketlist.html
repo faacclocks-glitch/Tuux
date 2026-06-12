@@ -314,14 +314,15 @@
 
     if (existingStores.length > 0) {
 
-      const tiendaActual = tienda.toLowerCase();
-
+      const tiendaActual = tienda.trim().toLowerCase();
+      
       const exists = existingStores.some(
-        store => store.toLowerCase() === tiendaActual
+        store => store.trim().toLowerCase() === tiendaActual
       );
-
+      
+      console.log("TIENDA ACTUAL:", tiendaActual);
       console.log("EXISTS:", exists);
-
+      
       if (!exists) {
 
         const choice = confirm(
