@@ -243,16 +243,16 @@
     ✓ Producto agregado al carrito
   </div>
 </section>
-
+console.log("SCRIPT CARGADO");
 <script>
-  const existingStores = {{ cart_store_keys|tojson }};
+  const existingStores = {{ cart_store_keys|default([], true)|tojson }};
   const form = document.getElementById('multiStepForm');
   const steps = document.querySelectorAll('.form-step');
   const nextBtn = document.getElementById('nextBtn');
   const backBtn = document.getElementById('backBtn');
   const submitBtn = document.getElementById('submitBtn');
   const successMessage = document.getElementById('successMessage');
-  let currentStep = {{ initial_step - 1 }};
+  let currentStep = {{ (initial_step or 1) - 1 }};
 
   function showStep(step) {
     steps.forEach((s, index) => {
@@ -272,6 +272,7 @@
   }
 
   nextBtn.addEventListener('click', function(e) {
+    console.log("CLICK SIGUIENTE");
     e.preventDefault();
     
     // Validar paso 1
