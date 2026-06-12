@@ -333,6 +333,12 @@
         return;
       }
 
+      // 🚨 NUEVO: Buscamos el contador en la navbar y le cambiamos el número en vivo
+      const cartCountElement = document.querySelector('.cart-count');
+      if (cartCountElement && data.cart_count !== undefined) {
+        cartCountElement.textContent = data.cart_count;
+      }
+
       document.getElementById('producto').value = '';
       document.getElementById('cantidad').value = '1';
       document.getElementById('detalles').value = '';
