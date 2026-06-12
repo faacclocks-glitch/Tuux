@@ -253,7 +253,7 @@
   const backBtn = document.getElementById('backBtn');
   const submitBtn = document.getElementById('submitBtn');
   const successMessage = document.getElementById('successMessage');
-  let currentStep = {{ (initial_step or 1) - 1 }};
+  let currentStep = 0;
 
   function showStep(step) {
     steps.forEach((s, index) => {
@@ -272,29 +272,33 @@
     }
   }
 
-  nextBtn.addEventListener('click', function(e) {
-    console.log("CLICK SIGUIENTE");
-    e.preventDefault();
-    
-    // Validar paso 1
+  nextBtn.onclick = function() {
+    console.log("BOTON SIGUIENTE");
     const nombre = document.getElementById('nombre').value.trim();
     const municipio = document.getElementById('municipio').value.trim();
     const celular = document.getElementById('celular').value.trim();
     
     if (!nombre || !municipio || !celular) {
-      alert('Por favor completa todos los campos requeridos');
+      alert('Completa todos los campos');
       return;
     }
     
-    currentStep = 1;
-    showStep(currentStep);
-  });
-
-  backBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    currentStep = 0;
-    showStep(currentStep);
-  });
+    steps[0].classList.remove('active');
+    steps[1].classList.add('active');
+    
+    backBtn.style.display = 'block';
+    nextBtn.style.display = 'none';
+    submitBtn.style.display = 'block';
+  };
+  
+  backBtn.onclick = function() {
+    steps[1].classList.remove('active');
+    steps[0].classList.add('active');
+    
+    backBtn.style.display = 'none';
+    nextBtn.style.display = 'block';
+    submitBtn.style.display = 'none';
+  };
 
   submitBtn.addEventListener('click', function(e) {
     e.preventDefault();
