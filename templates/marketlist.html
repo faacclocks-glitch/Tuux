@@ -356,9 +356,12 @@
     .then(response => response.json())
     .then(data => {
       if (!data.ok) {
-        alert(data.error || 'Error');
+        alert(data.error);
         return;
       }
+
+      successMessage.style.display = 'block';
+    })
       
 
       // Limpiar campos del paso 2
