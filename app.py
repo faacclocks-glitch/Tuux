@@ -64,15 +64,16 @@ def get_cart_store_keys():
     groups = set()
     for item in get_cart():
         if item.get('custom'):
-            tienda = (item.get('tienda') or '').strip()
-            direccion = (item.get('direccion') or '').strip()
-            groups.add((tienda, direccion))
-        else:
-            tienda = get_store(item.get('store_id'))
+            tienda = (item.get('tienda') or '').strip().lower()
             if tienda:
-                groups.add((getattr(tienda, 'nombre', '').strip(), getattr(tienda, 'direccion', '').strip()))
-    print(get_cart())
-    print(groups)
+                groups.add(tienda)
+
+        else:
+            tienda_obj = get_store(item.get('store_id'))
+            if tienda_obj:
+                nombre = getattr(tienda_obj, 'nombre', '').strip().lower()
+                if nombre:
+                    groups.add(nombre)
     return list(groups)
 
 
