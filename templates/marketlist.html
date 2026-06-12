@@ -318,9 +318,18 @@
 
       const tiendaActual = tienda.trim().toLowerCase();
       
-      const exists = existingStores.some(
-        store => store.trim().toLowerCase() === tiendaActual
-      );
+      const exists = existingStores.some(store => {
+        console.log("STORE ORIGINAL:");
+        console.log(store);
+        
+        console.log("STORE LIMPIO:");
+        console.log(store.trim().toLowerCase());
+        
+        console.log("TIENDA ACTUAL:");
+        console.log(tiendaActual);
+        
+        return store.trim().toLowerCase() === tiendaActual;
+      });
       
       console.log("TIENDA ACTUAL:", tiendaActual);
       console.log("EXISTS:", exists);
