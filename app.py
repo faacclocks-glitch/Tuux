@@ -60,9 +60,7 @@ def save_cart(cart):
     session['cart'] = cart
 
 
-cart_store_keys = [
-    pair[0] for pair in get_cart_store_keys()
-]
+cart_store_keys = [x[0] for x in get_cart_store_keys()]
 
 return render_template(
     'marketlist.html',
