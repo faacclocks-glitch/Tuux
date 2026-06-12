@@ -243,8 +243,9 @@
     ✓ Producto agregado al carrito
   </div>
 </section>
-console.log("SCRIPT CARGADO");
+
 <script>
+  console.log("SCRIPT CARGADO");
   const existingStores = {{ cart_store_keys|default([], true)|tojson }};
   const form = document.getElementById('multiStepForm');
   const steps = document.querySelectorAll('.form-step');
