@@ -246,9 +246,7 @@
 
 <script>
   console.log("SCRIPT CARGADO");
-  alert("JS INICIADO");
   const existingStores = {{ cart_store_keys|default([], true)|tojson|safe }};
-  alert("PASÓ EXISTINGPAIRS");
   const form = document.getElementById('multiStepForm');
   const steps = document.querySelectorAll('.form-step');
   const nextBtn = document.getElementById('nextBtn');
