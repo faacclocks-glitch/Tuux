@@ -315,35 +315,35 @@
     alert(JSON.stringify(existingStores));
     alert(tienda);
     if (existingStores.length > 0) {
-
       const tiendaActual = tienda.trim().toLowerCase();
+    
+      console.log("TIENDA ACTUAL:");
+      console.log(tiendaActual);
       
-      const exists = existingStores.some(store => {
-        console.log("STORE ORIGINAL:");
+      console.log("EXISTING STORES:");
+      console.log(existingStores);
+      
+      const exists = existingStores.some(function(store) {
+        console.log("COMPARANDO CON:");
         console.log(store);
-        
-        console.log("STORE LIMPIO:");
-        console.log(store.trim().toLowerCase());
-        
-        console.log("TIENDA ACTUAL:");
-        console.log(tiendaActual);
         
         return store.trim().toLowerCase() === tiendaActual;
       });
       
-      console.log("TIENDA ACTUAL:", tiendaActual);
-      console.log("EXISTS:", exists);
+      console.log("EXISTS:");
+      console.log(exists);
+      
+      alert("EXISTS: " + exists);
       
       if (!exists) {
-
         const choice = confirm(
           '¿Deseas agregar este servicio a otra tienda por $50?'
         );
-
+        
         if (!choice) {
           return;
         }
-
+        
         formData.set('confirm_switch', '1');
       }
     }
