@@ -183,12 +183,10 @@
     const increment = form.querySelector('.increment');
     const input = form.querySelector('input[name="cantidad"]');
 
-    // 1. Control de cantidad (+ / -)
+    // Control de cantidad (+ / -)
     decrement.addEventListener('click', function() {
       let value = parseInt(input.value, 10) || 1;
-      if (value > 1) {
-        input.value = value - 1;
-      }
+      if (value > 1) { input.value = value - 1; }
     });
 
     increment.addEventListener('click', function() {
@@ -196,39 +194,45 @@
       input.value = value + 1;
     });
 
-    // 2. NUEVO: Interceptar el envío para hacerlo mediante AJAX (Fetch)
+    // INTERCEPTOR CON DIAGNÓSTICO
     form.addEventListener('submit', function(e) {
-      e.preventDefault(); // Detiene la recarga normal de la página
-
-      // Empaquetamos los datos del formulario (la cantidad seleccionada)
+      e.preventDefault(); // Evita que la página se recargue
+      
+      console.log("1. ¡Botón presionado! Intentando enviar por AJAX a:", form.action);
+      
       const formData = new FormData(form);
 
-      // Enviamos la petición POST a la URL del action del formulario
       fetch(form.action, {
         method: 'POST',
         body: formData,
         headers: {
-          'X-Requested-With': 'XMLHttpRequest' // Le avisa a Flask que es una petición AJAX
+          'X-Requested-With': 'XMLHttpRequest'
         }
       })
-      .then(response => response.json())
+      .then(response => {
+        console.log("2. Servidor respondió con estatus:", response.status);
+        return response.json();
+      })
       .then(data => {
-        // Si Flask responde con éxito, actualizamos el contador en vivo
+        console.log("3. Datos recibidos de Flask:", data);
+        
         if (data.cart_count !== undefined) {
+          // Buscamos el elemento en la página
           const cartCountElement = document.querySelector('.cart-count');
+          
           if (cartCountElement) {
+            console.log("4. Elemento .cart-count encontrado. Viejo valor:", cartCountElement.textContent, "-> Nuevo valor:", data.cart_count);
             cartCountElement.textContent = data.cart_count;
-            
-            // Efecto visual opcional para notar el cambio
-            cartCountElement.style.color = 'green';
-            setTimeout(() => { cartCountElement.style.color = 'black'; }, 500);
+            alert("¡Se actualizó el contador a " + data.cart_count + "!");
+          } else {
+            console.error("❌ ERROR: El HTML de esta página no tiene ningún elemento con la clase 'cart-count'.");
+            alert("Error: No encontré la clase .cart-count en el HTML de esta página.");
           }
-          alert('¡Producto agregado con éxito!');
         }
       })
       .catch(error => {
-        console.error('Error en AJAX, procesando envío tradicional:', error);
-        form.submit(); // Fallback por si algo falla en el JavaScript
+        console.error('❌ Error en la petición Fetch:', error);
+        alert("Hubo un error en la red o en el formato de respuesta.");
       });
     });
   });
