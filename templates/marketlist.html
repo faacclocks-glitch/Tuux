@@ -329,18 +329,9 @@
       console.log(existingStores);
       console.log(tiendaActual);
       console.log(exists);
+      
       if (!exists) {
-        const choice = confirm(
-          '¿Deseas agregar este servicio a otra tienda por $50?'
-        );
-        if (!choice) {
-          return;
-        }
-        formData.set('confirm_switch', '1');
-      }
-    }
-      console.log(exists);
-      if (!exists) {
+        
         const choice = confirm('¿Deseas agregar este servicio a otra tienda por $50? Si aceptas, se agregará el producto al carrito y se sumará los $50 a los servicios agregados.');
         if (!choice) {
           return;
