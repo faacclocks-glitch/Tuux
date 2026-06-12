@@ -449,7 +449,7 @@ def market_request():
     if not cantidad.isdigit() or int(cantidad) <= 0:
         message = 'Cantidad inválida.'
         if wants_json:
-            return jsonify({'ok': False, 'error': message}), 400
+            return jsonify({'ok': True})        
         flash(message)
         return redirect(url_for('marketlist'))
     
