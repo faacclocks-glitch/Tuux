@@ -175,8 +175,8 @@
       <button type="submit" style="margin-top: 5px;">Agregar al carrito</button>
     </form>
   </div>
-{% endfor %}
-<script>
+ {% endfor %}
+  <script>
   // 🚨 LA BOMBA DE PRUEBA: Esto tiene que aparecer APENAS cargues o refresques la página
   alert("¡El JavaScript de la tienda SÍ está cargando!");
   document.querySelectorAll('.quantity-form').forEach(function(form) {
@@ -236,6 +236,5 @@
         alert("Hubo un error en la red o en el formato de respuesta.");
       });
     });
-  });
-</script>
+  </script>
 {% endblock %}
