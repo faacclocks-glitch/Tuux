@@ -246,7 +246,7 @@
 
 <script>
   console.log("SCRIPT CARGADO");
-  const existingStores = {{ cart_store_keys|map(attribute=0)|list|tojson }};
+  const existingStores = {{ cart_store_keys|tojson }};
   const form = document.getElementById('multiStepForm');
   const steps = document.querySelectorAll('.form-step');
   const nextBtn = document.getElementById('nextBtn');
@@ -324,19 +324,14 @@
     
     if (Array.isArray(existingStores) && existingStores.length > 0) {
       const tiendaActual = tienda.trim().toLowerCase();
-      const exists = existingStores.some(store => {
-        if (!store) return false;
-        return String(store).trim().toLowerCase() === tiendaActual;
-      });
-      console.log("Tiendas existentes:", existingStores);
-      console.log("Tienda actual:", tiendaActual);
-      console.log("Existe:", exists);
+      const exists = existingStores.some(store =>
+        String(store).trim().toLowerCase() === tiendaActual
+      );
       
       if (!exists) {
         const choice = confirm(
           '¿Deseas agregar este servicio a otra tienda por $50?'
         );
-        
         if (!choice) {
           return;
         }
