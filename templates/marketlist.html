@@ -351,6 +351,18 @@
     });
 
   });
+  // 🚨 NUEVO: Detectar si venimos del carrito para saltar al Paso 2
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('step') === '2') {
+    // Ocultamos el paso 1 y activamos el paso 2
+    steps[0].classList.remove('active');
+    steps[1].classList.add('active');
+
+    // Ajustamos la visibilidad de los botones correspondientes al paso 2
+    backBtn.style.display = 'block';
+    nextBtn.style.display = 'none';
+    submitBtn.style.display = 'block';
+  }
 
 </script>
 {% endblock %}
