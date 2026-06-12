@@ -453,6 +453,18 @@ def market_request():
         return redirect(url_for('marketlist'))
     
     cart = get_cart()
+    if cart:
+        # Extraemos el nombre de la tienda del primer artículo que ya esté en el carrito
+        # (Usamos .get por si la llave se llama 'tienda' o 'store_name')
+        primera_tienda = cart[0].get('tienda' or 'store_name', '').strip().lower()
+        
+        if tienda.lower() != primera_tienda:
+            message = f""
+            if wants_json:
+                return jsonify({'ok': False, 'error': message}), 400
+            flash(message)
+            return redirect(url_for('marketlist'))
+            
     cart.append({
         'custom': True,
         'tienda': tienda,
