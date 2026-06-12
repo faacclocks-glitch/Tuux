@@ -511,38 +511,6 @@ def market():
     return render_template('market.html', tiendas=MARKET.tiendas, market_request=session.get('market_request'))
 
 
-@app.route('/add_to_cart/<int:store_id>/<int:product_id>', methods=['POST'])
-def add_to_cart(store_id, product_id):
-    # 1. Obtener la cantidad que mandó el usuario desde el input
-    cantidad = int(request.form.get('cantidad', 1))
-    
-    # 2. Si el carrito no existe en la sesión del navegador, lo creamos vacío
-    if 'cart' not in session:
-        session['cart'] = {}
-    
-    # Creamos una clave única por producto usando la tienda y el ID del producto
-    # Ejemplo: "tienda_1_prod_0" (así no se mezclan si dos tiendas tienen el producto 0)
-    item_key = f"tienda_{store_id}_prod_{product_id}"
-    
-    # 3. Sumamos la cantidad al carrito
-    if item_key in session['cart']:
-        session['cart'][item_key] += cantidad
-    else:
-        session['cart'][item_key] = cantidad
-        
-    # Le avisamos a Flask que modificamos la sesión (obligatorio para diccionarios)
-    session.modified = True
-    
-    # 4. Calculamos el total de piezas que hay en el carrito actualmente
-    total_piezas = sum(session['cart'].values())
-    
-    # 5. ¡EL TRUCO! Si la petición viene desde el JavaScript (Fetch), respondemos con JSON
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return jsonify({'cart_count': total_piezas})
-    
-    # Si por alguna razón falla JS o se envía normal, recarga la página de la tienda
-    return redirect(url_for('store', store_id=store_id))
-
 @app.route('/add/<int:store_id>/<int:product_id>', methods=['POST'])
 def add_to_cart(store_id, product_id):
     producto = get_product(store_id, product_id)
