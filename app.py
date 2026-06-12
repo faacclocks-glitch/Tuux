@@ -59,23 +59,18 @@ def get_cart():
 def save_cart(cart):
     session['cart'] = cart
 
-
 def get_cart_store_keys():
-    stores = set()
-
+    groups = set()
     for item in get_cart():
         if item.get('custom'):
             tienda = (item.get('tienda') or '').strip().lower()
-            stores.add(tienda)
-
+            groups.add(tienda)
         else:
             tienda_obj = get_store(item.get('store_id'))
-
             if tienda_obj:
                 nombre = getattr(tienda_obj, 'nombre', '').strip().lower()
-                stores.add(nombre)
-
-    return list(stores)
+                groups.add(nombre)
+    return list(groups)
 
 def calculate_store_switch_fee(cart):
     groups = set()
@@ -495,9 +490,8 @@ def market_request():
 @app.route('/market-list')
 def marketlist():
     market_request_data = session.get('market_request', None)
+
     cart_store_keys = get_cart_store_keys()
-    print("CART STORE KEYS:")
-    print(cart_store_keys)
 
     items, total = build_cart_items()
     total += calculate_store_switch_fee(get_cart())
@@ -511,7 +505,7 @@ def marketlist():
         initial_step=step,
         cart_total=total
     )
-    
+
 @app.route('/market')
 def market():
     return render_template('market.html', tiendas=MARKET.tiendas, market_request=session.get('market_request'))
