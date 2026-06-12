@@ -528,46 +528,32 @@ def add_to_cart(store_id, product_id):
         flash('Stock insuficiente.')
         return redirect(url_for('store', store_id=store_id))
         
+    # ... (Toda tu validación de stock y producto se queda igual) ...
+
     cart = get_cart()
     
+    # Creamos una variable para capturar la alerta de la tienda extra
+    alerta_tienda = None
     existing_store_ids = {item.get('store_id') for item in cart if item.get('store_id') is not None}
     if existing_store_ids and store_id not in existing_store_ids:
-        flash('¿Deseas agregar otra tienda por $50 y sumarlo al total?')
-    
-    # Buscamos si ya existe el producto en el carrito
-    encontrado = False
-    for item in cart:
-        if item.get('store_id') == store_id and item.get('product_id') == product_id:
-            item['cantidad'] += cantidad
-            encontrado = True
-            break # Rompemos el ciclo sin hacer return prematuro
-            
-    # Si no existía, lo creamos y agregamos
-    if not encontrado:
-        producto_snapshot = {
-            'id': product_id,
-            'nombre': getattr(producto, 'nombre', None),
-            'precio': getattr(producto, 'precio', 0),
-            'presentacion': getattr(producto, 'presentacion', None),
-            'unidades': getattr(producto, 'unidades', None),
-        }
-        new_item = {
-            'store_id': store_id,
-            'product_id': product_id,
-            'cantidad': cantidad,
-            'producto': producto_snapshot,
-        }
-        cart.append(new_item)
+        alerta_tienda = '¿Deseas agregar otra tienda por $50 y sumarlo al total?'
+        flash(alerta_tienda) # Se queda por si acaso entran de forma tradicional
+        
+    # ... (Tu ciclo for para buscar o crear el producto se queda exactamente igual) ...
         
     save_cart(cart)
     flash('Producto agregado al carrito.')
     
-    # Calculamos la suma total de piezas reales en el carrito
     total_piezas = sum(int(item.get('cantidad', 1)) for item in cart)
     
-    # RESPUESTA UNIFICADA: Tanto para productos nuevos como repetidos
+    # RESPUESTA UNIFICADA INTERVENIDA:
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.accept_mimetypes.accept_json:
-        return jsonify({'ok': True, 'cart_count': total_piezas})
+        # Enviamos la alerta_tienda en el JSON (iría como None si es la misma tienda)
+        return jsonify({
+            'ok': True, 
+            'cart_count': total_piezas,
+            'alerta_tienda': alerta_tienda 
+        })
         
     return redirect(url_for('store', store_id=store_id))
 
