@@ -323,11 +323,15 @@
     // Validar si es otra tienda
     if (existingStores.length > 0) {
       const tiendaActual = tienda.trim().toLowerCase();
-      const exists = existingStores.includes(tiendaActual);
+      const exists = existingStores.some(
+        store => store.trim().toLowerCase() === tiendaActual
+      );
       console.log(existingStores);
       console.log(tiendaActual);
       console.log(exists);
-      
+      alert("Tiendas actuales: " + JSON.stringify(existingStores));
+      alert("Tienda nueva: " + tiendaActual);
+      alert("Existe: " + exists);
       if (!exists) {
         
         const choice = confirm('¿Deseas agregar este servicio a otra tienda por $50? Si aceptas, se agregará el producto al carrito y se sumará los $50 a los servicios agregados.');
