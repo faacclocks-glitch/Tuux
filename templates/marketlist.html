@@ -283,7 +283,11 @@
     submitBtn.style.display = 'none';
   };
 
+  // 🚨 NUEVO: Variable global para controlar el tiempo del mensaje de éxito
+  let successTimeout;
+
   submitBtn.addEventListener('click', function(e) {
+      // ... todo tu código de validación y fetch se queda igual ...
 
     e.preventDefault();
 
@@ -344,7 +348,13 @@
       document.getElementById('detalles').value = '';
 
       successMessage.style.display = 'block';
+
+      successTimeout = setTimeout(function() {
+        successMessage.style.display = 'none';
+      }, 2500); 
+
     })
+  })
     .catch(error => {
       console.error(error);
       alert('Hubo un error');
