@@ -246,7 +246,9 @@
 <script>
 
   const existingStores = {{ cart_store_keys|tojson|safe }};
-
+  console.log("STORES:");
+  console.log(existingStores);
+  alert(JSON.stringify(existingStores));
   const form = document.getElementById('multiStepForm');
   const steps = document.querySelectorAll('.form-step');
   const nextBtn = document.getElementById('nextBtn');
