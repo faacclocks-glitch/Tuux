@@ -301,25 +301,29 @@
       return;
     }
 
+    // ... Tu código anterior de obtener valores ...
+
     const formData = new FormData(form);
 
+    // 🚨 NUEVA LÓGICA: Bloqueo de una sola tienda
     if (existingStores.length > 0) {
-
       const tiendaActual = tienda.trim().toLowerCase();
 
       const exists = existingStores.some(function(store) {
         return store.trim().toLowerCase() === tiendaActual;
       });
-
-      alert("EXIST: " + exists);
       
       if (!exists) {
-
-        alert('Se agregarán $50 por otra tienda');
+        // Obtenemos el nombre de la tienda que ya está en el carrito para decírselo al usuario
+        const tiendaEnCarrito = existingStores[0]; 
         
-        formData.set('confirm_switch', '1');
+        alert(`¡Atención! Por el momento solo puedes pedir de una sola tienda por pedido. Ya tienes productos de "${tiendaEnCarrito}" en tu carrito. Si deseas ordenar de otra tienda, por favor procesa o vacía tu carrito actual.`);
+        
+        return; // 🚨 DETIENE el proceso aquí, impidiendo que se ejecute el Fetch
       }
     }
+
+    // Si pasa la validación, procede a enviar por Fetch de forma normal...
 
     fetch(form.action, {
       method: 'POST',
