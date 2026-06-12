@@ -60,16 +60,17 @@ def save_cart(cart):
     session['cart'] = cart
 
 
-def get_cart_store_keys():
-    tiendas = set()
+cart_store_keys = [
+    pair[0] for pair in get_cart_store_keys()
+]
 
-    for item in get_cart():
-        if item.get('custom'):
-            tienda = (item.get('tienda') or '').strip().lower()
-            if tienda:
-                tiendas.add(tienda)
-
-    return list(tiendas)
+return render_template(
+    'marketlist.html',
+    market_request=market_request_data,
+    cart_store_keys=cart_store_keys,
+    initial_step=step,
+    cart_total=total
+)
 
 
 def calculate_store_switch_fee(cart):
