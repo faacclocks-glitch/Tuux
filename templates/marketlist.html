@@ -181,10 +181,10 @@
 {% endwith %}
 
 <section class="store-request">
-  <h2>Mis datos</h2>
+  
   <form method="post" action="{{ url_for('market_request') }}" id="multiStepForm">    <!-- Paso 1: Datos Personales -->
     <div class="form-step active">
-      <div>
+      <h2>Mis datos</h2><div>
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre" value="{{ market_request.nombre if market_request else '' }}" required>
       </div>
@@ -201,9 +201,9 @@
     </div>
 
     <!-- Paso 2: Datos del Pedido -->
-  <h2>Mi pedido</h2>
+  
     <div class="form-step">
-      <div>
+      <h2>Mi pedido</h2><div>
         <label for="tienda">¿Dónde quieres que compremos?:</label>
         <input type="text" id="tienda" name="tienda" value="{{ market_request.tienda if market_request else '' }}" required>
       </div>
