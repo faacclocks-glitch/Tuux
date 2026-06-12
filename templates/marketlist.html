@@ -246,9 +246,7 @@
 <script>
 
   const existingStores = {{ cart_store_keys|tojson|safe }};
-  console.log("STORES:");
-  console.log(existingStores);
-  alert(JSON.stringify(existingStores));
+
   const form = document.getElementById('multiStepForm');
   const steps = document.querySelectorAll('.form-step');
   const nextBtn = document.getElementById('nextBtn');
@@ -256,16 +254,7 @@
   const submitBtn = document.getElementById('submitBtn');
   const successMessage = document.getElementById('successMessage');
 
-  let currentStep = 0;
-
-  console.log("JS FUNCIONANDO");
-  console.log(existingStores);
-  console.log(nextBtn);
-  console.log(steps);
-
   nextBtn.onclick = function() {
-
-    console.log("BOTON SIGUIENTE");
 
     const nombre = document.getElementById('nombre').value.trim();
     const municipio = document.getElementById('municipio').value.trim();
@@ -310,40 +299,26 @@
 
     const formData = new FormData(form);
 
-    console.log(existingStores);
-    alert("ENTRO AL SUBMIT");
-    alert(JSON.stringify(existingStores));
-    alert(tienda);
     if (existingStores.length > 0) {
+
       const tiendaActual = tienda.trim().toLowerCase();
-    
-      console.log("TIENDA ACTUAL:");
-      console.log(tiendaActual);
-      
-      console.log("EXISTING STORES:");
-      console.log(existingStores);
-      
+
       const exists = existingStores.some(function(store) {
-        console.log("COMPARANDO CON:");
-        console.log(store);
-        
         return store.trim().toLowerCase() === tiendaActual;
       });
-      
-      console.log("EXISTS:");
-      console.log(exists);
-      
+
       alert("EXISTS: " + exists);
-      
+
       if (!exists) {
+
         const choice = confirm(
           '¿Deseas agregar este servicio a otra tienda por $50?'
         );
-        
+
         if (!choice) {
           return;
         }
-        
+
         formData.set('confirm_switch', '1');
       }
     }
@@ -378,5 +353,4 @@
   });
 
 </script>
-
 {% endblock %}
