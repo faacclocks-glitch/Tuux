@@ -322,7 +322,7 @@
     if (existingPairs && existingPairs.length > 0) {
       const exists = existingPairs.some(
        pair =>
-        pair[0].trim().toLowerCase() === tienda.trim().toLowerCase()
+        pair.trim().toLowerCase() === tienda.trim().toLowerCase()
       );
       console.log(exists);
       if (!exists) {
