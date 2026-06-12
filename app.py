@@ -474,8 +474,9 @@ def market_request():
         'detalles': '',
     }
     session['market_request'] = market_request
-    flash('Pedido agregado al carrito.')
-
+    if not wants_json:
+        flash('Pedido agregado al carrito.')
+        
     items, total = build_cart_items()
     total += calculate_store_switch_fee(get_cart())
     if request.accept_mimetypes.accept_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
