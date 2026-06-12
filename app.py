@@ -65,7 +65,7 @@ print("CART STORE KEYS:")
 print(cart_store_keys)
 print(type(cart_store_keys))
 
-    return render_template(
+return render_template(
     'marketlist.html',
     market_request=market_request_data,
     cart_store_keys=cart_store_keys,
