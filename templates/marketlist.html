@@ -244,106 +244,96 @@
 </section>
 
 <script>
-  
-  const existingStores = [];
-  console.log("JS FUNCIONANDO");
-  console.log(existingStores);
+
+  const existingStores = {{ cart_store_keys|tojson|safe }};
+
   const form = document.getElementById('multiStepForm');
   const steps = document.querySelectorAll('.form-step');
   const nextBtn = document.getElementById('nextBtn');
   const backBtn = document.getElementById('backBtn');
   const submitBtn = document.getElementById('submitBtn');
   const successMessage = document.getElementById('successMessage');
+
   let currentStep = 0;
 
-  function showStep(step) {
-    steps.forEach((s, index) => {
-      s.classList.toggle('active', index === step);
-    });
-    
-    // Actualizar botones
-    if (step === 0) {
-      backBtn.style.display = 'none';
-      nextBtn.style.display = 'block';
-      submitBtn.style.display = 'none';
-    } else {
-      backBtn.style.display = 'block';
-      nextBtn.style.display = 'none';
-      submitBtn.style.display = 'block';
-    }
-  }
-
+  console.log("JS FUNCIONANDO");
+  console.log(existingStores);
   console.log(nextBtn);
   console.log(steps);
 
   nextBtn.onclick = function() {
+
     console.log("BOTON SIGUIENTE");
+
     const nombre = document.getElementById('nombre').value.trim();
     const municipio = document.getElementById('municipio').value.trim();
     const celular = document.getElementById('celular').value.trim();
-    
+
     if (!nombre || !municipio || !celular) {
       alert('Completa todos los campos');
       return;
     }
-    
+
     steps[0].classList.remove('active');
     steps[1].classList.add('active');
-    
+
     backBtn.style.display = 'block';
     nextBtn.style.display = 'none';
     submitBtn.style.display = 'block';
   };
-  
+
   backBtn.onclick = function() {
+
     steps[1].classList.remove('active');
     steps[0].classList.add('active');
-    
+
     backBtn.style.display = 'none';
     nextBtn.style.display = 'block';
     submitBtn.style.display = 'none';
   };
 
-  submitBtn.addEventListener('click', function(e) {
+  submitBtn.onclick = function(e) {
+
     e.preventDefault();
-    
+
     const tienda = document.getElementById('tienda').value.trim();
     const direccion = document.getElementById('direccion').value.trim();
     const producto = document.getElementById('producto').value.trim();
     const cantidad = document.getElementById('cantidad').value.trim();
-    
+
     if (!tienda || !direccion || !producto || !cantidad) {
       alert('Por favor completa todos los campos requeridos');
       return;
     }
-    
-    // Construir FormData
+
     const formData = new FormData(form);
 
-    
     console.log(existingStores);
-    console.log(tienda);
-    console.log(direccion);
-    // Validar si es otra tienda
-    
+
     if (existingStores.length > 0) {
-      const tiendaActual = tienda.trim().toLowerCase();
+
+      const tiendaActual = tienda.toLowerCase();
+
       const exists = existingStores.some(
-        store => store === tiendaActual
+        store => store.toLowerCase() === tiendaActual
       );
-      
+
+      console.log("EXISTS:", exists);
+
       if (!exists) {
+
         const choice = confirm(
           '¿Deseas agregar este servicio a otra tienda por $50?'
         );
+
         if (!choice) {
           return;
         }
+
         formData.set('confirm_switch', '1');
       }
     }
-    
-    // Enviar con fetch
+
     fetch(form.action, {
       method: 'POST',
       headers: {
@@ -354,30 +344,24 @@
     })
     .then(response => response.json())
     .then(data => {
+
       if (!data.ok) {
         alert(data.error);
         return;
       }
 
-      successMessage.style.display = 'block';
-    })
-      
-
-      // Limpiar campos del paso 2
       document.getElementById('producto').value = '';
       document.getElementById('cantidad').value = '1';
       document.getElementById('detalles').value = '';
-      
-      // Mostrar mensaje de éxito
+
       successMessage.style.display = 'block';
     })
     .catch(error => {
-      console.error('Error:', error);
-      alert('Hubo un error al agregar el producto');
+      console.error(error);
+      alert('Hubo un error');
     });
-  });
 
-  showStep(currentStep);
+  };
+
 </script>
-
 {% endblock %}
