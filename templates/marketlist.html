@@ -246,7 +246,7 @@
 
 <script>
   console.log("SCRIPT CARGADO");
-  const existingStores = {{ cart_store_keys|default([], true)|tojson|safe }};
+  const existingStores = {{ cart_store_keys|tojson }};
   const form = document.getElementById('multiStepForm');
   const steps = document.querySelectorAll('.form-step');
   const nextBtn = document.getElementById('nextBtn');
@@ -329,9 +329,7 @@
       console.log(existingStores);
       console.log(tiendaActual);
       console.log(exists);
-      alert("Tiendas actuales: " + JSON.stringify(existingStores));
-      alert("Tienda nueva: " + tiendaActual);
-      alert("Existe: " + exists);
+      
       if (!exists) {
         
         const choice = confirm('¿Deseas agregar este servicio a otra tienda por $50? Si aceptas, se agregará el producto al carrito y se sumará los $50 a los servicios agregados.');
