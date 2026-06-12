@@ -249,7 +249,7 @@
 </section>
 
 <script>
-  const existingPairs = {{ cart_store_keys|tojson }};
+  const existingStores = {{ cart_store_keys|tojson }};
   const form = document.getElementById('multiStepForm');
   const steps = document.querySelectorAll('.form-step');
   const nextBtn = document.getElementById('nextBtn');
@@ -319,11 +319,22 @@
     console.log(tienda);
     console.log(direccion);
     // Validar si es otra tienda
-    if (existingPairs && existingPairs.length > 0) {
-      const exists = existingPairs.some(
-       pair =>
-        pair.trim().toLowerCase() === tienda.trim().toLowerCase()
-      );
+    if (existingStores.length > 0) {
+      const tiendaActual = tienda.trim().toLowerCase();
+      const exists = existingStores.includes(tiendaActual);
+      console.log(existingStores);
+      console.log(tiendaActual);
+      console.log(exists);
+      if (!exists) {
+        const choice = confirm(
+          '¿Deseas agregar este servicio a otra tienda por $50?'
+        );
+        if (!choice) {
+          return;
+        }
+        formData.set('confirm_switch', '1');
+      }
+    }
       console.log(exists);
       if (!exists) {
         const choice = confirm('¿Deseas agregar este servicio a otra tienda por $50? Si aceptas, se agregará el producto al carrito y se sumará los $50 a los servicios agregados.');
