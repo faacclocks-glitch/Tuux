@@ -150,26 +150,32 @@
     margin: 0;
   }
 </style>
-  <h1>{{ tienda.nombre }} - {{ tienda.giro }}</h1>
-  <p>{{ tienda.direccion }} · {{ tienda.celular }}</p>
+  <div class="navbar" style="display: flex; justify-content: space-between; padding: 10px; background: #f5f5f5; align-items: center;">
+  <a href="{{ url_for('market') }}" class="nav-link">← Volver al Mercado</a>
   
-  {% for producto in tienda.productos %}
-    <div class="product">
-      <strong>{{ producto.nombre }}</strong><br>
-      Precio: ${{ producto.precio }} · Stock: {{ producto.unidades }}<br>
-      <form method="post" action="{{ url_for('add_to_cart', store_id=store_id, product_id=loop.index0) }}" class="quantity-form">
-        <div class="quantity-control">
-          <button type="button" class="decrement">−</button>
-          <input type="number" name="cantidad" value="1" min="1" readonly>
-          <button type="button" class="increment">+</button>
-        </div>
-        <button type="submit">Agregar al carrito</button>
-      </form>
-    </div>
-  
-  {% endfor %}
+  <a href="{{ url_for('cart') }}" class="cart-link" style="text-decoration: none; font-size: 1.2rem;">
+    🛒 Carrito: <strong class="cart-count">{{ cart_count }}</strong> piezas
+  </a>
+</div>
 
-  <a href="{{ url_for('market') }}" class="nav-link">Volver al Mercado</a>
+<h1>{{ tienda.nombre }} - {{ tienda.giro }}</h1>
+<p>{{ tienda.direccion }} · {{ tienda.celular }}</p>
+ 
+{% for producto in tienda.productos %}
+  <div class="product" style="margin-bottom: 20px; padding: 10px; border: 1px solid #ddd;">
+    <strong>{{ producto.nombre }}</strong><br>
+    Precio: ${{ producto.precio }} · Stock: {{ producto.unidades }}<br>
+    
+    <form method="post" action="{{ url_for('add_to_cart', store_id=store_id, product_id=loop.index0) }}" class="quantity-form">
+      <div class="quantity-control">
+        <button type="button" class="decrement">−</button>
+        <input type="number" name="cantidad" value="1" min="1" readonly>
+        <button type="button" class="increment">+</button>
+      </div>
+      <button type="submit" style="margin-top: 5px;">Agregar al carrito</button>
+    </form>
+  </div>
+{% endfor %}
 
 <script>
   document.querySelectorAll('.quantity-form').forEach(function(form) {
@@ -177,6 +183,7 @@
     const increment = form.querySelector('.increment');
     const input = form.querySelector('input[name="cantidad"]');
 
+    // 1. Control de cantidad (+ / -)
     decrement.addEventListener('click', function() {
       let value = parseInt(input.value, 10) || 1;
       if (value > 1) {
@@ -187,6 +194,42 @@
     increment.addEventListener('click', function() {
       let value = parseInt(input.value, 10) || 1;
       input.value = value + 1;
+    });
+
+    // 2. NUEVO: Interceptar el envío para hacerlo mediante AJAX (Fetch)
+    form.addEventListener('submit', function(e) {
+      e.preventDefault(); // Detiene la recarga normal de la página
+
+      // Empaquetamos los datos del formulario (la cantidad seleccionada)
+      const formData = new FormData(form);
+
+      // Enviamos la petición POST a la URL del action del formulario
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest' // Le avisa a Flask que es una petición AJAX
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Si Flask responde con éxito, actualizamos el contador en vivo
+        if (data.cart_count !== undefined) {
+          const cartCountElement = document.querySelector('.cart-count');
+          if (cartCountElement) {
+            cartCountElement.textContent = data.cart_count;
+            
+            // Efecto visual opcional para notar el cambio
+            cartCountElement.style.color = 'green';
+            setTimeout(() => { cartCountElement.style.color = 'black'; }, 500);
+          }
+          alert('¡Producto agregado con éxito!');
+        }
+      })
+      .catch(error => {
+        console.error('Error en AJAX, procesando envío tradicional:', error);
+        form.submit(); // Fallback por si algo falla en el JavaScript
+      });
     });
   });
 </script>
