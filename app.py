@@ -511,59 +511,64 @@ def market():
     return render_template('market.html', tiendas=MARKET.tiendas, market_request=session.get('market_request'))
 
 
-@app.route('/store/<int:store_id>')
-def store(store_id):
-    tienda = get_store(store_id)
-    if not tienda:
-        flash('Tienda no encontrada.')
-        return redirect(url_for('market'))
-    return render_template('store.html', tienda=tienda, store_id=store_id)
-
-
 @app.route('/add/<int:store_id>/<int:product_id>', methods=['POST'])
 def add_to_cart(store_id, product_id):
     producto = get_product(store_id, product_id)
     if not producto:
         flash('Producto no encontrado.')
         return redirect(url_for('store', store_id=store_id))
+        
     cantidad = request.form.get('cantidad', '1')
     if not cantidad.isdigit() or int(cantidad) <= 0:
         flash('Cantidad inválida.')
         return redirect(url_for('store', store_id=store_id))
+        
     cantidad = int(cantidad)
     if cantidad > producto.unidades:
         flash('Stock insuficiente.')
         return redirect(url_for('store', store_id=store_id))
+        
     cart = get_cart()
+    
     existing_store_ids = {item.get('store_id') for item in cart if item.get('store_id') is not None}
     if existing_store_ids and store_id not in existing_store_ids:
         flash('¿Deseas agregar otra tienda por $50 y sumarlo al total?')
+    
+    # Buscamos si ya existe el producto en el carrito
+    encontrado = False
     for item in cart:
         if item.get('store_id') == store_id and item.get('product_id') == product_id:
             item['cantidad'] += cantidad
-            save_cart(cart)
-            flash('Producto agregado al carrito.')
-            return redirect(url_for('store', store_id=store_id))
-    # Crear snapshot serializable del producto para guardarlo en la sesión.
-    producto_snapshot = {
-        'id': product_id,
-        'nombre': getattr(producto, 'nombre', None),
-        'precio': getattr(producto, 'precio', 0),
-        'presentacion': getattr(producto, 'presentacion', None),
-        'unidades': getattr(producto, 'unidades', None),
-    }
-    new_item = {
-        'store_id': store_id,
-        'product_id': product_id,
-        'cantidad': cantidad,
-        'producto': producto_snapshot,
-    }
-    cart.append(new_item)
+            encontrado = True
+            break # Rompemos el ciclo sin hacer return prematuro
+            
+    # Si no existía, lo creamos y agregamos
+    if not encontrado:
+        producto_snapshot = {
+            'id': product_id,
+            'nombre': getattr(producto, 'nombre', None),
+            'precio': getattr(producto, 'precio', 0),
+            'presentacion': getattr(producto, 'presentacion', None),
+            'unidades': getattr(producto, 'unidades', None),
+        }
+        new_item = {
+            'store_id': store_id,
+            'product_id': product_id,
+            'cantidad': cantidad,
+            'producto': producto_snapshot,
+        }
+        cart.append(new_item)
+        
     save_cart(cart)
     flash('Producto agregado al carrito.')
-    # Si la petición es AJAX, devolver JSON con el nuevo contador
+    
+    # Calculamos la suma total de piezas reales en el carrito
+    total_piezas = sum(int(item.get('cantidad', 1)) for item in cart)
+    
+    # RESPUESTA UNIFICADA: Tanto para productos nuevos como repetidos
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.accept_mimetypes.accept_json:
-        return jsonify({'ok': True, 'cart_count': len(get_cart())})
+        return jsonify({'ok': True, 'cart_count': total_piezas})
+        
     return redirect(url_for('store', store_id=store_id))
 
 
