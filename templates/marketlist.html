@@ -344,34 +344,7 @@
     })
     .then(response => response.json())
     .then(data => {
-      if (!data.ok) {
-        const message = data.error || 'Hubo un error';
-        if (message.includes('otra tienda')) {
-          const choice = confirm(message);
-          if (!choice) {
-            return;
-          }
-
-          formData.set('confirm_switch', '1')
-          fetch(form.action, {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'X-Requested-With': 'XMLHttpRequest',
-            },
-            body: formData
-          })
-            .then(response => response.json())
-            .then(data => {
-              if (data.ok) {
-                window.location.reload();
-              }
-            });
-          return;
-          }
-        alert(message);
-        return;
-      }
+      
 
       // Limpiar campos del paso 2
       document.getElementById('producto').value = '';
