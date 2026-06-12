@@ -178,6 +178,8 @@
 {% endfor %}
 
 <script>
+  // 🚨 LA BOMBA DE PRUEBA: Esto tiene que aparecer APENAS cargues o refresques la página
+  alert("¡El JavaScript de la tienda SÍ está cargando!");
   document.querySelectorAll('.quantity-form').forEach(function(form) {
     const decrement = form.querySelector('.decrement');
     const increment = form.querySelector('.increment');
