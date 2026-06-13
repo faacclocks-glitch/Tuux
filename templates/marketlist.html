@@ -179,6 +179,35 @@
     align-items: center;
     justify-content: center;
   }
+  /* Contenedor del globo de pensamiento */
+.globo-pensamiento {
+  position: absolute;
+  background-color: #fff3cd;   /* Color amarillo suave de advertencia */
+  color: #856404;               /* Texto café oscuro */
+  border: 1px solid #ffeeba;
+  padding: 6px 12px;
+  border-radius: 15px;         /* Bordes redondeados tipo globo */
+  font-size: 0.85rem;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  
+  /* Lo posiciona arriba del input */
+  transform: translateY(-45px); 
+  display: none;               /* Oculto por defecto */
+  pointer-events: none;        /* Evita que estorbe si el usuario intenta hacer clic */
+}
+
+/* Animación opcional para que aparezca con un efecto suave */
+@keyframes aparecerGlobo {
+  from { opacity: 0; transform: translateY(-35px); }
+  to { opacity: 1; transform: translateY(-45px); }
+}
+
+.globo-pensamiento.visible {
+  display: block;
+  animation: aparecerGlobo 0.2s ease-out;
+}
 </style>
 
 
@@ -229,6 +258,7 @@
       <div class="full-width">
         <label for="producto">¿Qué necesitas que compremos?:</label>
         <input type="text" id="producto" name="producto" value="{{ market_request.producto if market_request else '' }}" required>
+        <div id="globo-info" class="globo-pensamiento">💭 No productos perecederos por el momento</div>
       </div>
 
       <div>
@@ -267,6 +297,21 @@
   const backBtn = document.getElementById('backBtn');
   const submitBtn = document.getElementById('submitBtn');
   const successMessage = document.getElementById('successMessage');
+  // 🔌 CONTROL DEL GLOBO DE PENSAMIENTO
+const inputProducto = document.getElementById('producto');
+const globoInfo = document.getElementById('globo-info');
+
+if (inputProducto && globoInfo) {
+  // Cuando el usuario hace clic o selecciona el campo
+  inputProducto.addEventListener('focus', function() {
+    globoInfo.classList.add('visible');
+  });
+
+  // Cuando el usuario hace clic afuera o cambia de campo
+  inputProducto.addEventListener('blur', function() {
+    globoInfo.classList.remove('visible');
+  });
+}
 
   nextBtn.onclick = function() {
 
