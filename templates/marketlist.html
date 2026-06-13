@@ -333,26 +333,33 @@
         
         alert(`¡Atención! Confirma tu pedido por WhatsApp y pregunta por disponibilidad para el servicio de otra tienda`);
         // ============================================================
-// 🚨 PEGA ESTE BLOQUE JUSTO AQUÍ ABAJO:
-// ============================================================
+        // 🚨 PEGA ESTE BLOQUE JUSTO AQUÍ ABAJO:
+        // ============================================================
 
-// 2. Regresar visualmente al Paso 2 (Formulario de la tienda)
-steps[0].classList.remove('active'); // Oculta el Paso 1
-steps[1].classList.add('active');    // Muestra el Paso 2
+        // 2. Regresar visualmente al Paso 2 (Formulario de la tienda)
+        steps[0].classList.remove('active'); 
+        steps[1].classList.add('active');
 
-// Ajustamos la visibilidad de los botones para el Paso 2
+        // Ajustamos los botones para el Paso 2
 if (typeof backBtn !== 'undefined') backBtn.style.display = 'block';
 if (typeof nextBtn !== 'undefined') nextBtn.style.display = 'none';
 if (typeof submitBtn !== 'undefined') submitBtn.style.display = 'block';
 
-// 3. Bloquear los datos del cliente y la tienda (Se quedan los que ya escribieron)
+// 3. 🎯 MOSTRAR LA TIENDA DEL CARRITO Y BLOQUEAR
+// Si ya hay una tienda en el carrito, obligamos al campo a mostrarla
+if (typeof existingStores !== 'undefined' && existingStores.length > 0) {
+    const inputTienda = document.getElementById('tienda');
+    if (inputTienda) {
+        inputTienda.value = existingStores[0]; // 👈 Aquí inyecta el nombre exacto del carrito
+    }
+}
+
+// Bloqueamos los datos fijos (Usuario y Tienda) con candado y color gris
 const camposFijos = ['nombre', 'municipio', 'celular', 'tienda', 'direccion'];
 camposFijos.forEach(function(id) {
     const input = document.getElementById(id);
     if (input) {
-        input.readOnly = true; // 🔒 Bloquea el campo para que no se borre ni edite
-        
-        // Estilo visual gris de "bloqueado" directamente en JS
+        input.readOnly = true; // 🔒 Bloqueado
         input.style.backgroundColor = "#e9ecef"; 
         input.style.color = "#6c757d";
         input.style.cursor = "not-allowed";
@@ -364,28 +371,27 @@ const camposProducto = ['producto', 'cantidad', 'detalles'];
 camposProducto.forEach(function(id) {
     const input = document.getElementById(id);
     if (input) {
-        input.readOnly = false; // 🔓 Asegura que sí se pueda escribir
-        
-        // Quitamos cualquier estilo de bloqueo por si acaso
+        input.readOnly = false; // 🔓 Abierto para escribir
         input.style.backgroundColor = ""; 
         input.style.color = "";
         input.style.cursor = "";
         
-        // Limpiamos los campos para el siguiente artículo
         if (id === 'cantidad') {
-            input.value = '1'; // Resetea la cantidad a 1
+            input.value = '1'; // Resetea cantidad a 1
         } else {
-            input.value = '';  // Vacía el Producto y los Detalles
+            input.value = '';  // Vacía el texto anterior
         }
     }
 });
 
-// 5. Mover la pantalla automáticamente al inicio del formulario
+// 5. Mover la pantalla automáticamente al inicio del Formulario 2
 const seccionFormulario = document.querySelector('.store-request');
 if (seccionFormulario) {
     seccionFormulario.scrollIntoView({ behavior: 'smooth' });
 }
 // ============================================================
+
+
         
 
 
