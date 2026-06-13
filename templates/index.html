@@ -323,12 +323,50 @@
     .nav a, .nav-link { font-size: 1.2rem; margin-left: 30px; }
   }
 
+  @media (max-width: 768px) {
+    .btn-flotante {
+      bottom: 0;
+      right: 0;
+      left: 0;
+      border-radius: 0; /* Quitamos lo redondo para que sea una barra */
+      text-align: center;
+      padding: 18px;
+      box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.15);
+    }
+  }
+
   .nav a:hover,
   .nav-link:hover {
     background: linear-gradient(90deg, #3DD6C6, #104E8B);
     box-shadow: 0 10px 24px rgba(16, 78, 139, 0.18);
     color: white;
     transform: translateY(-2px);
+  }
+  /* Estilos para el botón flotante */
+  .btn-flotante {
+    position: fixed;
+    bottom: 30px;       /* Distancia desde abajo de la pantalla */
+    right: 30px;        /* Distancia desde la derecha de la pantalla */
+    z-index: 9999;      /* Altura máxima para que NADA lo tape */
+  
+  /* Estilos estéticos (puedes cambiarlos para que combinen con TU'UX) */
+    background-color: #28a745; /* Color verde llamativo */
+    color: white;
+    padding: 15px 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 50px; /* Bordes completamente redondeados */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.25); /* Sombra para que se vea "3D" */
+  
+  /* Animación suave cuando pasas el mouse por encima */
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+/* Efecto al pasar el cursor (Desktop) */
+  .btn-flotante:hover {
+    transform: scale(1.05); /* Se agranda un poquito */
+    background-color: #218838; /* Verde un poco más oscuro */
   }
 </style>
 
@@ -476,7 +514,7 @@
   </div>
 
   <div class="steps-footer" style="margin-left: 30px; margin-top: 20px;">
-    <a href="{{ url_for('marketlist') }}" class="nav-link">🛒 Realizar compra</a>
+    <a href="{{ url_for('marketlist') }}" class="btn-flotante">🛒 Realizar compra</a>
   </div>
 
 {% endblock %}
