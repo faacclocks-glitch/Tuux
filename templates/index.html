@@ -323,51 +323,45 @@
     .nav a, .nav-link { font-size: 1.2rem; margin-left: 30px; }
   }
 
-  @media (max-width: 768px) {
-    .btn-flotante {
-      bottom: 0;
-      right: 0;
-      left: 0;
-      border-radius: 0; /* Quitamos lo redondo para que sea una barra */
-      text-align: center;
-      padding: 18px;
-      box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.15);
-    }
-  }
-
-  .nav a:hover,
-  .nav-link:hover {
-    background: linear-gradient(90deg, #3DD6C6, #104E8B);
-    box-shadow: 0 10px 24px rgba(16, 78, 139, 0.18);
-    color: white;
-    transform: translateY(-2px);
-  }
-  /* Estilos para el botón flotante */
   .btn-flotante {
+  /* 📍 POSICIÓN: Esto es lo que hace que flote y te siga */
     position: fixed;
-    bottom: 30px;       /* Distancia desde abajo de la pantalla */
-    right: 30px;        /* Distancia desde la derecha de la pantalla */
-    z-index: 9999;      /* Altura máxima para que NADA lo tape */
-  
-  /* Estilos estéticos (puedes cambiarlos para que combinen con TU'UX) */
-    background-color: #28a745; /* Color verde llamativo */
-    color: white;
-    padding: 15px 25px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    text-decoration: none;
-    border-radius: 50px; /* Bordes completamente redondeados */
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.25); /* Sombra para que se vea "3D" */
-  
-  /* Animación suave cuando pasas el mouse por encima */
-    transition: transform 0.2s ease, background-color 0.2s ease;
-}
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    text-decoration: none; /* Quita la línea de abajo típica de los enlaces */
 
-/* Efecto al pasar el cursor (Desktop) */
-  .btn-flotante:hover {
-    transform: scale(1.05); /* Se agranda un poquito */
-    background-color: #218838; /* Verde un poco más oscuro */
+  /* 🎨 EL FORMATO DE TU TIENDA (Modifícalo a tu antojo) */
+    background-color: #28a745; /* 👈 Cambia por tu color de "Agregar al carrito" */
+    color: #ffffff;            /* 👈 Cambia por el color de tu texto (blanco, negro, etc.) */
+    padding: 12px 24px;        /* 👈 Ajusta el tamaño/relleno del botón */
+    border-radius: 5px;        /* 👈 Ponle el mismo redondeado que tengan tus botones */
+  
+  /* Tipografía */
+    font-size: 1rem;
+    font-weight: bold;
+  
+  /* Sombra (opcional, por si quieres que resalte que está flotando arriba) */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  
+  /* Animación suave para el cambio de color */
+    transition: background-color 0.2s ease;
   }
+
+/* 🚨 CAMBIO DE COLOR AL PASAR EL MOUSE (Hover) */
+  .btn-flotante:hover {
+    background-color: #218838; /* 👈 El color que toma tu botón cuando le pasas el cursor */
+    color: #ffffff;            /* Mantener el color del texto */
+  }
+
+/* Ajuste opcional para pantallas de celular */
+@media (max-width: 768px) {
+  .btn-flotante {
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px; /* Un poco más pequeño en celular */
+  }
+}
 </style>
 
   <div class="hero-row">
