@@ -459,7 +459,7 @@ def market_request():
         primera_tienda = cart[0].get('tienda' or 'store_name', '').strip().lower()
         
         if tienda.lower() != primera_tienda:
-            message = f""
+            message = f"Atención! Confirma tu pedido por WhatsApp y pregunta por disponibilidad para el servicio de otra tienda"
             if wants_json:
                 return jsonify({'ok': False, 'error': message}), 400
             flash(message)
