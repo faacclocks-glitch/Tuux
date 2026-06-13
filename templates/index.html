@@ -325,17 +325,17 @@
 
   .btn-flotante {
   /* 📍 POSICIÓN: Esto es lo que hace que flote y te siga */
-    position: fixed;
+    position: fixed !important;
     bottom: 30px;
     right: 30px;
     z-index: 9999;
     text-decoration: none; /* Quita la línea de abajo típica de los enlaces */
 
   /* 🎨 EL FORMATO DE TU TIENDA (Modifícalo a tu antojo) */
-    background-color: linear-gradient(90deg, #00B3B3, #3DD6C6); /* 👈 Cambia por tu color de "Agregar al carrito" */
-    color: white;            /* 👈 Cambia por el color de tu texto (blanco, negro, etc.) */
-    padding: 12px 20px;        /* 👈 Ajusta el tamaño/relleno del botón */
-    border-radius: 8px;        /* 👈 Ponle el mismo redondeado que tengan tus botones */
+    background-color: linear-gradient(90deg, #00B3B3, #3DD6C6) !important; /* 👈 Cambia por tu color de "Agregar al carrito" */
+    color: white !important;            /* 👈 Cambia por el color de tu texto (blanco, negro, etc.) */
+    padding: 12px 24px;        /* 👈 Ajusta el tamaño/relleno del botón */
+    border-radius: 5px;        /* 👈 Ponle el mismo redondeado que tengan tus botones */
     cursor: pointer;
     border: none
     flex: 1;
@@ -348,13 +348,13 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   
   /* Animación suave para el cambio de color */
-    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s;
+    transition: background-color 0.2s ease;;
   }
 
 /* 🚨 CAMBIO DE COLOR AL PASAR EL MOUSE (Hover) */
   .btn-flotante:hover {
-    background-color: linear-gradient(90deg, #666, #444); /* 👈 El color que toma tu botón cuando le pasas el cursor */
-    color: white;            /* Mantener el color del texto */
+    background-color: linear-gradient(90deg, #666, #444) !important; /* 👈 El color que toma tu botón cuando le pasas el cursor */
+    color: white !important;            /* Mantener el color del texto */
   }
 
 /* Ajuste opcional para pantallas de celular */
