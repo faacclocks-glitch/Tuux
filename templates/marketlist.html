@@ -107,6 +107,19 @@
     background: linear-gradient(90deg, #666, #444);
   }
 
+  /* Ajuste para que el formulario libre el encabezado en celulares */
+  @media (max-width: 768px) {
+  .store-request {
+    padding-top: 80px; /* 🚨 Cambia los '80px' por la altura aproximada de tu encabezado */
+  }
+
+  /* O directamente al contenedor de los pasos si usas flex/grid */
+  .form-step.active {
+    margin-top: 20px;
+    padding-top: 10px;
+  }
+}
+
   @media (min-width: 480px) {
     button {
       flex: 0 1 auto;
