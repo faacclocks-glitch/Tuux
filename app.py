@@ -159,7 +159,7 @@ def index():
         return redirect(url_for('market'))
 
     return render_template(
-        'market.html',
+        'businesspeople.html',
         tiendas=MARKET.tiendas,
         market_request=session.get('market_request')
     )
