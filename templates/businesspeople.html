@@ -3,7 +3,9 @@
 
 <style>
   body {
-    background-image: url("{{ url_for('static', filename='vendedor.jpg') }}");
+    background-image:
+      linear-gradient(rgba(255,255,255,.88), rgba(255,255,255,.94)),
+      url("{{ url_for('static', filename='vendedor.jpg') }}");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
@@ -12,19 +14,217 @@
     min-height: 100vh;
   }
 
-  p{
-    color: black;
-    font-size: 1.2rem; /* 1.2rem equivale más o menos a 19px, ideal para una lectura cómoda */
-    margin-left: 15px;
+  .provider-container {
+    width: min(900px, 92%);
+    margin: 0 auto;
+    padding: 40px 0 70px;
+  }
+
+  .provider-header {
+    text-align: center;
+    margin-bottom: 35px;
+  }
+
+  .provider-header h1 {
+    color: #104E8B;
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 10px;
+  }
+
+  .provider-header p {
+    color: #596773;
+    font-size: 1.1rem;
+  }
+
+  .product-form {
+    background: rgba(255,255,255,.95);
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 12px 35px rgba(0,0,0,.10);
+  }
+
+  .product-form h2 {
+    color: #24323d;
+    margin-top: 0;
+    margin-bottom: 25px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    font-weight: 700;
+    color: #24323d;
+    margin-bottom: 8px;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #d9e0e5;
+    border-radius: 12px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    background: white;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+
+  .submit-button {
+    width: 100%;
+    border: none;
+    border-radius: 14px;
+    padding: 15px;
+    background: linear-gradient(90deg,#00B3B3,#3DD6C6);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .submit-button:hover {
+    opacity: .92;
+  }
+
+  .help-text {
+    margin-top: 8px;
+    font-size: .9rem;
+    color: #71808c;
+  }
+
+  @media(max-width:600px) {
+    .provider-container {
+      width: 90%;
+      padding-top: 25px;
+    }
+
+    .product-form {
+      padding: 22px;
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
   }
 </style>
 
-  <div style="padding: 0px; max-width: 760px; color: black;">
-    <h1 style="font-size: 3rem; margin-bottom: 20px; margin-left: 15px;">Página en construcción</h1>
-    <p style="font-size: 1.2rem; line-height: 1.6; margin-bottom: 24px;">Gracias por crear tu cuenta como vendedor. Esta sección aún está en desarrollo.</p>
-    <p style="font-size: 1.2rem; margin-top: 400px; margin-bottom: 24px;">Mientras tanto, puedes volver a <a href="{{ url_for('login') }}" style="color: #a3d8ff; text-decoration: underline;">iniciar sesión</a> o explorar el <a href="{{ url_for('market') }}" style="color: #a3d8ff; text-decoration: underline;">mercado</a> si ya tienes sesión activa.</p>
-    <div style="padding: 20px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;">
-      <strong>Estado:</strong> En construcción
-    </div>
-  </div>
+<main class="provider-container">
+
+  <section class="provider-header">
+    <h1>Panel del proveedor</h1>
+    <p>Agrega tus productos y haz que aparezcan en TU'UX.</p>
+  </section>
+
+  <section class="product-form">
+
+    <h2>Agregar producto</h2>
+
+    <form method="post"
+          action="{{ url_for('agregar_producto_proveedor') }}"
+          enctype="multipart/form-data">
+
+      <div class="form-group">
+        <label for="tienda">Tienda</label>
+
+        <select id="tienda" name="tienda_id" required>
+          <option value="">Selecciona una tienda</option>
+
+          {% for tienda in tiendas %}
+            <option value="{{ loop.index0 }}">
+              {{ tienda.nombre }}
+            </option>
+          {% endfor %}
+
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="nombre">Nombre del producto</label>
+
+        <input
+          type="text"
+          id="nombre"
+          name="nombre"
+          placeholder="Ej. Coca-Cola"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="presentacion">Presentación</label>
+
+        <input
+          type="text"
+          id="presentacion"
+          name="presentacion"
+          placeholder="Ej. Botella de 500ml"
+          required
+        >
+      </div>
+
+      <div class="form-row">
+
+        <div class="form-group">
+          <label for="precio">Precio público</label>
+
+          <input
+            type="number"
+            id="precio"
+            name="precio"
+            min="0"
+            step="0.01"
+            placeholder="0.00"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="unidades">Stock disponible</label>
+
+          <input
+            type="number"
+            id="unidades"
+            name="unidades"
+            min="0"
+            step="1"
+            placeholder="0"
+            required
+          >
+        </div>
+
+      </div>
+
+      <div class="form-group">
+        <label for="imagen">Foto del producto</label>
+
+        <input
+          type="file"
+          id="imagen"
+          name="imagen"
+          accept=".jpg,.jpeg,.png,.webp"
+        >
+
+        <div class="help-text">
+          Puedes agregar una foto del producto.
+        </div>
+      </div>
+
+      <button type="submit" class="submit-button">
+        ➕ Agregar producto
+      </button>
+
+    </form>
+
+  </section>
+
+</main>
+
 {% endblock %}
