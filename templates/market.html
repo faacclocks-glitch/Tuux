@@ -307,31 +307,85 @@
        ========================= -->
   <h2 class="section-title">Productos</h2>
   <section class="products-grid" id="productsGrid">
-    {% for tienda in tiendas %}
-      <article class="product-card">
+
+  {% for tienda in tiendas %}
+    {% set store_index = loop.index0 %}
+
+    {% for producto in tienda.productos %}
+      {% set product_index = loop.index0 %}
+
+      <article
+        class="product-card"
+        data-product-name="{{ producto.nombre|lower }}"
+      >
+
         <div class="product-image">
           🎒
         </div>
+
         <div class="product-info">
-          <h3>
-            {{ tienda.nombre }}
-          </h3>
+
+          <h3>{{ producto.nombre }}</h3>
+
+          {% if producto.presentacion %}
+            <p class="presentation">
+              {{ producto.presentacion }}
+            </p>
+          {% endif %}
+
           <div class="price">
-            $180
+            ${{ "%.2f"|format(producto.precio) }}
           </div>
-          <div class="availability">
-            🟢 Disponible
-          </div>
-          <a
-            class="product-link"
-            href="{{ url_for('store', store_id=loop.index0) }}"
-          >
-            Ver producto →
-          </a>
+
+          {% if producto.unidades > 0 %}
+
+            <div class="availability">
+              🟢 Disponible
+            </div>
+
+            <form
+              method="post"
+              action="{{ url_for(
+                'add_to_cart',
+                store_id=store_index,
+                product_id=product_index
+              ) }}"
+            >
+
+              <input
+                type="hidden"
+                name="cantidad"
+                value="1"
+              >
+
+              <button
+                type="submit"
+                class="product-link"
+              >
+                🛒 Agregar al carrito
+              </button>
+
+            </form>
+
+          {% else %}
+
+            <div
+              class="availability"
+              style="color:#c0392b;"
+            >
+              🔴 Agotado
+            </div>
+
+          {% endif %}
+
         </div>
+
       </article>
+
     {% endfor %}
-  </section>
+  {% endfor %}
+
+</section>
   <!-- =========================
        PEDIDO PERSONALIZADO
        ========================= -->
