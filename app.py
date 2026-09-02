@@ -376,6 +376,138 @@ def businesspeople():
         tiendas=MARKET.tiendas
     )
 
+@app.route('/proveedor/agregar-producto', methods=['POST'])
+def agregar_producto_proveedor():
+
+    if not session.get('username'):
+        return redirect(url_for('login'))
+
+    if session.get('tipo_usuario') != 'vendedor':
+        flash('Acceso restringido a vendedores.')
+        return redirect(url_for('market'))
+
+    # Obtener datos del formulario
+    tienda_id = request.form.get('tienda_id', '').strip()
+    nombre = request.form.get('nombre', '').strip()
+    presentacion = request.form.get('presentacion', '').strip()
+    precio = request.form.get('precio', '').strip()
+    unidades = request.form.get('unidades', '').strip()
+
+    # Validar datos
+    if not tienda_id or not nombre or not presentacion or not precio or not unidades:
+        flash('Completa todos los campos obligatorios.')
+        return redirect(url_for('businesspeople'))
+
+    try:
+        tienda_id = int(tienda_id)
+        precio = float(precio)
+        unidades = int(unidades)
+    except ValueError:
+        flash('Precio o stock inválido.')
+        return redirect(url_for('businesspeople'))
+
+    if tienda_id < 0 or tienda_id >= len(MARKET.tiendas):
+        flash('Tienda no válida.')
+        return redirect(url_for('businesspeople'))
+
+    if precio < 0 or unidades < 0:
+        flash('El precio y el stock no pueden ser negativos.')
+        return redirect(url_for('businesspeople'))
+
+    # Obtener tienda
+    tienda = MARKET.tiendas[tienda_id]
+
+    # Procesar imagen
+    imagen_nombre = None
+
+    archivo = request.files.get('imagen')
+
+    if archivo and archivo.filename:
+        nombre_archivo = archivo.filename
+
+        # Nombre seguro y sencillo para esta primera versión
+        nombre_archivo = nombre_archivo.replace(' ', '_')
+
+        ruta_static = os.path.join(
+            PROJECT_DIR,
+            'static'
+        )
+
+        os.makedirs(ruta_static, exist_ok=True)
+
+        ruta_imagen = os.path.join(
+            ruta_static,
+            nombre_archivo
+        )
+
+        archivo.save(ruta_imagen)
+
+        imagen_nombre = nombre_archivo
+
+    # Crear producto
+    producto = proyecto.Producto(
+        nombre,
+        unidades,
+        precio,
+        presentacion,
+        imagen_nombre
+    )
+
+    # Agregarlo inmediatamente al catálogo en memoria
+    tienda.agregar_producto(producto)
+
+    # Guardarlo también en SQLite
+    try:
+        # Buscar el mercado correspondiente
+        conn = proyecto._connect()
+
+        with conn:
+            cursor = conn.cursor()
+
+            cursor.execute(
+                '''
+                SELECT id
+                FROM mercados
+                ORDER BY id ASC
+                LIMIT 1
+                '''
+            )
+
+            mercado_row = cursor.fetchone()
+
+            if mercado_row:
+                mercado_id = mercado_row[0]
+
+                cursor.execute(
+                    '''
+                    SELECT id
+                    FROM tiendas
+                    WHERE mercado_id = ?
+                    ORDER BY id ASC
+                    LIMIT 1 OFFSET ?
+                    ''',
+                    (mercado_id, tienda_id)
+                )
+
+                tienda_row = cursor.fetchone()
+
+                if tienda_row:
+                    tienda_id_db = tienda_row[0]
+
+                    proyecto.save_producto(
+                        producto,
+                        tienda_id_db
+                    )
+
+    except Exception as e:
+        print('Error guardando producto en DB:', e)
+
+    flash(
+        f'✅ {nombre} fue agregado correctamente al catálogo.'
+    )
+
+    return redirect(url_for('market'))
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
