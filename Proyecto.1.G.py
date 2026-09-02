@@ -311,7 +311,13 @@ def crear_tiendas_demo():
     mercado1.agregar_tienda(tienda2)
     mercado1.agregar_tienda(tienda3)
 
-    producto1 = Producto("Coca-Cola", 50, 20, "Botella de 500ml")
+    producto1 = Producto(
+    "Coca-Cola",
+    50,
+    20,
+    "Botella de 500ml",
+    "carrito.jpg"
+)
     producto2 = Producto("Pepsi", 40, 18, "Lata de 330ml")                 
     producto3 = Producto("Arizona", 24, 20, "Lata de 500ml")
     producto4 = Producto("Dos XX lager", 12, 20, "Lata de 355ml")
