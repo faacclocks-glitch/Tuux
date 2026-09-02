@@ -20,7 +20,7 @@ PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 PARENT_DIR = os.path.abspath(os.path.join(PROJECT_DIR, '..'))
 sys.path.insert(0, PARENT_DIR)
 
-#from user_account import create_account, init_db as init_user_db, verify_login, get_user_role, create_reset_token, reset_password as reset_user_password
+from user_account import create_account, init_db as init_user_db, verify_login, get_user_role, create_reset_token, reset_password as reset_user_password
 
 # Importar Proyecto.1.G.py usando importlib porque el nombre de archivo no es un módulo válido
 PROYECT_PATH = os.path.join(PROJECT_DIR, 'Proyecto.1.G.py')
