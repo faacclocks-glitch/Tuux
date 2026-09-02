@@ -366,10 +366,15 @@ def register():
 def businesspeople():
     if not session.get('username'):
         return redirect(url_for('login'))
+
     if session.get('tipo_usuario') != 'vendedor':
         flash('Acceso restringido a vendedores.')
         return redirect(url_for('market'))
-    return render_template('businesspeople.html')
+
+    return render_template(
+        'businesspeople.html',
+        tiendas=MARKET.tiendas
+    )
 
 
 @app.route('/login', methods=['GET', 'POST'])
