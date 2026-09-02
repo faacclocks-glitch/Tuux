@@ -25,43 +25,7 @@
   /* =========================
      HEADER
      ========================= */
-  .tuux-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 22px 6%;
-    background: rgba(255, 255, 255, 0.78);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-  .logo {
-    font-size: 2rem;
-    font-weight: 800;
-    letter-spacing: 1px;
-    color: #104E8B;
-  }
-  .tagline {
-    font-size: 0.95rem;
-    color: #66727d;
-    margin-top: 3px;
-  }
-  .cart-button {
-    text-decoration: none;
-    background: linear-gradient(90deg, #00B3B3, #3DD6C6);
-    color: white;
-    padding: 11px 18px;
-    border-radius: 14px;
-    font-weight: 700;
-    box-shadow: 0 8px 20px rgba(0, 179, 179, 0.18);
-    transition: 0.2s ease;
-  }
-  .cart-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 25px rgba(16, 78, 139, 0.2);
-  }
+ 
   /* =========================
      CONTENEDOR
      ========================= */
@@ -251,19 +215,7 @@
      RESPONSIVE
      ========================= */
   @media (max-width: 700px) {
-    .tuux-header {
-      padding: 18px 5%;
-    }
-    .logo {
-      font-size: 1.6rem;
-    }
-    .tagline {
-      font-size: 0.8rem;
-    }
-    .cart-button {
-      padding: 9px 13px;
-      font-size: 0.9rem;
-    }
+    
     .shop-container {
       width: 90%;
       padding-top: 32px;
@@ -307,15 +259,7 @@
 <!-- =========================
      HEADER
      ========================= -->
-<header class="tuux-header">
-  <div>
-    <div class="logo">TU’UX</div>
-    <div class="tagline">Más tiempo para lo que importa.</div>
-  </div>
-  <a href="#" class="cart-button">
-    🛒 Carrito
-  </a>
-</header>
+
 <main class="shop-container">
   <!-- =========================
        HERO
