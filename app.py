@@ -35,6 +35,15 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 MARKET = proyecto.crear_tiendas_demo()
 init_user_db()
+print("USUARIOS EN ACCOUNTS.DB:")
+
+conn = user_account.db_connect()
+rows = conn.execute("SELECT username, tipo FROM users").fetchall()
+
+for row in rows:
+    print("USUARIO:", row[0], "| TIPO:", row[1])
+
+conn.close()
 proyecto.init_db()
 proyecto.persistir_demo_si_no_existe(MARKET)
 
