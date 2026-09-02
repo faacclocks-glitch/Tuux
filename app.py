@@ -157,7 +157,7 @@ def remove_from_cart(item_index):
 def index():
     if session.get('username'):
         return redirect(url_for('market'))
-    return render_template('index.html')
+    return render_template('market.html')
 
 def home():
     return redirect(render_template("home.html"))
