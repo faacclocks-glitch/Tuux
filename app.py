@@ -34,7 +34,7 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 MARKET = proyecto.crear_tiendas_demo()
-#init_user_db()
+init_user_db()
 proyecto.init_db()
 proyecto.persistir_demo_si_no_existe(MARKET)
 
