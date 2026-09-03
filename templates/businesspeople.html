@@ -259,6 +259,13 @@
                             <strong>Presentación:</strong>
                             {{ producto['presentacion'] }}
                         </p>
+                        <a 
+                            href="{{ url_for('editar_producto_proveedor', producto_id=producto['id']) }}"
+                            class="edit-product-button"
+                        >
+                          
+                        < ✏️ Editar producto
+                        </a>
                     </div>
 
                 </article>
