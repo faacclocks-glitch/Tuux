@@ -396,13 +396,14 @@ def businesspeople():
         conn.close()
 
     except Exception as e:
-        print('Error obteniendo productos del vendedor:', e)
+        print('ERROR OBTENIENDO PRODUCTOS DEL VENDEDOR:', e)
 
     return render_template(
         'businesspeople.html',
         tiendas=MARKET.tiendas,
         productos_vendedor=productos_vendedor
     )
+
 @app.route('/proveedor/agregar-producto', methods=['POST'])
 def agregar_producto_proveedor():
 
