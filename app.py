@@ -539,6 +539,84 @@ def agregar_producto_proveedor():
     flash(f'✅ {nombre} fue agregado correctamente al catálogo.')
     return redirect(url_for('businesspeople'))
 
+@app.route('/proveedor/editar-producto/<int:producto_id>', methods=['GET', 'POST'])
+def editar_producto_proveedor(producto_id):
+
+    if not session.get('username'):
+        return redirect(url_for('login'))
+
+    if session.get('tipo_usuario') != 'vendedor':
+        flash('Acceso restringido a vendedores.')
+        return redirect(url_for('market'))
+
+    vendedor_username = session.get('username')
+
+    try:
+        conn = proyecto._connect()
+        cursor = conn.cursor()
+
+        # Buscar únicamente un producto que pertenezca al vendedor
+        cursor.execute('''
+            SELECT
+                id,
+                nombre,
+                unidades,
+                precio,
+                presentacion,
+                imagen
+            FROM productos
+            WHERE id = ?
+              AND vendedor_username = ?
+        ''', (producto_id, vendedor_username))
+
+        producto = cursor.fetchone()
+
+        if not producto:
+            conn.close()
+            flash('Producto no encontrado.')
+            return redirect(url_for('businesspeople'))
+
+        if request.method == 'POST':
+
+            nombre = request.form.get('nombre', '').strip()
+            presentacion = request.form.get('presentacion', '').strip()
+            precio = request.form.get('precio', 0)
+            unidades = request.form.get('unidades', 0)
+
+            cursor.execute('''
+                UPDATE productos
+                SET nombre = ?,
+                    presentacion = ?,
+                    precio = ?,
+                    unidades = ?
+                WHERE id = ?
+                  AND vendedor_username = ?
+            ''', (
+                nombre,
+                presentacion,
+                float(precio),
+                int(unidades),
+                producto_id,
+                vendedor_username
+            ))
+
+            conn.commit()
+            conn.close()
+
+            flash('Producto actualizado correctamente.')
+            return redirect(url_for('businesspeople'))
+
+        conn.close()
+
+        return render_template(
+            'editar_producto.html',
+            producto=producto
+        )
+
+    except Exception as e:
+        print('ERROR EDITANDO PRODUCTO:', e)
+        flash(f'Error editando producto: {e}')
+        return redirect(url_for('businesspeople'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
