@@ -348,25 +348,21 @@
           </div>
 
           {% if producto.unidades > 0 %}
-
-            <div class="availability">
-              🟢 Disponible
-            </div>
-
-            <form
-              method="post"
-              action="{{ url_for(
-                'add_to_cart',
-                store_id=store_index,
-                product_id=product_index
-              ) }}"
-            >
-
-              <input
-                type="hidden"
-                name="cantidad"
-                value="1"
-              >
+           <div class="availability">
+             🟢 Disponible
+           </div>
+          
+           <a
+             href="{{ url_for(
+              'detalle_producto',
+              store_id=store_index,
+              product_id=product_index
+             ) }}"
+             class="product-link"
+           >
+             Ver producto
+           </a>
+          {% else %}
 
               <button
                 type="submit"
