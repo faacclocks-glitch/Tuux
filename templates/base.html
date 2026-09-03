@@ -149,33 +149,42 @@
 <div class="page-content">
   <div class="nav" style="font-size: 1.3rem;">
     {% if session.username %}
-      <strong>Usuario:</strong> {{ session.username }}   |
-           
-      <a href="{{ url_for('index') }}" class="home-button" aria-label="Inicio" style="display:inline-flex;align-items:center;gap:8px;color:white;text-decoration:none;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-        </svg>
-      </a>
-      <a href="{{ url_for('market') }}" class="market-button" style="display:inline-flex;align-items:center;gap:8px;color:white;text-decoration:none;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M3 9l1-2h16l1 2v8a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2V12H7v5a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9zm2-5h14v2H5V4z"/>
-        </svg>
-        <span style="color:white;">Mercado</span>
-      </a>
-      
-      <a href="{{ url_for('cart') }}" class="cart-button" style="display:inline-flex; align-items:center; gap:8px; color:white; text-decoration:none;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 24 24">
-          <path d="M7 4H3v2h2l2.6 7.6-1 1.8C6.2 16.2 6.7 17 7.5 17H19v-2H8.4l.9-1.6h7.4c.8 0 1.5-.4 1.8-1.1L22 6H7.4L6.7 4z"/>
-          <circle cx="10" cy="20" r="1.5"/>
-          <circle cx="18" cy="20" r="1.5"/>
-        </svg>
 
-        <span class="cart-count cart-badge">{{ cart_count }}</span>
-      </a>
+  <strong>Usuario:</strong> {{ session.username }} |
 
-      <a href="{{ url_for('logout') }}">Cerrar sesión</a>
-    {% else %}
-    {% endif %}
+  {% if session.get('tipo_usuario') == 'vendedor' %}
+
+    <a href="{{ url_for('businesspeople') }}" class="market-button"
+       style="display:inline-flex;align-items:center;gap:8px;color:white;text-decoration:none;">
+      🏪
+      <span style="color:white;">Panel proveedor</span>
+    </a>
+
+  {% else %}
+
+    <a href="{{ url_for('index') }}" class="home-button"
+       aria-label="Inicio"
+       style="display:inline-flex;align-items:center;gap:8px;color:white;text-decoration:none;">
+      🏠
+    </a>
+
+    <a href="{{ url_for('market') }}" class="market-button"
+       style="display:inline-flex;align-items:center;gap:8px;color:white;text-decoration:none;">
+      🏪
+      <span style="color:white;">Mercado</span>
+    </a>
+
+    <a href="{{ url_for('cart') }}" class="cart-button"
+       style="display:inline-flex;align-items:center;gap:8px;color:white;text-decoration:none;">
+      🛒
+      <span class="cart-count cart-badge">{{ cart_count }}</span>
+    </a>
+
+  {% endif %}
+
+  <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+
+{% endif %}
   </div>
 
   {% block alerts %}
