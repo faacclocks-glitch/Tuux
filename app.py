@@ -958,6 +958,24 @@ def market():
             market_request=session.get('market_request')
         )
 
+@app.route('/producto/<int:store_id>/<int:product_id>')
+def detalle_producto(store_id, product_id):
+
+    tienda = get_store(store_id)
+    producto = get_product(store_id, product_id)
+
+    if not tienda or not producto:
+        flash('Producto no encontrado.')
+        return redirect(url_for('market'))
+
+    return render_template(
+        'producto.html',
+        tienda=tienda,
+        producto=producto,
+        store_id=store_id,
+        product_id=product_id
+    )
+
 
 @app.route('/add/<int:store_id>/<int:product_id>', methods=['POST'])
 def add_to_cart(store_id, product_id):
