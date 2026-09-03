@@ -496,7 +496,8 @@ def agregar_producto_proveedor():
 
                     proyecto.save_producto(
                         producto,
-                        tienda_id_db
+                        tienda_id_db,
+                        session.get('username')
                     )
 
     except Exception as e:
