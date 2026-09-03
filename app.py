@@ -510,7 +510,7 @@ def agregar_producto_proveedor():
 def login():
     if request.method == 'POST':
         username = request.form['username'].strip()
-        print("LOGIN DEBUG - usuario recibido:", repr(username))
+        
         password = request.form['password']
         ok, message = verify_login(username, password)
         flash(message)
