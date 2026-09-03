@@ -247,14 +247,9 @@ def init_db(db_path=None):
             unidades INTEGER, precio REAL, FOREIGN KEY(pedido_id) REFERENCES pedidos(id),
             FOREIGN KEY(producto_id) REFERENCES productos(id)
         )''')
-        existing_product_columns = [
-    row[1] for row in c.execute('PRAGMA table_info(productos)')
-]
-
-if 'vendedor_username' not in existing_product_columns:
-    c.execute(
-        'ALTER TABLE productos ADD COLUMN vendedor_username TEXT'
-    )
+        existing_product_columns = [row[1] for row in c.execute('PRAGMA table_info(productos)')]
+        if 'vendedor_username' not in existing_product_columns:
+            c.execute('ALTER TABLE productos ADD COLUMN vendedor_username TEXT')
         
         # Validación de la columna username
         existing_pedidos = [row[1] for row in conn.execute('PRAGMA table_info(pedidos)')]
