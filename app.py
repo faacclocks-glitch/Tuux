@@ -503,7 +503,7 @@ def agregar_producto_proveedor():
         print('Error guardando producto en DB:', e)
 
     flash(f'✅ {nombre} fue agregado correctamente al catálogo.')
-return redirect(url_for('businesspeople'))
+    return redirect(url_for('businesspeople'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
