@@ -689,6 +689,39 @@ def activar_producto_proveedor(producto_id):
 
     return redirect(url_for('businesspeople'))
 
+@app.route('/proveedor/eliminar-producto/<int:producto_id>', methods=['POST'])
+def eliminar_producto_proveedor(producto_id):
+
+    if not session.get('username'):
+        return redirect(url_for('login'))
+
+    if session.get('tipo_usuario') != 'vendedor':
+        flash('Acceso restringido a vendedores.')
+        return redirect(url_for('market'))
+
+    vendedor_username = session.get('username')
+
+    try:
+        conn = proyecto._connect()
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            DELETE FROM productos
+            WHERE id = ?
+              AND vendedor_username = ?
+        ''', (producto_id, vendedor_username))
+
+        conn.commit()
+        conn.close()
+
+        flash('Producto eliminado correctamente.')
+
+    except Exception as e:
+        print('ERROR ELIMINANDO PRODUCTO:', e)
+        flash(f'Error eliminando producto: {e}')
+
+    return redirect(url_for('businesspeople'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
