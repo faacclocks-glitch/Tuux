@@ -173,10 +173,16 @@
 
       {% if producto.unidades > 0 %}
 
-  {% if producto.unidades <= 3 %}
+  {% if producto.unidades == 1 %}
+    <div class="availability" style="color:#e67e22;">
+      🟠 Última unidad disponible
+    </div>
+
+  {% elif producto.unidades <= 3 %}
     <div class="availability" style="color:#e67e22;">
       🟠 Últimas {{ producto.unidades }} unidades disponibles
     </div>
+
   {% else %}
     <div class="availability" style="color:#159447;">
       🟢 Disponible: {{ producto.unidades }} unidades
