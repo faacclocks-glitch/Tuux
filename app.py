@@ -371,11 +371,38 @@ def businesspeople():
         flash('Acceso restringido a vendedores.')
         return redirect(url_for('market'))
 
+    vendedor_username = session.get('username')
+
+    productos_vendedor = []
+
+    try:
+        conn = proyecto._connect()
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            SELECT
+                id,
+                nombre,
+                unidades,
+                precio,
+                presentacion,
+                imagen
+            FROM productos
+            WHERE vendedor_username = ?
+            ORDER BY id DESC
+        ''', (vendedor_username,))
+
+        productos_vendedor = cursor.fetchall()
+        conn.close()
+
+    except Exception as e:
+        print('Error obteniendo productos del vendedor:', e)
+
     return render_template(
         'businesspeople.html',
-        tiendas=MARKET.tiendas
+        tiendas=MARKET.tiendas,
+        productos_vendedor=productos_vendedor
     )
-
 @app.route('/proveedor/agregar-producto', methods=['POST'])
 def agregar_producto_proveedor():
 
