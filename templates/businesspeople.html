@@ -266,6 +266,27 @@
                           
                         < ✏️ Editar producto
                         </a>
+                      {% if producto['unidades'] > 0 %} 
+                       <form
+                         method="post"
+                         action="{{ url_for('agotar_producto_proveedor', producto_id=producto['id']) }}"
+                         style="margin-top: 10px;"
+                       >
+                         <button type="submit">
+                           🚫 Marcar como agotado
+                         </button>
+                       </form>
+                      {% else %}
+                       <form
+                         method="post"
+                         action="{{ url_for('activar_producto_proveedor', producto_id=producto['id']) }}"
+                         style="margin-top: 10px;"
+                       >
+                         <button type="submit">
+                           ✅ Volver a disponible
+                         </button>
+                       </form>
+                      {% endif %}
                     </div>
 
                 </article>
