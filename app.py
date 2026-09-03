@@ -979,49 +979,116 @@ def detalle_producto(store_id, product_id):
 
 @app.route('/add/<int:store_id>/<int:product_id>', methods=['POST'])
 def add_to_cart(store_id, product_id):
+
     producto = get_product(store_id, product_id)
+
     if not producto:
         flash('Producto no encontrado.')
-        return redirect(url_for('store', store_id=store_id))
-        
+        return redirect(url_for('market'))
+
     cantidad = request.form.get('cantidad', '1')
+
     if not cantidad.isdigit() or int(cantidad) <= 0:
         flash('Cantidad inválida.')
-        return redirect(url_for('store', store_id=store_id))
-        
+        return redirect(url_for(
+            'detalle_producto',
+            store_id=store_id,
+            product_id=product_id
+        ))
+
     cantidad = int(cantidad)
+
     if cantidad > producto.unidades:
         flash('Stock insuficiente.')
-        return redirect(url_for('store', store_id=store_id))
-        
-    # ... (Toda tu validación de stock y producto se queda igual) ...
+        return redirect(url_for(
+            'detalle_producto',
+            store_id=store_id,
+            product_id=product_id
+        ))
 
     cart = get_cart()
-    
-    # Creamos una variable para capturar la alerta de la tienda extra
+
+    # Detectar si estamos agregando una tienda diferente
     alerta_tienda = None
-    existing_store_ids = {item.get('store_id') for item in cart if item.get('store_id') is not None}
+
+    existing_store_ids = {
+        item.get('store_id')
+        for item in cart
+        if item.get('store_id') is not None
+    }
+
     if existing_store_ids and store_id not in existing_store_ids:
         alerta_tienda = '¿Deseas agregar otra tienda por $50 y sumarlo al total?'
-        flash(alerta_tienda) # Se queda por si acaso entran de forma tradicional
-        
-    # ... (Tu ciclo for para buscar o crear el producto se queda exactamente igual) ...
-        
-    save_cart(cart)
-    flash('Producto agregado al carrito.')
-    
-    total_piezas = sum(int(item.get('cantidad', 1)) for item in cart)
-    
-    # RESPUESTA UNIFICADA INTERVENIDA:
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.accept_mimetypes.accept_json:
-        # Enviamos la alerta_tienda en el JSON (iría como None si es la misma tienda)
-        return jsonify({
-            'ok': True, 
-            'cart_count': total_piezas,
-            'alerta_tienda': alerta_tienda 
+        flash(alerta_tienda)
+
+    # Buscar si el producto ya está en el carrito
+    producto_existente = None
+
+    for item in cart:
+        if (
+            not item.get('custom')
+            and item.get('store_id') == store_id
+            and item.get('product_id') == product_id
+        ):
+            producto_existente = item
+            break
+
+    if producto_existente:
+
+        nueva_cantidad = producto_existente.get('cantidad', 0) + cantidad
+
+        if nueva_cantidad > producto.unidades:
+            flash('La cantidad total supera el stock disponible.')
+            return redirect(url_for(
+                'detalle_producto',
+                store_id=store_id,
+                product_id=product_id
+            ))
+
+        producto_existente['cantidad'] = nueva_cantidad
+
+    else:
+
+        cart.append({
+            'custom': False,
+            'store_id': store_id,
+            'product_id': product_id,
+            'cantidad': cantidad,
+            'producto': {
+                'nombre': producto.nombre,
+                'precio': producto.precio,
+                'presentacion': producto.presentacion,
+                'imagen': getattr(producto, 'imagen', None),
+                'unidades': producto.unidades
+            }
         })
-        
-    return redirect(url_for('store', store_id=store_id))
+
+    save_cart(cart)
+
+    flash('Producto agregado al carrito.')
+
+    total_piezas = sum(
+        int(item.get('cantidad', 1))
+        for item in cart
+    )
+
+    # Si la petición viene de JavaScript, devolver JSON
+    if (
+        request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        or request.accept_mimetypes.accept_json
+    ):
+        return jsonify({
+            'ok': True,
+            'cart_count': total_piezas,
+            'alerta_tienda': alerta_tienda
+        })
+
+    # Si viene del formulario normal, regresar al detalle
+    return redirect(url_for(
+        'detalle_producto',
+        store_id=store_id,
+        product_id=product_id
+    ))
 
 
 
