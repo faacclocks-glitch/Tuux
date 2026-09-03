@@ -348,41 +348,32 @@
           </div>
 
           {% if producto.unidades > 0 %}
-           <div class="availability">
-             🟢 Disponible
-           </div>
-          
-           <a
-             href="{{ url_for(
-              'detalle_producto',
-              store_id=store_index,
-              product_id=product_index
-             ) }}"
-             class="product-link"
-           >
-             Ver producto
-           </a>
-          {% else %}
 
-              <button
-                type="submit"
-                class="product-link"
-              >
-                🛒 Agregar al carrito
-              </button>
+  <div class="availability">
+    🟢 Disponible
+  </div>
 
-            </form>
+  <a
+    href="{{ url_for(
+      'detalle_producto',
+      store_id=store_index,
+      product_id=product_index
+    ) }}"
+    class="product-link"
+  >
+    Ver producto
+  </a>
 
-          {% else %}
+{% else %}
 
-            <div
-              class="availability"
-              style="color:#c0392b;"
-            >
-              🔴 Agotado
-            </div>
+  <div
+    class="availability"
+    style="color:#c0392b;"
+  >
+    🔴 Agotado
+  </div>
 
-          {% endif %}
+{% endif %}
 
         </div>
 
