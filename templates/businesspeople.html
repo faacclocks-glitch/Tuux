@@ -286,6 +286,16 @@
                            ✅ Volver a disponible
                          </button>
                        </form>
+                      <form
+                        method="post"
+                        action="{{ url_for('eliminar_producto_proveedor', producto_id=producto['id']) }}"
+                        style="margin-top: 10px;"
+                        onsubmit="return confirm('¿Seguro que quieres eliminar este producto?');"
+                      >
+                        <button type="submit"
+                          🗑️ Eliminar producto
+                        </button>
+                      </form>
                       {% endif %}
                     </div>
 
