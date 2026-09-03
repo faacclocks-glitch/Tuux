@@ -509,9 +509,8 @@ def agregar_producto_proveedor():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        if request.method == 'POST':
-    username = request.form['username'].strip()
-    print("LOGIN DEBUG - usuario recibido:", repr(username))
+        username = request.form['username'].strip()
+        print("LOGIN DEBUG - usuario recibido:", repr(username))
 
     password = request.form['password']
         password = request.form['password']
