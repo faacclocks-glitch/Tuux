@@ -1,1 +1,237 @@
+{% extends "base.html" %}
+{% block content %}
 
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background:
+      linear-gradient(
+        rgba(255,255,255,.90),
+        rgba(255,255,255,.94)
+      ),
+      url("{{ url_for('static', filename='tiendas.jpg') }}");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #24323d;
+  }
+
+  .product-detail-container {
+    width: min(1000px, 92%);
+    margin: 0 auto;
+    padding: 45px 0 70px;
+  }
+
+  .product-detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    background: rgba(255,255,255,.95);
+    border-radius: 28px;
+    padding: 35px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.10);
+  }
+
+  .product-detail-image {
+    min-height: 400px;
+    background: #f0f4f5;
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .product-detail-image img {
+    width: 100%;
+    height: 100%;
+    max-height: 500px;
+    object-fit: contain;
+  }
+
+  .no-image {
+    font-size: 5rem;
+  }
+
+  .product-detail-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .product-detail-info h1 {
+    color: #104E8B;
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin: 0 0 12px;
+  }
+
+  .presentation {
+    color: #596773;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+  }
+
+  .price {
+    color: #104E8B;
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+  }
+
+  .availability {
+    font-weight: 700;
+    margin-bottom: 25px;
+  }
+
+  .quantity-label {
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .quantity-input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #d9e0e5;
+    border-radius: 12px;
+    font-size: 1rem;
+    margin-bottom: 15px;
+  }
+
+  .cart-button {
+    width: 100%;
+    border: none;
+    border-radius: 14px;
+    padding: 15px;
+    background: linear-gradient(90deg,#00B3B3,#3DD6C6);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .back-button {
+    display: block;
+    text-align: center;
+    margin-top: 18px;
+    color: #104E8B;
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  @media(max-width:700px) {
+    .product-detail-container {
+      width: 90%;
+      padding-top: 25px;
+    }
+
+    .product-detail {
+      grid-template-columns: 1fr;
+      padding: 22px;
+      gap: 25px;
+    }
+
+    .product-detail-image {
+      min-height: 280px;
+    }
+  }
+</style>
+
+<main class="product-detail-container">
+
+  <section class="product-detail">
+
+    <div class="product-detail-image">
+
+      {% if producto.imagen %}
+        <img
+          src="{{ url_for('static', filename=producto.imagen) }}"
+          alt="{{ producto.nombre }}"
+        >
+      {% else %}
+        <div class="no-image">
+          📦
+        </div>
+      {% endif %}
+
+    </div>
+
+    <div class="product-detail-info">
+
+      <h1>{{ producto.nombre }}</h1>
+
+      {% if producto.presentacion %}
+        <div class="presentation">
+          {{ producto.presentacion }}
+        </div>
+      {% endif %}
+
+      <div class="price">
+        ${{ "%.2f"|format(producto.precio) }}
+      </div>
+
+      {% if producto.unidades > 0 %}
+
+        <div class="availability" style="color:#159447;">
+          🟢 Disponible
+        </div>
+
+        <form
+          method="post"
+          action="{{ url_for(
+            'add_to_cart',
+            store_id=store_id,
+            product_id=product_id
+          ) }}"
+        >
+
+          <label
+            for="cantidad"
+            class="quantity-label"
+          >
+            Cantidad
+          </label>
+
+          <input
+            type="number"
+            id="cantidad"
+            name="cantidad"
+            class="quantity-input"
+            min="1"
+            max="{{ producto.unidades }}"
+            value="1"
+            required
+          >
+
+          <button
+            type="submit"
+            class="cart-button"
+          >
+            🛒 Agregar al carrito
+          </button>
+
+        </form>
+
+      {% else %}
+
+        <div class="availability" style="color:#c0392b;">
+          🔴 Agotado
+        </div>
+
+      {% endif %}
+
+      <a
+        href="{{ url_for('market') }}"
+        class="back-button"
+      >
+        ← Volver a productos
+      </a>
+
+    </div>
+
+  </section>
+
+</main>
+
+{% endblock %}
