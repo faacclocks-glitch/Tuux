@@ -372,9 +372,10 @@ def businesspeople():
         return redirect(url_for('market'))
 
     vendedor_username = session.get('username')
+    print("VENDEDOR ACTUAL:", repr(vendedor_username))
 
     productos_vendedor = []
-
+   
     try:
         conn = proyecto._connect()
         cursor = conn.cursor()
@@ -393,6 +394,8 @@ def businesspeople():
         ''', (vendedor_username,))
 
         productos_vendedor = cursor.fetchall()
+        print("PRODUCTOS ENCONTRADOS:", len(productos_vendedor))
+        print("PRODUCTOS:", productos_vendedor)
         conn.close()
 
     except Exception as e:
