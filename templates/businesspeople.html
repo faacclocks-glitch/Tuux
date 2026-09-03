@@ -223,6 +223,53 @@
       </button>
 
     </form>
+    <section class="my-products">
+    <h2>📦 Mis productos</h2>
+
+    {% if productos_vendedor %}
+        <div class="products-grid">
+            {% for producto in productos_vendedor %}
+                <article class="product-card">
+
+                    {% if producto['imagen'] %}
+                        <img
+                            src="{{ url_for('static', filename=producto['imagen']) }}"
+                            alt="{{ producto['nombre'] }}"
+                        >
+                    {% else %}
+                        <div class="no-image">
+                            📦
+                        </div>
+                    {% endif %}
+
+                    <div class="product-info">
+                        <h3>{{ producto['nombre'] }}</h3>
+
+                        <p>
+                            <strong>Precio público:</strong>
+                            ${{ "%.2f"|format(producto['precio']) }}
+                        </p>
+
+                        <p>
+                            <strong>Stock:</strong>
+                            {{ producto['unidades'] }}
+                        </p>
+
+                        <p>
+                            <strong>Presentación:</strong>
+                            {{ producto['presentacion'] }}
+                        </p>
+                    </div>
+
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="empty-products">
+            Todavía no tienes productos registrados.
+        </p>
+    {% endif %}
+</section>
 
   </section>
 
