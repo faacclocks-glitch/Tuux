@@ -173,9 +173,15 @@
 
       {% if producto.unidades > 0 %}
 
-        <div class="availability" style="color:#159447;">
-          🟢 Disponible
-        </div>
+  {% if producto.unidades <= 3 %}
+    <div class="availability" style="color:#e67e22;">
+      🟠 Últimas {{ producto.unidades }} unidades disponibles
+    </div>
+  {% else %}
+    <div class="availability" style="color:#159447;">
+      🟢 Disponible: {{ producto.unidades }} unidades
+    </div>
+  {% endif %}
 
         <form
           method="post"
