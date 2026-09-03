@@ -502,11 +502,8 @@ def agregar_producto_proveedor():
     except Exception as e:
         print('Error guardando producto en DB:', e)
 
-    flash(
-        f'✅ {nombre} fue agregado correctamente al catálogo.'
-    )
-
-    return redirect(url_for('market'))
+    flash(f'✅ {nombre} fue agregado correctamente al catálogo.')
+return redirect(url_for('businesspeople'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
