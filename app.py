@@ -618,6 +618,77 @@ def editar_producto_proveedor(producto_id):
         flash(f'Error editando producto: {e}')
         return redirect(url_for('businesspeople'))
 
+@app.route('/proveedor/agotar-producto/<int:producto_id>', methods=['POST'])
+def agotar_producto_proveedor(producto_id):
+
+    if not session.get('username'):
+        return redirect(url_for('login'))
+
+    if session.get('tipo_usuario') != 'vendedor':
+        flash('Acceso restringido a vendedores.')
+        return redirect(url_for('market'))
+
+    vendedor_username = session.get('username')
+
+    try:
+        conn = proyecto._connect()
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            UPDATE productos
+            SET unidades = 0
+            WHERE id = ?
+              AND vendedor_username = ?
+        ''', (producto_id, vendedor_username))
+
+        conn.commit()
+        conn.close()
+
+        flash('Producto marcado como agotado.')
+
+    except Exception as e:
+        print('ERROR AGOTANDO PRODUCTO:', e)
+        flash(f'Error agotando producto: {e}')
+
+    return redirect(url_for('businesspeople'))
+
+
+@app.route('/proveedor/activar-producto/<int:producto_id>', methods=['POST'])
+def activar_producto_proveedor(producto_id):
+
+    if not session.get('username'):
+        return redirect(url_for('login'))
+
+    if session.get('tipo_usuario') != 'vendedor':
+        flash('Acceso restringido a vendedores.')
+        return redirect(url_for('market'))
+
+    vendedor_username = session.get('username')
+
+    try:
+        conn = proyecto._connect()
+        cursor = conn.cursor()
+
+        # Por ahora ponemos 1 unidad al volver a activar.
+        cursor.execute('''
+            UPDATE productos
+            SET unidades = 1
+            WHERE id = ?
+              AND vendedor_username = ?
+              AND unidades = 0
+        ''', (producto_id, vendedor_username))
+
+        conn.commit()
+        conn.close()
+
+        flash('Producto nuevamente disponible.')
+
+    except Exception as e:
+        print('ERROR ACTIVANDO PRODUCTO:', e)
+        flash(f'Error activando producto: {e}')
+
+    return redirect(url_for('businesspeople'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
