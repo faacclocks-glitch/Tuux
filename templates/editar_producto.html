@@ -1,1 +1,175 @@
+{% extends "base.html" %}
+{% block content %}
 
+<style>
+  .edit-container {
+    width: min(700px, 92%);
+    margin: 0 auto;
+    padding: 40px 0 70px;
+  }
+
+  .edit-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .edit-header h1 {
+    color: #104E8B;
+  }
+
+  .edit-form {
+    background: white;
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 12px 35px rgba(0,0,0,.10);
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    font-weight: 700;
+    color: #24323d;
+    margin-bottom: 8px;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #d9e0e5;
+    border-radius: 12px;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+
+  .save-button {
+    width: 100%;
+    border: none;
+    border-radius: 14px;
+    padding: 15px;
+    background: linear-gradient(90deg,#00B3B3,#3DD6C6);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .back-button {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #104E8B;
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  @media(max-width:600px) {
+    .edit-container {
+      width: 90%;
+      padding-top: 25px;
+    }
+
+    .edit-form {
+      padding: 22px;
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+  }
+</style>
+
+<main class="edit-container">
+
+  <section class="edit-header">
+    <h1>✏️ Editar producto</h1>
+    <p>Actualiza la información de tu producto.</p>
+  </section>
+
+  <section class="edit-form">
+
+    <form method="post">
+
+      <div class="form-group">
+        <label for="nombre">Nombre del producto</label>
+
+        <input
+          type="text"
+          id="nombre"
+          name="nombre"
+          value="{{ producto['nombre'] }}"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="presentacion">Presentación</label>
+
+        <input
+          type="text"
+          id="presentacion"
+          name="presentacion"
+          value="{{ producto['presentacion'] }}"
+          required
+        >
+      </div>
+
+      <div class="form-row">
+
+        <div class="form-group">
+          <label for="precio">Precio público</label>
+
+          <input
+            type="number"
+            id="precio"
+            name="precio"
+            min="0"
+            step="0.01"
+            value="{{ producto['precio'] }}"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="unidades">Stock disponible</label>
+
+          <input
+            type="number"
+            id="unidades"
+            name="unidades"
+            min="0"
+            step="1"
+            value="{{ producto['unidades'] }}"
+            required
+          >
+        </div>
+
+      </div>
+
+      <button type="submit" class="save-button">
+        💾 Guardar cambios
+      </button>
+
+    </form>
+
+    <a
+      href="{{ url_for('businesspeople') }}"
+      class="back-button"
+    >
+      ← Volver a mis productos
+    </a>
+
+  </section>
+
+</main>
+
+{% endblock %}
