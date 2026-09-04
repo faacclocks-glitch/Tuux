@@ -1182,7 +1182,7 @@ def add_to_cart(store_id, product_id):
     print(cart)
     print("=== FIN DEBUG ===")
 
-    flash(f"{producto['nombre']} se agregó al carrito.")
+    # La confirmación se muestra directamente en la página mediante AJAX.
     
     total_piezas = sum(
         int(item.get('cantidad', 1))
