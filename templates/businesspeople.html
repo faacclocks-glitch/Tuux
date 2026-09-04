@@ -100,21 +100,71 @@
     color: #71808c;
   }
 
-  @media(max-width:600px) {
-    .provider-container {
-      width: 90%;
-      padding-top: 25px;
-    }
+  .products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
 
-    .product-form {
-      padding: 22px;
-    }
+.product-card {
+  overflow: hidden;
+  background: white;
+  border-radius: 18px;
+  border: 1px solid #e3e8ec;
+}
 
-    .form-row {
-      grid-template-columns: 1fr;
-      gap: 0;
-    }
+.product-card > img {
+  display: block;
+  width: 100%;
+  height: 220px;
+  object-fit: contain;
+  background: #f7f9fa;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.no-image {
+  width: 100%;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f7f9fa;
+  font-size: 3rem;
+}
+
+.product-info {
+  padding: 18px;
+}
+
+@media(max-width:600px) {
+  .provider-container {
+    width: 90%;
+    padding-top: 25px;
   }
+
+  .product-form {
+    padding: 22px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .product-card > img {
+    height: 200px;
+  }
+
+  .no-image {
+    height: 200px;
+  }
+}
 </style>
 
 <main class="provider-container">
