@@ -314,73 +314,72 @@
   <h2 class="section-title">Productos</h2>
   <section class="products-grid" id="productsGrid">
 
-  {% for tienda in tiendas %}
-    {% set store_index = loop.index0 %}
+  {% for producto in productos %}
 
-    {% for producto in tienda.productos %}
-      {% set product_index = loop.index0 %}
+  <article
+    class="product-card"
+    data-product-name="{{ producto['nombre']|lower }}"
+  >
 
-      <article
-        class="product-card"
-        data-product-name="{{ producto.nombre|lower }}"
-      >
-
-        <div class="product-image">
-    {% if producto.imagen %}
-        <img src="{{ url_for('static', filename=producto.imagen) }}" alt="{{ producto.nombre }}">
-    {% else %}
+    <div class="product-image">
+      {% if producto['imagen'] %}
+        <img
+          src="{{ url_for('static', filename=producto['imagen']) }}"
+          alt="{{ producto['nombre'] }}"
+        >
+      {% else %}
         <span>📦</span>
-    {% endif %}
-</div>
+      {% endif %}
+    </div>
 
-        <div class="product-info">
+    <div class="product-info">
 
-          <h3>{{ producto.nombre }}</h3>
+      <h3>{{ producto['nombre'] }}</h3>
 
-          {% if producto.presentacion %}
-            <p class="presentation">
-              {{ producto.presentacion }}
-            </p>
-          {% endif %}
+      {% if producto['presentacion'] %}
+        <p class="presentation">
+          {{ producto['presentacion'] }}
+        </p>
+      {% endif %}
 
-          <div class="price">
-            ${{ "%.2f"|format(producto.precio) }}
-          </div>
+      <div class="price">
+        ${{ "%.2f"|format(producto['precio']) }}
+      </div>
 
-          {% if producto.unidades > 0 %}
+      {% if producto['unidades'] > 0 %}
 
-  <div class="availability">
-    🟢 Disponible
-  </div>
-
-  <a
-    href="{{ url_for(
-      'detalle_producto',
-      store_id=store_index,
-      product_id=product_index
-    ) }}"
-    class="product-link"
-  >
-    Ver producto
-  </a>
-
-{% else %}
-
-  <div
-    class="availability"
-    style="color:#c0392b;"
-  >
-    🔴 Agotado
-  </div>
-
-{% endif %}
-
+        <div class="availability">
+          🟢 Disponible
         </div>
 
-      </article>
+        <a
+          href="{{ url_for(
+            'detalle_producto',
+            store_id=producto['tienda_id'],
+            product_id=producto['producto_id']
+          ) }}"
+          class="product-link"
+        >
+          Ver producto
+        </a>
 
-    {% endfor %}
-  {% endfor %}
+      {% else %}
+
+        <div
+          class="availability"
+          style="color:#c0392b;"
+        >
+          🔴 Agotado
+        </div>
+
+      {% endif %}
+
+    </div>
+
+  </article>
+
+{% endfor %}
+    
 
 </section>
   <!-- =========================
