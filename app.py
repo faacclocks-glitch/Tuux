@@ -968,21 +968,45 @@ def market():
 @app.route('/producto/<int:store_id>/<int:product_id>')
 def detalle_producto(store_id, product_id):
 
-    tienda = get_store(store_id)
-    producto = get_product(store_id, product_id)
+    try:
+        conn = proyecto._connect()
+        cursor = conn.cursor()
 
-    if not tienda or not producto:
-        flash('Producto no encontrado.')
+        cursor.execute('''
+            SELECT
+                p.id,
+                p.tienda_id,
+                p.nombre,
+                p.unidades,
+                p.precio,
+                p.presentacion,
+                p.imagen,
+                t.nombre AS tienda_nombre
+            FROM productos p
+            LEFT JOIN tiendas t ON p.tienda_id = t.id
+            WHERE p.id = ?
+              AND p.tienda_id = ?
+        ''', (product_id, store_id))
+
+        producto = cursor.fetchone()
+        conn.close()
+
+        if not producto:
+            flash('Producto no encontrado.')
+            return redirect(url_for('market'))
+
+        return render_template(
+            'producto.html',
+            tienda=producto['tienda_nombre'],
+            producto=producto,
+            store_id=store_id,
+            product_id=product_id
+        )
+
+    except Exception as e:
+        print('ERROR CARGANDO DETALLE DEL PRODUCTO:', e)
+        flash('No se pudo cargar el producto.')
         return redirect(url_for('market'))
-
-    return render_template(
-        'producto.html',
-        tienda=tienda,
-        producto=producto,
-        store_id=store_id,
-        product_id=product_id
-    )
-
 
 @app.route('/add/<int:store_id>/<int:product_id>', methods=['POST'])
 def add_to_cart(store_id, product_id):
