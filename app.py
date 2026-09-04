@@ -363,7 +363,6 @@ def register():
     return render_template('register.html')
 
 
-
 @app.route('/businesspeople')
 def businesspeople():
     if not session.get('username'):
@@ -438,6 +437,8 @@ def agregar_producto_proveedor():
         flash('Acceso restringido a vendedores.')
         return redirect(url_for('market'))
 
+    vendedor_username = session.get('username')
+
     # Obtener datos del formulario
     tienda_id = request.form.get('tienda_id', '').strip()
     nombre = request.form.get('nombre', '').strip()
@@ -445,11 +446,12 @@ def agregar_producto_proveedor():
     precio = request.form.get('precio', '').strip()
     unidades = request.form.get('unidades', '').strip()
 
-    # Validar datos
+    # Validar campos obligatorios
     if not tienda_id or not nombre or not presentacion or not precio or not unidades:
         flash('Completa todos los campos obligatorios.')
         return redirect(url_for('businesspeople'))
 
+    # Convertir tipos
     try:
         tienda_id = int(tienda_id)
         precio = float(precio)
@@ -458,7 +460,8 @@ def agregar_producto_proveedor():
         flash('Precio o stock inválido.')
         return redirect(url_for('businesspeople'))
 
-    if tienda_id < 0 or tienda_id >= len(MARKET.tiendas):
+    # Validar valores
+    if tienda_id <= 0:
         flash('Tienda no válida.')
         return redirect(url_for('businesspeople'))
 
@@ -466,8 +469,35 @@ def agregar_producto_proveedor():
         flash('El precio y el stock no pueden ser negativos.')
         return redirect(url_for('businesspeople'))
 
-    # Obtener tienda
-    tienda = MARKET.tiendas[tienda_id]
+    # Verificar que la tienda exista REALMENTE en SQLite
+    try:
+        conn = proyecto._connect()
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            SELECT id, nombre
+            FROM tiendas
+            WHERE id = ?
+        ''', (tienda_id,))
+
+        tienda_row = cursor.fetchone()
+
+        conn.close()
+
+        if not tienda_row:
+            flash('La tienda seleccionada no existe.')
+            return redirect(url_for('businesspeople'))
+
+        print(
+            "TIENDA SELECCIONADA:",
+            tienda_row['id'],
+            tienda_row['nombre']
+        )
+
+    except Exception as e:
+        print('ERROR VERIFICANDO TIENDA:', e)
+        flash('No se pudo verificar la tienda.')
+        return redirect(url_for('businesspeople'))
 
     # Procesar imagen
     imagen_nombre = None
@@ -475,10 +505,7 @@ def agregar_producto_proveedor():
     archivo = request.files.get('imagen')
 
     if archivo and archivo.filename:
-        nombre_archivo = archivo.filename
-
-        # Nombre seguro y sencillo para esta primera versión
-        nombre_archivo = nombre_archivo.replace(' ', '_')
+        nombre_archivo = archivo.filename.replace(' ', '_')
 
         ruta_static = os.path.join(
             PROJECT_DIR,
@@ -505,60 +532,31 @@ def agregar_producto_proveedor():
         imagen_nombre
     )
 
-    # Agregarlo inmediatamente al catálogo en memoria
-    tienda.agregar_producto(producto)
-
-    # Guardarlo también en SQLite
+    # Guardar directamente en SQLite usando el ID REAL de la tienda
     try:
-        # Buscar el mercado correspondiente
-        conn = proyecto._connect()
+        proyecto.save_producto(
+            producto,
+            tienda_id,
+            vendedor_username
+        )
 
-        with conn:
-            cursor = conn.cursor()
-
-            cursor.execute(
-                '''
-                SELECT id
-                FROM mercados
-                ORDER BY id ASC
-                LIMIT 1
-                '''
-            )
-
-            mercado_row = cursor.fetchone()
-
-            if mercado_row:
-                mercado_id = mercado_row[0]
-
-                cursor.execute(
-                    '''
-                    SELECT id
-                    FROM tiendas
-                    WHERE mercado_id = ?
-                    ORDER BY id ASC
-                    LIMIT 1 OFFSET ?
-                    ''',
-                    (mercado_id, tienda_id)
-                )
-
-                tienda_row = cursor.fetchone()
-
-                if tienda_row:
-                    tienda_id_db = tienda_row[0]
-
-                    proyecto.save_producto(
-                        producto,
-                        tienda_id_db,
-                        session.get('username')
-                    )
+        print(
+            "PRODUCTO GUARDADO:",
+            nombre,
+            "| tienda_id:",
+            tienda_id,
+            "| vendedor:",
+            vendedor_username
+        )
 
     except Exception as e:
-        print('ERROR REAL GUARDANDO PRODUCTO EN DB:', e)
+        print('ERROR GUARDANDO PRODUCTO EN DB:', e)
         flash(f'Error guardando producto en DB: {e}')
         return redirect(url_for('businesspeople'))
 
     flash(f'✅ {nombre} fue agregado correctamente al catálogo.')
     return redirect(url_for('businesspeople'))
+
 
 @app.route('/proveedor/editar-producto/<int:producto_id>', methods=['GET', 'POST'])
 def editar_producto_proveedor(producto_id):
