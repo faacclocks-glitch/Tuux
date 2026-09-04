@@ -17,6 +17,14 @@ from urllib.parse import quote
 
 # Para poder importar user_account desde el directorio padre
 PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
+
+PRODUCT_IMAGES_DIR = os.environ.get(
+    'PRODUCT_IMAGES_DIR',
+    '/data/product_images'
+)
+
+os.makedirs(PRODUCT_IMAGES_DIR, exist_ok=True)
+
 PARENT_DIR = os.path.abspath(os.path.join(PROJECT_DIR, '..'))
 sys.path.insert(0, PARENT_DIR)
 
@@ -32,6 +40,11 @@ app = Flask(__name__, template_folder='templates')
 app.secret_key = os.environ.get('FLASK_SECRET', 'dev-flask-key')
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
+@app.route('/product-images/<path:filename>')
+def product_image(filename):
+    from flask import send_from_directory
+    return send_from_directory(PRODUCT_IMAGES_DIR, filename)
 
 MARKET = proyecto.crear_tiendas_demo()
 init_user_db()
@@ -600,21 +613,16 @@ def agregar_producto_proveedor():
     if archivo and archivo.filename:
         nombre_archivo = archivo.filename.replace(' ', '_')
 
-        ruta_static = os.path.join(
-            PROJECT_DIR,
-            'static'
-        )
+        os.makedirs(PRODUCT_IMAGES_DIR, exist_ok=True)
 
-        os.makedirs(ruta_static, exist_ok=True)
+ruta_imagen = os.path.join(
+    PRODUCT_IMAGES_DIR,
+    nombre_archivo
+)
 
-        ruta_imagen = os.path.join(
-            ruta_static,
-            nombre_archivo
-        )
+archivo.save(ruta_imagen)
 
-        archivo.save(ruta_imagen)
-
-        imagen_nombre = nombre_archivo
+imagen_nombre = nombre_archivo
 
     # Crear producto
     producto = proyecto.Producto(
