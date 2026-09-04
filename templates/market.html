@@ -25,6 +25,60 @@
   /* =========================
      HEADER
      ========================= */
+
+    /* =========================
+     BOTÓN PROVEEDOR
+     ========================= */
+  .provider-link {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+  }
+
+  .provider-link a {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 12px;
+    background: white;
+    color: #104E8B;
+    border: 1px solid #104E8B;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: 0.2s ease;
+  }
+
+  .provider-link a:hover {
+    background: #104E8B;
+    color: white;
+  }
+
+    /* =========================
+     BOTÓN PROVEEDOR
+     ========================= */
+  .provider-link {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+  }
+
+  .provider-link a {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 12px;
+    background: white;
+    color: #104E8B;
+    border: 1px solid #104E8B;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: 0.2s ease;
+  }
+
+  .provider-link a:hover {
+    background: #104E8B;
+    color: white;
+  }
  
   /* =========================
      CONTENEDOR
@@ -284,6 +338,10 @@
       <button type="button">
         Buscar
       </button>
+    </div>
+    
+    <div class="provider-link">
+      <a href="{{ url_for('login') }}">Proveedor</a>
     </div>
   </section>
   <!-- =========================
