@@ -1214,7 +1214,14 @@ def add_to_cart(store_id, product_id):
 
 @app.route('/cart')
 def cart():
+    print("=== CART DEBUG 1 ===")
+    print("SESSION CART:", session.get('cart'))
+
     items, product_total = build_cart_items()
+
+    print("=== CART DEBUG 2 ===")
+    print("BUILD ITEMS:", items)
+    print("PRODUCT TOTAL:", product_total)
     cart_items = get_cart()
     switch_fee = calculate_store_switch_fee(cart_items)
     total = product_total + switch_fee
