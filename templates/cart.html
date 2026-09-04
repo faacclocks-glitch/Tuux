@@ -536,6 +536,125 @@
     align-items: center;
     justify-content: center;
   }
+
+    /* =========================
+     TARJETAS COMPACTAS DEL CARRITO
+     ========================= */
+
+  .store-group {
+    margin-bottom: 28px;
+  }
+
+  .store-group > h2 {
+    margin-bottom: 14px;
+  }
+
+  .store-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .store-group > h2 {
+    width: 100%;
+  }
+
+  .product {
+    position: relative;
+    width: 220px;
+    margin: 0;
+    padding: 10px;
+    border-radius: 18px;
+    background: rgba(255, 245, 225, 0.82);
+    backdrop-filter: blur(12px);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+  }
+
+  .cart-product-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .cart-product-image,
+  .cart-product-placeholder {
+    width: 100%;
+    height: 175px;
+    object-fit: contain;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 12px;
+    padding: 6px;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+  }
+
+  .cart-product-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+  }
+
+  .product strong {
+    display: block;
+    margin: 4px 0 0;
+    font-size: 1.05rem;
+    line-height: 1.2;
+  }
+
+  .cart-price {
+    margin: 6px 0 10px;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #009f9f;
+  }
+
+  .product .meta {
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+  }
+
+  .product .remove-button {
+    width: auto;
+    margin: 4px 0 0;
+    padding: 10px 22px;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .store-group {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .product {
+      width: 100%;
+    }
+
+    .cart-product-image,
+    .cart-product-placeholder {
+      height: 155px;
+    }
+
+    .product strong {
+      font-size: 0.95rem;
+    }
+
+    .cart-price {
+      font-size: 1.15rem;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .store-group {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 
   
@@ -555,8 +674,10 @@
     {% for tienda_nombre, tienda_items in grouped_items.items() %}
       <div class="store-group">
         <h2>{{ tienda_nombre }}</h2>
-        {% for item in tienda_items %}
-                    <div class="product">
+                {% for item in tienda_items %}
+
+          <div class="product">
+
             <span class="item-badge">x{{ item.cantidad }}</span>
 
             <div class="cart-product-content">
@@ -568,9 +689,6 @@
                 </div>
 
                 <strong>{{ item.producto }}</strong>
-              <div class="cart-price">
-                ${{ "%.2f"|format(item.producto.precio) }}
-              </div>
 
               {% else %}
 
@@ -588,31 +706,34 @@
 
                 <strong>{{ item.producto.nombre }}</strong>
 
+                <div class="cart-price">
+                  ${{ "%.2f"|format(item.producto.precio) }}
+                </div>
+
               {% endif %}
 
-              <div class="meta">
-
-                {% if item.detalles %}
+              {% if item.detalles %}
+                <div class="meta">
                   Detalles: {{ item.detalles }}
-                {% endif %}
-
-              </div>
+                </div>
+              {% endif %}
 
               <form
                 method="post"
                 action="{{ url_for('remove_from_cart', item_index=item.item_index) }}"
               >
-                <button type="submit" class="remove-button">
+                <button
+                  type="submit"
+                  class="remove-button"
+                >
                   Eliminar
                 </button>
               </form>
 
             </div>
+
           </div>
-            <form method="post" action="{{ url_for('remove_from_cart', item_index=item.item_index) }}" style="display:inline; margin-left:12px;">
-              <button type="submit" class="remove-button">Eliminar</button>
-            </form>
-          </div>
+
         {% endfor %}
       </div>
     {% endfor %}
