@@ -877,6 +877,7 @@ def marketlist():
 
 @app.route('/market')
 def market():
+    productos = []
 
     try:
         conn = proyecto._connect()
@@ -884,27 +885,33 @@ def market():
 
         cursor.execute('''
             SELECT
-                t.id,
-                t.nombre,
-                t.direccion,
-                t.celular,
-                t.giro,
-                p.id,
+                p.id AS producto_id,
+                p.tienda_id,
                 p.nombre,
                 p.unidades,
                 p.precio,
                 p.presentacion,
-                p.imagen
-            FROM tiendas t
-            LEFT JOIN productos p
-                ON p.tienda_id = t.id
-            ORDER BY t.id ASC, p.id ASC
+                p.imagen,
+                p.vendedor_username,
+                t.nombre AS tienda_nombre
+            FROM productos p
+            LEFT JOIN tiendas t ON p.tienda_id = t.id
+            ORDER BY p.id DESC
         ''')
 
-        rows = cursor.fetchall()
+        productos = cursor.fetchall()
         conn.close()
 
-        # Reconstruir tiendas para el catálogo
+    except Exception as e:
+        print('ERROR CARGANDO PRODUCTOS DEL MARKET:', e)
+
+    return render_template(
+        'market.html',
+        productos=productos,
+        market_request=session.get('market_request')
+    )
+    
+    # Reconstruir tiendas para el catálogo
         tiendas_market = []
 
         tiendas_dict = {}
