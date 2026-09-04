@@ -364,6 +364,7 @@ def register():
 
 
 @app.route('/businesspeople')
+@app.route('/businesspeople')
 def businesspeople():
     if not session.get('username'):
         return redirect(url_for('login'))
@@ -376,14 +377,31 @@ def businesspeople():
     print("VENDEDOR ACTUAL:", repr(vendedor_username))
 
     productos_vendedor = []
-   
+    tiendas = []
+
     try:
         conn = proyecto._connect()
         cursor = conn.cursor()
 
+        # Tiendas reales de la base de datos
         cursor.execute('''
             SELECT
                 id,
+                nombre,
+                mercado_id
+            FROM tiendas
+            ORDER BY id ASC
+        ''')
+        tiendas = cursor.fetchall()
+
+        print("TIENDAS ENCONTRADAS:", len(tiendas))
+        print("TIENDAS:", tiendas)
+
+        # Productos pertenecientes al vendedor actual
+        cursor.execute('''
+            SELECT
+                id,
+                tienda_id,
                 nombre,
                 unidades,
                 precio,
@@ -395,16 +413,18 @@ def businesspeople():
         ''', (vendedor_username,))
 
         productos_vendedor = cursor.fetchall()
+
         print("PRODUCTOS ENCONTRADOS:", len(productos_vendedor))
         print("PRODUCTOS:", productos_vendedor)
+
         conn.close()
 
     except Exception as e:
-        print('ERROR OBTENIENDO PRODUCTOS DEL VENDEDOR:', e)
+        print('ERROR CARGANDO DATOS DEL PROVEEDOR:', e)
 
     return render_template(
         'businesspeople.html',
-        tiendas=MARKET.tiendas,
+        tiendas=tiendas,
         productos_vendedor=productos_vendedor
     )
 
