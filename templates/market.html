@@ -324,7 +324,7 @@
     <div class="product-image">
       {% if producto['imagen'] %}
         <img
-          src="{{ url_for('static', filename=producto['imagen']) }}"
+          src="{{ url_for('product_image', filename=producto['imagen']) }}"
           alt="{{ producto['nombre'] }}"
         >
       {% else %}
