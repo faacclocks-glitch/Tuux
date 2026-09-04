@@ -2,6 +2,15 @@
 {% block content %}
 
 <style>
+  .flash-message {
+  margin: 15px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #e8f8f5;
+  color: #117864;
+  font-weight: 700;
+  text-align: center;
+}
   body {
     margin: 0;
     min-height: 100vh;
@@ -224,6 +233,16 @@
           </button>
 
         </form>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="flash-message">
+                ✅ {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
 
       {% else %}
 
