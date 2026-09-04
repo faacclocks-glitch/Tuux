@@ -1182,8 +1182,8 @@ def add_to_cart(store_id, product_id):
     print(cart)
     print("=== FIN DEBUG ===")
 
-    flash('Producto agregado al carrito.')
-
+    flash(f"{producto['nombre']} se agregó al carrito.")
+    
     total_piezas = sum(
         int(item.get('cantidad', 1))
         for item in cart
