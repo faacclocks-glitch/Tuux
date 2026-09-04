@@ -210,7 +210,10 @@ class Vendedor(Usuario):
 # ==========================================
 
 def _db_path():
-    return os.path.join(os.path.dirname(__file__), 'marketplace.db')
+    return os.environ.get(
+        'MARKETPLACE_DB',
+        os.path.join(os.path.dirname(__file__), 'marketplace.db')
+    )
 
 
 def _connect(db_path=None):
