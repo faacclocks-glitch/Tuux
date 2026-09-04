@@ -36,7 +36,8 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 MARKET = proyecto.crear_tiendas_demo()
 init_user_db()
 proyecto.init_db()
-proyecto.persistir_demo_si_no_existe(MARKET)
+# Catálogo persistente: /data/marketplace.db
+# No volver a sembrar datos demo automáticamente.
 
 
 def get_store(store_id):
