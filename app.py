@@ -363,7 +363,7 @@ def register():
     return render_template('register.html')
 
 
-@app.route('/businesspeople')
+
 @app.route('/businesspeople')
 def businesspeople():
     if not session.get('username'):
