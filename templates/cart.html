@@ -33,6 +33,48 @@
     p { font-size: 1.2rem; margin-left: 30px; }
   }
 
+    /* =========================
+     MINI TARJETA DEL CARRITO
+     ========================= */
+  .cart-product-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .cart-product-image {
+    width: 100%;
+    max-width: 180px;
+    height: 190px;
+    object-fit: contain;
+    background: rgba(255, 255, 255, 0.75);
+    border-radius: 14px;
+    padding: 8px;
+    margin-bottom: 14px;
+  }
+
+  .cart-product-placeholder {
+    width: 100%;
+    max-width: 180px;
+    height: 190px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.75);
+    border-radius: 14px;
+    font-size: 3rem;
+    margin-bottom: 14px;
+  }
+
+  @media (min-width: 768px) {
+    .cart-product-image,
+    .cart-product-placeholder {
+      max-width: 160px;
+      height: 170px;
+    }
+  }
+
   /* CORRECCIÓN: Tarjeta de producto adaptable */
   .product {
     position: relative;
@@ -465,19 +507,56 @@
       <div class="store-group">
         <h2>{{ tienda_nombre }}</h2>
         {% for item in tienda_items %}
-          <div class="product">
+                    <div class="product">
             <span class="item-badge">x{{ item.cantidad }}</span>
-            {% if item.custom %}
-              <strong>{{ item.producto }}</strong>
-            {% else %}
-              <strong>{{ item.producto.nombre }}</strong>
-            {% endif %}
-            <div class="meta">
-              
-              {% if item.detalles %}
-                Detalles: {{ item.detalles }}
+
+            <div class="cart-product-content">
+
+              {% if item.custom %}
+
+                <div class="cart-product-placeholder">
+                  📦
+                </div>
+
+                <strong>{{ item.producto }}</strong>
+
+              {% else %}
+
+                {% if item.producto.imagen %}
+                  <img
+                    class="cart-product-image"
+                    src="{{ url_for('product_image', filename=item.producto.imagen) }}"
+                    alt="{{ item.producto.nombre }}"
+                  >
+                {% else %}
+                  <div class="cart-product-placeholder">
+                    📦
+                  </div>
+                {% endif %}
+
+                <strong>{{ item.producto.nombre }}</strong>
+
               {% endif %}
+
+              <div class="meta">
+
+                {% if item.detalles %}
+                  Detalles: {{ item.detalles }}
+                {% endif %}
+
+              </div>
+
+              <form
+                method="post"
+                action="{{ url_for('remove_from_cart', item_index=item.item_index) }}"
+              >
+                <button type="submit" class="remove-button">
+                  Eliminar
+                </button>
+              </form>
+
             </div>
+          </div>
             <form method="post" action="{{ url_for('remove_from_cart', item_index=item.item_index) }}" style="display:inline; margin-left:12px;">
               <button type="submit" class="remove-button">Eliminar</button>
             </form>
