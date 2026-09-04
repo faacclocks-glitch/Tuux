@@ -260,7 +260,6 @@ def remove_from_cart(item_index):
 
 
 
-root@868b4901ebc8:/app# sed -n '255,280p' /app/app.py
         flash('Producto eliminado del carrito.')
     else:
         flash('Elemento del carrito no encontrado.')
