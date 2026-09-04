@@ -205,40 +205,73 @@
   document.addEventListener('submit', function(e) {
     const form = e.target;
     if (!(form instanceof HTMLFormElement)) return;
+
     try {
       const action = form.getAttribute('action') || '';
+
       if (action.includes('/add/')) {
         e.preventDefault();
+
         const data = new FormData(form);
+
         fetch(action, {
           method: 'POST',
-          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          },
           body: data,
           credentials: 'same-origin'
-        }).then(r => r.json()).then(json => {
+        })
+        .then(r => r.json())
+        .then(json => {
+
           if (json && json.cart_count !== undefined) {
-            
-            // Selecciona TODOS los contadores (.cart-count) en la página
+
+            // Actualiza todos los contadores del carrito
             document.querySelectorAll('.cart-count').forEach(el => {
-              // 1. Actualiza el número de manera segura
               el.textContent = json.cart_count;
-              
-              // 2. Aplica la animación de escala de forma individual a cada uno
+
               el.animate([
-                { transform: 'scale(1)' }, 
-                { transform: 'scale(1.3)' }, 
+                { transform: 'scale(1)' },
+                { transform: 'scale(1.3)' },
                 { transform: 'scale(1)' }
-              ], { duration: 300 });
+              ], {
+                duration: 300
+              });
             });
 
+            // Obtiene el nombre del producto desde el formulario
+            const productName =
+              form.closest('.product-detail-info')?.querySelector('h1')?.textContent.trim()
+              || 'Producto';
+
+            // Crea la alerta
+            const alerta = document.createElement('div');
+            alerta.className = 'alert';
+            alerta.textContent = '✅ ' + productName + ' se agregó al carrito.';
+
+            // La coloca al inicio del contenido del producto
+            const productInfo = form.closest('.product-detail-info');
+
+            if (productInfo) {
+              productInfo.insertBefore(alerta, productInfo.firstChild);
+            }
+
+            // Desaparece después de 3 segundos
+            setTimeout(() => {
+              alerta.remove();
+            }, 3000);
           }
-        }).catch(() => {
-          // si falla, enviar el formulario normalmente
+
+        })
+        .catch(() => {
+          // Si AJAX falla, enviar el formulario normalmente
           form.submit();
         });
       }
+
     } catch (err) {
-      // en caso de error, dejar que el submit siga su curso
+      // En caso de error, dejar que el submit siga su curso
     }
   }, true);
 </script>
