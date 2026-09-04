@@ -910,60 +910,6 @@ def market():
         productos=productos,
         market_request=session.get('market_request')
     )
-    
-    # Reconstruir tiendas para el catálogo
-        tiendas_market = []
-
-        tiendas_dict = {}
-
-        for row in rows:
-
-            tienda_id = row[0]
-
-            if tienda_id not in tiendas_dict:
-
-                tienda = proyecto.Tienda(
-                    row[1],
-                    row[2],
-                    row[3],
-                    row[4]
-                )
-
-                tiendas_dict[tienda_id] = tienda
-                tiendas_market.append(tienda)
-
-            tienda = tiendas_dict[tienda_id]
-
-            # Si existe producto
-            if row[5] is not None:
-
-                producto = proyecto.Producto(
-                    row[6],
-                    row[7],
-                    row[8],
-                    row[9],
-                    row[10]
-                )
-
-                tienda.agregar_producto(producto)
-
-        return render_template(
-            'market.html',
-            tiendas=tiendas_market,
-            market_request=session.get('market_request')
-        )
-
-    except Exception as e:
-
-        print('ERROR CARGANDO MARKET DESDE DB:', e)
-
-        flash(f'Error cargando catálogo: {e}')
-
-        return render_template(
-            'market.html',
-            tiendas=MARKET.tiendas,
-            market_request=session.get('market_request')
-        )
 
 @app.route('/producto/<int:store_id>/<int:product_id>')
 def detalle_producto(store_id, product_id):
