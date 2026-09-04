@@ -614,15 +614,15 @@ def agregar_producto_proveedor():
         nombre_archivo = archivo.filename.replace(' ', '_')
 
         os.makedirs(PRODUCT_IMAGES_DIR, exist_ok=True)
-
-ruta_imagen = os.path.join(
-    PRODUCT_IMAGES_DIR,
-    nombre_archivo
-)
-
-archivo.save(ruta_imagen)
-
-imagen_nombre = nombre_archivo
+        
+        ruta_imagen = os.path.join(
+            PRODUCT_IMAGES_DIR,
+            nombre_archivo
+        )
+        
+        archivo.save(ruta_imagen)
+        
+        imagen_nombre = nombre_archivo
 
     # Crear producto
     producto = proyecto.Producto(
