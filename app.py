@@ -260,17 +260,27 @@ def remove_from_cart(item_index):
 
 
 
+root@868b4901ebc8:/app# sed -n '255,280p' /app/app.py
+        flash('Producto eliminado del carrito.')
+    else:
+        flash('Elemento del carrito no encontrado.')
+    return redirect(url_for('cart'))
+
+
+
+
 @app.route('/')
 def index():
-    if session.get('username'):
-        return redirect(url_for('market'))
+    return redirect(url_for('market'))
 
-    return render_template(
-        'market.html',
-        tiendas=MARKET.tiendas,
-        market_request=session.get('market_request')
-    )
+def home():
+    return redirect(render_template("home.html"))
 
+@app.route("/confirmar_pedido", methods=['POST'])
+
+def confirmar_pedido():
+    # Construir los items y total del carrito actual
+root@868b4901ebc8:/app# 
 def home():
     return redirect(render_template("home.html"))
 
