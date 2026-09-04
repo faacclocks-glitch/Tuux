@@ -258,33 +258,12 @@ def remove_from_cart(item_index):
     return redirect(url_for('cart'))
 
 
-
-
-        flash('Producto eliminado del carrito.')
-    else:
-        flash('Elemento del carrito no encontrado.')
-    return redirect(url_for('cart'))
-
-
-
-
 @app.route('/')
 def index():
     return redirect(url_for('market'))
-
-def home():
-    return redirect(render_template("home.html"))
+    
 
 @app.route("/confirmar_pedido", methods=['POST'])
-
-def confirmar_pedido():
-    # Construir los items y total del carrito actual
-root@868b4901ebc8:/app# 
-def home():
-    return redirect(render_template("home.html"))
-
-@app.route("/confirmar_pedido", methods=['POST'])
-
 def confirmar_pedido():
     # Construir los items y total del carrito actual
     items, total = build_cart_items()
