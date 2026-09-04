@@ -1011,7 +1011,31 @@ def detalle_producto(store_id, product_id):
 @app.route('/add/<int:store_id>/<int:product_id>', methods=['POST'])
 def add_to_cart(store_id, product_id):
 
-    producto = get_product(store_id, product_id)
+    try:
+        conn = proyecto._connect()
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            SELECT
+                id,
+                tienda_id,
+                nombre,
+                unidades,
+                precio,
+                presentacion,
+                imagen
+            FROM productos
+            WHERE id = ?
+              AND tienda_id = ?
+        ''', (product_id, store_id))
+
+        producto = cursor.fetchone()
+        conn.close()
+
+    except Exception as e:
+        print('ERROR BUSCANDO PRODUCTO PARA CARRITO:', e)
+        flash('No se pudo encontrar el producto.')
+        return redirect(url_for('market'))
 
     if not producto:
         flash('Producto no encontrado.')
@@ -1021,25 +1045,28 @@ def add_to_cart(store_id, product_id):
 
     if not cantidad.isdigit() or int(cantidad) <= 0:
         flash('Cantidad inválida.')
-        return redirect(url_for(
-            'detalle_producto',
-            store_id=store_id,
-            product_id=product_id
-        ))
+        return redirect(
+            url_for(
+                'detalle_producto',
+                store_id=store_id,
+                product_id=product_id
+            )
+        )
 
     cantidad = int(cantidad)
 
-    if cantidad > producto.unidades:
+    if cantidad > producto['unidades']:
         flash('Stock insuficiente.')
-        return redirect(url_for(
-            'detalle_producto',
-            store_id=store_id,
-            product_id=product_id
-        ))
+        return redirect(
+            url_for(
+                'detalle_producto',
+                store_id=store_id,
+                product_id=product_id
+            )
+        )
 
     cart = get_cart()
 
-    # Detectar si estamos agregando una tienda diferente
     alerta_tienda = None
 
     existing_store_ids = {
@@ -1052,7 +1079,6 @@ def add_to_cart(store_id, product_id):
         alerta_tienda = '¿Deseas agregar otra tienda por $50 y sumarlo al total?'
         flash(alerta_tienda)
 
-    # Buscar si el producto ya está en el carrito
     producto_existente = None
 
     for item in cart:
@@ -1068,13 +1094,15 @@ def add_to_cart(store_id, product_id):
 
         nueva_cantidad = producto_existente.get('cantidad', 0) + cantidad
 
-        if nueva_cantidad > producto.unidades:
+        if nueva_cantidad > producto['unidades']:
             flash('La cantidad total supera el stock disponible.')
-            return redirect(url_for(
-                'detalle_producto',
-                store_id=store_id,
-                product_id=product_id
-            ))
+            return redirect(
+                url_for(
+                    'detalle_producto',
+                    store_id=store_id,
+                    product_id=product_id
+                )
+            )
 
         producto_existente['cantidad'] = nueva_cantidad
 
@@ -1086,11 +1114,11 @@ def add_to_cart(store_id, product_id):
             'product_id': product_id,
             'cantidad': cantidad,
             'producto': {
-                'nombre': producto.nombre,
-                'precio': producto.precio,
-                'presentacion': producto.presentacion,
-                'imagen': getattr(producto, 'imagen', None),
-                'unidades': producto.unidades
+                'nombre': producto['nombre'],
+                'precio': producto['precio'],
+                'presentacion': producto['presentacion'],
+                'imagen': producto['imagen'],
+                'unidades': producto['unidades']
             }
         })
 
@@ -1103,7 +1131,6 @@ def add_to_cart(store_id, product_id):
         for item in cart
     )
 
-    # Si la petición viene de JavaScript, devolver JSON
     if (
         request.headers.get('X-Requested-With') == 'XMLHttpRequest'
         or request.accept_mimetypes.accept_json
@@ -1114,13 +1141,13 @@ def add_to_cart(store_id, product_id):
             'alerta_tienda': alerta_tienda
         })
 
-    # Si viene del formulario normal, regresar al detalle
-    return redirect(url_for(
-        'detalle_producto',
-        store_id=store_id,
-        product_id=product_id
-    ))
-
+    return redirect(
+        url_for(
+            'detalle_producto',
+            store_id=store_id,
+            product_id=product_id
+        )
+    )
 
 
 @app.route('/cart')
