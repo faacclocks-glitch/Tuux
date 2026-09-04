@@ -41,16 +41,109 @@ proyecto.init_db()
 
 
 def get_store(store_id):
-    if 0 <= store_id < len(MARKET.tiendas):
-        return MARKET.tiendas[store_id]
-    return None
+    try:
+        conn = proyecto._connect()
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            SELECT id, nombre, direccion, celular, giro
+            FROM tiendas
+            WHERE id = ?
+        ''', (store_id,))
+
+        row = cursor.fetchone()
+
+        if not row:
+            conn.close()
+            return None
+
+        tienda = proyecto.Tienda(
+            row['nombre'],
+            row['direccion'],
+            row['celular'],
+            row['giro']
+        )
+
+        cursor.execute('''
+            SELECT
+                id,
+                nombre,
+                unidades,
+                precio,
+                presentacion,
+                imagen
+            FROM productos
+            WHERE tienda_id = ?
+            ORDER BY id ASC
+        ''', (store_id,))
+
+        productos = cursor.fetchall()
+        conn.close()
+
+        for producto_row in productos:
+            producto = proyecto.Producto(
+                producto_row['nombre'],
+                producto_row['unidades'],
+                producto_row['precio'],
+                producto_row['presentacion'],
+                producto_row['imagen']
+            )
+
+            # Guardamos el ID real de SQLite en el objeto
+            producto.id = producto_row['id']
+
+            tienda.agregar_producto(producto)
+
+        tienda.id = store_id
+
+        return tienda
+
+    except Exception as e:
+        print('ERROR CARGANDO TIENDA DESDE DB:', e)
+        return None
 
 
 def get_product(store_id, product_id):
-    tienda = get_store(store_id)
-    if tienda and 0 <= product_id < len(tienda.productos):
-        return tienda.productos[product_id]
-    return None
+    try:
+        conn = proyecto._connect()
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            SELECT
+                p.id,
+                p.tienda_id,
+                p.nombre,
+                p.unidades,
+                p.precio,
+                p.presentacion,
+                p.imagen
+            FROM productos p
+            WHERE p.id = ?
+              AND p.tienda_id = ?
+        ''', (product_id, store_id))
+
+        row = cursor.fetchone()
+        conn.close()
+
+        if not row:
+            return None
+
+        producto = proyecto.Producto(
+            row['nombre'],
+            row['unidades'],
+            row['precio'],
+            row['presentacion'],
+            row['imagen']
+        )
+
+        producto.id = row['id']
+        producto.tienda_id = row['tienda_id']
+
+        return producto
+
+    except Exception as e:
+        print('ERROR CARGANDO PRODUCTO DESDE DB:', e)
+        return None
 
 
 def get_cart():
