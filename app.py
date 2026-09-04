@@ -1181,6 +1181,10 @@ def add_to_cart(store_id, product_id):
         })
 
     save_cart(cart)
+    
+    print("=== DEBUG CARRITO ===")
+    print(cart)
+    print("=== FIN DEBUG ===")
 
     flash('Producto agregado al carrito.')
 
