@@ -792,26 +792,20 @@
 
         <div class="location-fields">
 
-  <label for="pickup_location">
-    📍 ¿Dónde se recogen los productos?
+  <label for="delivery_cp">
+    🏠 ¿A dónde lo quieres recibir?
   </label>
-  <input
-    type="text"
-    id="pickup_location"
-    name="pickup_location"
-    placeholder="Ej. Mérida"
-    autocomplete="off"
-  >
 
-  <label for="delivery_location">
-    🏠 ¿Dónde quieres recibirlos?
-  </label>
   <input
     type="text"
-    id="delivery_location"
-    name="delivery_location"
-    placeholder="Ej. Calkiní"
-    autocomplete="off"
+    id="delivery_cp"
+    name="delivery_cp"
+    placeholder="Código postal"
+    inputmode="numeric"
+    pattern="[0-9]{5}"
+    maxlength="5"
+    required
+    autocomplete="postal-code"
   >
 
 </div>
