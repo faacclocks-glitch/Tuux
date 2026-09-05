@@ -30,10 +30,11 @@ class Tienda:
         self.celular = celular
         self.giro = giro
         self.codigo_postal = codigo_postal
-        
+        self.productos = []
+
     def agregar_producto(self, producto):
         self.productos.append(producto)
-    
+
     def mostrar_productos(self):
         print(f"Productos disponibles en la tienda {self.nombre}:")
         for producto in self.productos:
