@@ -238,6 +238,12 @@ def init_db(db_path=None):
             id INTEGER PRIMARY KEY, mercado_id INTEGER, nombre TEXT, direccion TEXT,
             celular TEXT, giro TEXT, FOREIGN KEY(mercado_id) REFERENCES mercados(id)
         )''')
+        
+        columnas_tiendas = [row[1] for row in c.execute("PRAGMA table_info(tiendas)")]
+        
+        if "codigo_postal" not in columnas_tiendas:
+                c.execute("ALTER TABLE tiendas ADD COLUMN codigo_postal TEXT")
+        
         c.execute('''CREATE TABLE IF NOT EXISTS productos (
             id INTEGER PRIMARY KEY, tienda_id INTEGER, nombre TEXT, unidades INTEGER,
             precio REAL, presentacion TEXT, imagen TEXT, FOREIGN KEY(tienda_id) REFERENCES tiendas(id)
