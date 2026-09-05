@@ -25,11 +25,11 @@ class Producto:
 
 class Tienda:
     def __init__(self, nombre, direccion, celular, giro, codigo_postal=None):
-    self.nombre = nombre
-    self.direccion = direccion
-    self.celular = celular
-    self.giro = giro
-    self.codigo_postal = codigo_postal
+        self.nombre = nombre
+        self.direccion = direccion
+        self.celular = celular
+        self.giro = giro
+        self.codigo_postal = codigo_postal
         
     def agregar_producto(self, producto):
         self.productos.append(producto)
