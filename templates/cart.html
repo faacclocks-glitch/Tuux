@@ -835,10 +835,26 @@
         </div>
 
         <div class="price-summary">
-          <p><strong>Tarifa por entrega:</strong> $<span id="totalWithOptions">{{ product_total }}</span></p>
-          <!--<p><strong>Costo por servicio:</strong> $<span id="serviceFee">0</span></p>-->
-          <!--<p><strong>Total a pagar:</strong> $<span id="totalPayable">{{ total }}</span></p>-->
-        </div>
+  <p>
+    <strong>Subtotal:</strong>
+    $<span id="subtotalAmount">{{ "%.2f"|format(product_total) }}</span>
+  </p>
+
+  <p>
+    <strong>Envío:</strong>
+    <span id="shippingOption">Selecciona una opción</span>
+  </p>
+
+  <p>
+    <strong>Costo de envío:</strong>
+    $<span id="shippingCost">0.00</span>
+  </p>
+
+  <p>
+    <strong>Total:</strong>
+    $<span id="totalWithOptions">{{ "%.2f"|format(product_total) }}</span>
+  </p>
+</div>
 
               </div>
       <button type="submit" id="confirmButton">✅ Confirmar pedido por whatsapp</button>
@@ -864,24 +880,29 @@
       }
 
       function updateTotalWithOptions() {
-        let newTotal = productTotal;
+        let shippingCost = 0;
+        let shippingOption = 'Selecciona una opción';
+
+        if (deliveryOption.checked) {
+          shippingOption = 'Entrega a domicilio';
+          shippingCost = 50;
+        }
+
+        if (pickupOption.checked) {
+          shippingOption = 'Punto de entrega';
+          shippingCost = 0;
+        }
+
+        let newTotal = productTotal + shippingCost;
+
         if (urgentOption.checked) {
           newTotal += 50;
         }
-        if (deliveryOption.checked) {
-          newTotal += 50;
+        
+        document.getElementById('shippingOption').textContent = shippingOption;
+        document.getElementById('shippingCost').textContent = shippingCost.toFixed(2);
+        totalWithOptionsEl.textContent = newTotal.toFixed(2);
         }
-        totalWithOptionsEl.textContent = newTotal;
-
-        const serviceFee = calculateServiceFee(newTotal);
-        if (serviceFeeEl) {
-          serviceFeeEl.textContent = serviceFee;
-        }
-        if (totalPayableEl) {
-          totalPayableEl.textContent = newTotal + serviceFee;
-        }
-      }
-
       const tieneCustom = {{ 'true' if tiene_custom else 'false' }};
 
       function validateDeliveryOptions() {
