@@ -375,8 +375,7 @@ def confirmar_pedido():
     mensaje += SEPARADOR + "\n"
     
     
-    mensaje += f"- Subtotal de productos: Pendiente\n"
-    mensaje += f"- Costo por servicio tu´ux: pendiente\n"
+    mensaje += f"- Subtotal de productos: ${total:.2f} MXN\n"
     if delivery_selected:
         mensaje += "- Entrega a domicilio: $50 MXN aprox\n"
     if pickup_selected:
