@@ -954,7 +954,6 @@
       toggleCardSelection(urgentCard, urgentOption.checked);
       toggleCardSelection(deliveryCard, deliveryOption.checked);
       toggleCardSelection(pickupCard, pickupOption.checked);
-      updateMinimumWarning();
 
       document.querySelectorAll('.remove-button').forEach(button => {
         button.addEventListener('click', function(event) {
@@ -974,7 +973,7 @@
       toggleCardSelection(deliveryCard, deliveryOption.checked);
       toggleCardSelection(pickupCard, pickupOption.checked);
       updateTotalWithOptions();
-      updateMinimumWarning();
+  
     </script>
 
   {% else %}
