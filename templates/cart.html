@@ -817,10 +817,11 @@
     Tu carrito está vacío.
   </p>
 
-{% endif %}              <form
-                method="post"
-                action="{{ url_for('remove_from_cart', item_index=item.item_index) }}"
-              >
+{% endif %}
+<form
+  method="post"
+  action="{{ url_for('remove_from_cart', item_index=item.item_index) }}"
+>
                 <button
                   type="submit"
                   class="remove-button"
