@@ -283,13 +283,14 @@ def save_tienda(tienda, mercado_id, db_path=None):
         return c.lastrowid
 
 
-def save_producto(producto, tienda_id, vendedor_username=None, db_path=None):
+def save_producto(producto, tienda_id, vendedor_username=None, precio_proveedor=None, db_path=None):
     with _connect(db_path) as conn:
         c = conn.cursor()
+
         c.execute('''
             INSERT INTO productos
-            (tienda_id, nombre, unidades, precio, presentacion, imagen, vendedor_username)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            (tienda_id, nombre, unidades, precio, presentacion, imagen, vendedor_username, precio_proveedor)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             tienda_id,
             producto.nombre,
@@ -297,10 +298,12 @@ def save_producto(producto, tienda_id, vendedor_username=None, db_path=None):
             producto.precio,
             producto.presentacion,
             getattr(producto, 'imagen', None),
-            vendedor_username
+            vendedor_username,
+            precio_proveedor
         ))
+
         return c.lastrowid
-# Las funciones de lectura (get_productos, get_tienda, etc.) se mantienen igual pero usando context managers si lo prefieras.
+        # Las funciones de lectura (get_productos, get_tienda, etc.) se mantienen igual pero usando context managers si lo prefieras.
 
 def persistir_demo_si_no_existe(mercado1, db_path=None):
     if existe_mercado(db_path):
