@@ -267,7 +267,6 @@ def index():
 def confirmar_pedido():
     # Construir los items y total del carrito actual
     items, total = build_cart_items()
-    total = product_total
     
     if not items:
         flash('El carrito está vacío.')
