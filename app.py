@@ -383,9 +383,7 @@ def confirmar_pedido():
         mensaje += "- Punto de entrega: incluido\n"
     if urgent_selected:
         mensaje += "- Urgente (24-48hrs): $50 MXN\n"
-    if switch_fee:
-        mensaje += f"- Tarifa por otra tienda: ${switch_fee} MXN\n"
-    
+        
     mensaje += SEPARADOR + "\n"
 
     if tiene_custom:
