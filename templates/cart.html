@@ -655,6 +655,43 @@
       grid-template-columns: 1fr;
     }
   }
+  .order-summary {
+  width: min(92%, 500px);
+  margin: 30px auto;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+  box-sizing: border-box;
+}
+
+.order-summary h2 {
+  margin: 0 0 20px;
+  text-align: center;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+.summary-total {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 2px solid #ddd;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.summary-note {
+  margin: 18px 0 0;
+  text-align: center;
+  font-size: .9rem;
+  opacity: .7;
+}
 </style>
 
   
@@ -735,6 +772,37 @@
           </div>
 
         {% endfor %}
+            {% endfor %}
+
+    <div class="order-summary">
+
+      <h2>Resumen del pedido</h2>
+
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span>${{ "%.2f"|format(product_total) }}</span>
+      </div>
+
+      <div class="summary-row">
+        <span>Descuentos</span>
+        <span>$0.00</span>
+      </div>
+
+      <div class="summary-row">
+        <span>Tarifa de entrega</span>
+        <span>Se calcula al continuar</span>
+      </div>
+
+      <div class="summary-row summary-total">
+        <span>Total</span>
+        <span>${{ "%.2f"|format(total) }}</span>
+      </div>
+
+      <p class="summary-note">
+        La tarifa de entrega dependerá de la zona y del tipo de entrega.
+      </p>
+
+    </div>
       </div>
     {% endfor %}
     {% if switch_fee %}
