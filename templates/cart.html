@@ -708,54 +708,116 @@
 {% endwith %}
   <h1>Carrito</h1>
   {% if grouped_items %}
-    {% for tienda_nombre, tienda_items in grouped_items.items() %}
-      <div class="store-group">
-        <h2>{{ tienda_nombre }}</h2>
-                {% for item in tienda_items %}
 
-          <div class="product">
+  {% for tienda_nombre, tienda_items in grouped_items.items() %}
 
-            <span class="item-badge">x{{ item.cantidad }}</span>
+    <div class="store-group">
 
-            <div class="cart-product-content">
+      <h2>{{ tienda_nombre }}</h2>
 
-              {% if item.custom %}
+      {% for item in tienda_items %}
 
+        <div class="product">
+
+          <span class="item-badge">x{{ item.cantidad }}</span>
+
+          <div class="cart-product-content">
+
+            {% if item.custom %}
+
+              <div class="cart-product-placeholder">
+                📦
+              </div>
+
+              <strong>{{ item.producto }}</strong>
+
+            {% else %}
+
+              {% if item.producto.imagen %}
+                <img
+                  class="cart-product-image"
+                  src="{{ url_for('product_image', filename=item.producto.imagen) }}"
+                  alt="{{ item.producto.nombre }}"
+                >
+              {% else %}
                 <div class="cart-product-placeholder">
                   📦
                 </div>
-
-                <strong>{{ item.producto }}</strong>
-
-              {% else %}
-
-                {% if item.producto.imagen %}
-                  <img
-                    class="cart-product-image"
-                    src="{{ url_for('product_image', filename=item.producto.imagen) }}"
-                    alt="{{ item.producto.nombre }}"
-                  >
-                {% else %}
-                  <div class="cart-product-placeholder">
-                    📦
-                  </div>
-                {% endif %}
-
-                <strong>{{ item.producto.nombre }}</strong>
-
-                <div class="cart-price">
-                  ${{ "%.2f"|format(item.producto.precio) }}
-                </div>
-
               {% endif %}
 
-              {% if item.detalles %}
-                <div class="meta">
-                  Detalles: {{ item.detalles }}
-                </div>
-              {% endif %}
+              <strong>{{ item.producto.nombre }}</strong>
 
-              <form
+              <div class="cart-price">
+                ${{ "%.2f"|format(item.producto.precio) }}
+              </div>
+
+            {% endif %}
+
+            {% if item.detalles %}
+              <div class="meta">
+                Detalles: {{ item.detalles }}
+              </div>
+            {% endif %}
+
+            <form
+              method="post"
+              action="{{ url_for('remove_from_cart', item_index=item.item_index) }}"
+            >
+              <button
+                type="submit"
+                class="remove-button"
+              >
+                Eliminar
+              </button>
+            </form>
+
+          </div>
+
+        </div>
+
+      {% endfor %}
+
+    </div>
+
+  {% endfor %}
+
+  <div class="order-summary">
+
+    <h2>Resumen del pedido</h2>
+
+    <div class="summary-row">
+      <span>Subtotal</span>
+      <span>${{ "%.2f"|format(product_total) }}</span>
+    </div>
+
+    <div class="summary-row">
+      <span>Descuentos</span>
+      <span>$0.00</span>
+    </div>
+
+    <div class="summary-row">
+      <span>Tarifa de entrega</span>
+      <span>Se calcula al continuar</span>
+    </div>
+
+    <div class="summary-row summary-total">
+      <span>Total</span>
+      <span>${{ "%.2f"|format(total) }}</span>
+    </div>
+
+    <p class="summary-note">
+      La tarifa de entrega dependerá de la zona y del tipo de entrega.
+    </p>
+
+  </div>
+
+{% else %}
+
+  <p class="empty-cart">
+    Tu carrito está vacío.
+  </p>
+
+{% endif %}              <form
                 method="post"
                 action="{{ url_for('remove_from_cart', item_index=item.item_index) }}"
               >
