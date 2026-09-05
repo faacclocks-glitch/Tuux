@@ -287,10 +287,10 @@ def confirmar_pedido():
         return redirect(url_for('cart'))
 
     extra_total = 0
+    
     if urgent_selected:
         extra_total += 50
-    if delivery_selected:
-        extra_total += 50
+    
     total_con_opciones = total + extra_total
 
     total_a_pagar = total_con_opciones + service_fee
