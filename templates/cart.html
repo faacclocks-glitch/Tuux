@@ -840,10 +840,7 @@
           <!--<p><strong>Total a pagar:</strong> $<span id="totalPayable">{{ total }}</span></p>-->
         </div>
 
-        <div id="minimumWarning" class="min-purchase-warning" style="display:none;">
-          Compra mínima $250. Agrega más productos para continuar.
-        </div>
-      </div>
+              </div>
       <button type="submit" id="confirmButton">✅ Confirmar pedido por whatsapp</button>
     </form>
     <script>
@@ -925,21 +922,7 @@
         }
       }
 
-      function updateMinimumWarning() {
-        const warning = document.getElementById('minimumWarning');
-        const confirmButton = document.getElementById('confirmButton');
-        if (productTotal < 250 && !tieneCustom) {
-          warning.style.display = 'block';
-          confirmButton.disabled = true;
-          confirmButton.style.opacity = '0.65';
-          confirmButton.style.cursor = 'not-allowed';
-        } else {
-          warning.style.display = 'none';
-          confirmButton.disabled = false;
-          confirmButton.style.opacity = '1';
-          confirmButton.style.cursor = 'pointer';
-        }
-      }
+      
 
       urgentOption.addEventListener('change', function() {
        updateTotalWithOptions();
