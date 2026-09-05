@@ -776,6 +776,33 @@
       </div>
 
     {% endfor %}
+<div class="order-summary">
+  <h2>Resumen del pedido</h2>
+
+  <div class="summary-row">
+    <span>Subtotal</span>
+    <span>${{ "%.2f"|format(product_total) }}</span>
+  </div>
+
+  <div class="summary-row">
+    <span>Descuentos</span>
+    <span>$0.00</span>
+  </div>
+
+  <div class="summary-row">
+    <span>Tarifa de entrega</span>
+    <span>Se calcula al continuar</span>
+  </div>
+
+  <div class="summary-row summary-total">
+    <span>Total</span>
+    <span>${{ "%.2f"|format(total) }}</span>
+  </div>
+
+  <p class="summary-note">
+    La tarifa de entrega dependerá de la zona y del tipo de entrega.
+  </p>
+</div>
     <form method="post" action="{{ url_for('confirmar_pedido') }}" onsubmit="return validateDeliveryOptions()">
       <div class="delivery-options">
         <h2>Opciones de entrega</h2>
