@@ -293,14 +293,6 @@ def confirmar_pedido():
         extra_total += 50
     total_con_opciones = total + extra_total
 
-    service_fee = 0
-    if total_con_opciones >= 1000:
-        service_fee = 220
-    elif total_con_opciones >= 500:
-        service_fee = 150
-    elif total_con_opciones >= 250:
-        service_fee = 125
-
     total_a_pagar = total_con_opciones + service_fee
 
     # Agrupar items por tienda y dirección
