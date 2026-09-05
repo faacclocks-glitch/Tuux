@@ -267,8 +267,7 @@ def index():
 def confirmar_pedido():
     # Construir los items y total del carrito actual
     items, total = build_cart_items()
-    switch_fee = calculate_store_switch_fee(get_cart())
-    total += switch_fee
+    total = product_total
     
     if not items:
         flash('El carrito está vacío.')
@@ -1226,7 +1225,13 @@ def cart():
         grouped_items.setdefault(tienda_nombre, []).append(item)
 
     grouped_items = dict(sorted(grouped_items.items(), key=lambda kv: kv[0].lower()))
-    return render_template('cart.html', grouped_items=grouped_items, total=total, product_total=product_total, switch_fee=switch_fee, tiene_custom=tiene_custom)
+    return render_template(
+    'cart.html',
+    grouped_items=grouped_items,
+    total=total,
+    product_total=product_total,
+    tiene_custom=tiene_custom
+)
 
 
 @app.route('/checkout', methods=['POST'])
