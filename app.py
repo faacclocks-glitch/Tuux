@@ -543,8 +543,15 @@ def agregar_producto_proveedor():
     # Convertir tipos
     try:
         tienda_id = int(tienda_id)
-        precio = float(precio)
+        
+        # Precio que el proveedor quiere recibir
+        precio_proveedor = float(precio)
+
+        # Precio público de TU'UX (+20%)
+        precio = round(precio_proveedor * 1.20, 2)
+
         unidades = int(unidades)
+        
     except ValueError:
         flash('Precio o stock inválido.')
         return redirect(url_for('businesspeople'))
