@@ -628,7 +628,8 @@ def agregar_producto_proveedor():
         proyecto.save_producto(
             producto,
             tienda_id,
-            vendedor_username
+            vendedor_username,
+            precio_proveedor
         )
 
         print(
