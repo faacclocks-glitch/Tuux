@@ -753,13 +753,29 @@
 
             {% endif %}
 
-            {% if item.detalles %}
-              <div class="meta">
-                Detalles: {{ item.detalles }}
-              </div>
-            {% endif %}
+                          {% if item.detalles %}
+                <div class="meta">
+                  Detalles: {{ item.detalles }}
+                </div>
+              {% endif %}
 
-            
+              <form
+                method="post"
+                action="{{ url_for('remove_from_cart', item_index=item.item_index) }}"
+              >
+                <button type="submit" class="remove-button">
+                  Eliminar
+                </button>
+              </form>
+
+            </div>
+          </div>
+
+        {% endfor %}
+
+      </div>
+
+    {% endfor %}
     <form method="post" action="{{ url_for('confirmar_pedido') }}" onsubmit="return validateDeliveryOptions()">
       <div class="delivery-options">
         <h2>Opciones de entrega</h2>
@@ -954,7 +970,4 @@
       updateTotalWithOptions();
       updateMinimumWarning();
     </script>
-  {% else %}
-    <p>El carrito está vacío.</p>
-  {% endif %}
 {% endblock %}
