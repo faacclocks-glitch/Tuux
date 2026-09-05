@@ -888,10 +888,6 @@
       const tieneCustom = {{ 'true' if tiene_custom else 'false' }};
 
       function validateDeliveryOptions() {
-        if (productTotal < 250 && !tieneCustom) {
-          alert('El pedido mínimo es $250. Agrega más productos al carrito.');
-          return false;
-        }
         if (!deliveryOption.checked && !pickupOption.checked) {
           if (urgentOption.checked) {
             alert('Elige servicio a domicilio o punto de entrega');
@@ -902,11 +898,8 @@
         }
         return true;
       }
-
+      
       function canAutoSend() {
-        if (productTotal < 250 && !tieneCustom) {
-          return false;
-        }
         if (!deliveryOption.checked && !pickupOption.checked) {
           return false;
         }
