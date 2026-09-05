@@ -805,7 +805,6 @@
     </form>
     <script>
       const productTotal = Number({{ product_total }});
-      const switchFee = Number({{ switch_fee }});
       const urgentOption = document.getElementById('urgentOption');
       const deliveryOption = document.getElementById('deliveryOption');
       const pickupOption = document.getElementById('pickupOption');
@@ -839,7 +838,7 @@
           serviceFeeEl.textContent = serviceFee;
         }
         if (totalPayableEl) {
-          totalPayableEl.textContent = newTotal + serviceFee + switchFee;
+          totalPayableEl.textContent = newTotal + serviceFee;
         }
       }
 
