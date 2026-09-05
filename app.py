@@ -544,7 +544,6 @@ def agregar_producto_proveedor():
     try:
         tienda_id = int(tienda_id)
         precio = float(precio)
-        precio = round(precio * 1.20, 2)
         unidades = int(unidades)
     except ValueError:
         flash('Precio o stock inválido.')
