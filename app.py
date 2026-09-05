@@ -277,10 +277,6 @@ def confirmar_pedido():
     cart = get_cart()
     tiene_custom = any(item.get('custom') for item in cart)
     
-    # Solo aplicar mínimo de compra si no hay productos personalizados
-    if not tiene_custom and total < 250:
-        flash('El pedido mínimo es $250. Agrega más productos al carrito.')
-        return redirect(url_for('cart'))
     
     # Validar opciones enviadas desde el formulario
     urgent_selected = bool(request.form.get('urgent'))
