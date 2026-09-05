@@ -303,8 +303,7 @@ def save_producto(producto, tienda_id, vendedor_username=None, precio_proveedor=
         ))
 
         return c.lastrowid
-        # Las funciones de lectura (get_productos, get_tienda, etc.) se mantienen igual pero usando context managers si lo prefieras.
-
+        
 def persistir_demo_si_no_existe(mercado1, db_path=None):
     if existe_mercado(db_path):
         return
