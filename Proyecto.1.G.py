@@ -241,9 +241,11 @@ def init_db(db_path=None):
         )''')
         
         columnas_tiendas = [row[1] for row in c.execute("PRAGMA table_info(tiendas)")]
-        
         if "codigo_postal" not in columnas_tiendas:
-                c.execute("ALTER TABLE tiendas ADD COLUMN codigo_postal TEXT")
+            c.execute("ALTER TABLE tiendas ADD COLUMN codigo_postal TEXT")
+            
+        if "vendedor_username" not in columnas_tiendas:
+            c.execute("ALTER TABLE tiendas ADD COLUMN vendedor_username TEXT")
         
         c.execute('''CREATE TABLE IF NOT EXISTS productos (
             id INTEGER PRIMARY KEY, tienda_id INTEGER, nombre TEXT, unidades INTEGER,
