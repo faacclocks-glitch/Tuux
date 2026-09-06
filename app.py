@@ -293,7 +293,7 @@ def confirmar_pedido():
     
     total_con_opciones = total + extra_total
 
-    total_a_pagar = total_con_opciones + service_fee
+    total_a_pagar = total_con_opciones
 
     # Agrupar items por tienda y dirección
     tiendas_dict = {}
