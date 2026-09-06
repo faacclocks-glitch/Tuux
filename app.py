@@ -193,6 +193,93 @@ def calculate_store_switch_fee(cart):
     extra_stores = max(len(groups) - 1, 0)
     return 50 * extra_stores
 
+# ==========================================
+# DISTANCIAS PARA ENTREGA URGENTE - MVP
+# ==========================================
+
+BASE_CP_TUUX = "97314"
+
+# Distancias estimadas entre códigos postales.
+# Se irán ampliando conforme validemos operaciones reales.
+CP_DISTANCES_KM = {
+    ("97314", "97000"): 12.0,
+    ("97000", "97314"): 12.0,
+}
+
+
+def normalize_cp(cp):
+    """Normaliza un código postal a texto de 5 dígitos."""
+    if cp is None:
+        return None
+
+    cp = str(cp).strip()
+
+    if not cp.isdigit() or len(cp) != 5:
+        return None
+
+    return cp
+
+
+def get_distance_km(cp_origen, cp_destino):
+    """
+    Devuelve la distancia estimada entre dos códigos postales.
+    Por ahora usamos una tabla configurable para el MVP.
+    """
+    origen = normalize_cp(cp_origen)
+    destino = normalize_cp(cp_destino)
+
+    if not origen or not destino:
+        raise ValueError("Código postal inválido.")
+
+    if origen == destino:
+        return 0.0
+
+    distancia = CP_DISTANCES_KM.get((origen, destino))
+
+    if distancia is None:
+        distancia = CP_DISTANCES_KM.get((destino, origen))
+
+    if distancia is None:
+        raise ValueError(
+            f"No tenemos todavía una distancia configurada entre "
+            f"{origen} y {destino}."
+        )
+
+    return float(distancia)
+
+
+def calculate_operation_distance_km(origin_cps, destination_cp):
+    """
+    Calcula los kilómetros de la operación:
+
+    Base TU'UX → Tienda A → Tienda B → ... → Cliente
+
+    No incluye el regreso a la base.
+    """
+    destination_cp = normalize_cp(destination_cp)
+
+    if not destination_cp:
+        raise ValueError("Código postal de destino inválido.")
+
+    route = [BASE_CP_TUUX]
+
+    for cp in origin_cps:
+        cp = normalize_cp(cp)
+
+        if not cp:
+            raise ValueError("Uno de los códigos postales de origen es inválido.")
+
+        route.append(cp)
+
+    route.append(destination_cp)
+
+    total_km = 0.0
+
+    for i in range(len(route) - 1):
+        total_km += get_distance_km(route[i], route[i + 1])
+
+    return round(total_km, 2)
+
 
 def build_cart_items():
     cart = get_cart()
