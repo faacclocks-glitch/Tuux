@@ -943,26 +943,24 @@ function updateTotalWithOptions() {
       
 
       urgentOption.addEventListener('change', function() {
-       updateTotalWithOptions();
-       toggleCardSelection(urgentCard, urgentOption.checked);
-      });
-
-     deliveryOption.addEventListener('change', function() {
+  toggleCardSelection(urgentCard, urgentOption.checked);
+  toggleCardSelection(deliveryCard, deliveryOption.checked);
+  toggleCardSelection(otherDayCard, otherDayOption.checked);
   updateTotalWithOptions();
+});
 
-  if (deliveryOption.checked) {
-    deliveryCard.classList.add('selected');
-    otherDayCard.classList.remove('selected');
-  }
+deliveryOption.addEventListener('change', function() {
+  toggleCardSelection(urgentCard, urgentOption.checked);
+  toggleCardSelection(deliveryCard, deliveryOption.checked);
+  toggleCardSelection(otherDayCard, otherDayOption.checked);
+  updateTotalWithOptions();
 });
 
 otherDayOption.addEventListener('change', function() {
+  toggleCardSelection(urgentCard, urgentOption.checked);
+  toggleCardSelection(deliveryCard, deliveryOption.checked);
+  toggleCardSelection(otherDayCard, otherDayOption.checked);
   updateTotalWithOptions();
-
-  if (otherDayOption.checked) {
-    otherDayCard.classList.add('selected');
-    deliveryCard.classList.remove('selected');
-  }
 });
        function toggleCardSelection(card, isSelected) {
         if (isSelected) {
