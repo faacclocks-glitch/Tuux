@@ -833,13 +833,13 @@
   </label>
 
   <label class="option-card" for="urgentOption" id="urgentCard">
-    <input type="checkbox" name="urgent" value="1" id="urgentOption">
+    <input type="radio" name="delivery_type" value="urgent" id="urgentOption">
     <span class="icon">⚡</span>
     <div class="title">Entrega urgente</div>
     <div class="description">
-      Tu pedido tendrá prioridad.
+      Calculada según la distancia total de la operación y el tiempo ocupado.
     </div>
-    <div class="price">+$50</div>
+    <div class="price">Tarifa calculada</div>
   </label>
 
 </div>
@@ -876,19 +876,8 @@
       const urgentCard = document.getElementById('urgentCard');
       const deliveryCard = document.getElementById('deliveryCard');
       const totalWithOptionsEl = document.getElementById('totalWithOptions');
-      const serviceFeeEl = document.getElementById('serviceFee');
-      const totalPayableEl = document.getElementById('totalPayable');
-      const confirmButton = document.getElementById('confirmButton');
-
-      function calculateServiceFee(subtotal) {
-        if (subtotal >= 1000) return 220;
-        if (subtotal >= 500) return 150;
-        if (subtotal >= 250) return 125;
-        return 0;
-      }
-
       const otherDayOption = document.getElementById('otherDayOption');
-const otherDayCard = document.getElementById('otherDayCard');
+      const otherDayCard = document.getElementById('otherDayCard');
 
 function updateTotalWithOptions() {
   let shippingCost = 0;
@@ -906,9 +895,7 @@ function updateTotalWithOptions() {
 
   let newTotal = productTotal + shippingCost;
 
-  if (urgentOption.checked) {
-    newTotal += 50;
-  }
+  
 
   document.getElementById('shippingOption').textContent = shippingOption;
   document.getElementById('shippingCost').textContent = shippingCost.toFixed(2);
@@ -917,21 +904,27 @@ function updateTotalWithOptions() {
       const tieneCustom = {{ 'true' if tiene_custom else 'false' }};
 
       function validateDeliveryOptions() {
-        if (!deliveryOption.checked && !otherDayOption.checked) {
-          if (urgentOption.checked) {
-            alert('Selecciona una opción de entrega');
-          } else {
-            alert('Selecciona una opción de entrega');
-          }
+        if (
+          !deliveryOption.checked &&
+          !otherDayOption.checked &&
+          !urgentOption.checked
+        ) {
+          alert('Selecciona una opción de entrega');
           return false;
         }
+
         return true;
       }
       
       function canAutoSend() {
-        if (!deliveryOption.checked && !otherDayOption.checked) {
+        if (
+          !deliveryOption.checked &&
+          !otherDayOption.checked &&
+          !urgentOption.checked
+        ) {
           return false;
         }
+
         return true;
       }
 
