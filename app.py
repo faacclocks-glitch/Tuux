@@ -79,6 +79,8 @@ def get_store(store_id):
             row['giro']
         )
 
+        tienda.codigo_postal = row[5]
+
         cursor.execute('''
             SELECT
                 id,
