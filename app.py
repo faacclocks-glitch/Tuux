@@ -637,7 +637,8 @@ def agregar_producto_proveedor():
             SELECT id, nombre
             FROM tiendas
             WHERE id = ?
-        ''', (tienda_id,))
+              AND vendedor_username = ?
+        ''', (tienda_id, vendedor_username))
 
         tienda_row = cursor.fetchone()
 
