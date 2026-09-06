@@ -539,8 +539,10 @@ def businesspeople():
                 nombre,
                 mercado_id
             FROM tiendas
+            WHERE vendedor_username = ?
             ORDER BY id ASC
-        ''')
+        ''', (vendedor_username,))
+        
         tiendas = cursor.fetchall()
 
         print("TIENDAS ENCONTRADAS:", len(tiendas))
