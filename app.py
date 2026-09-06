@@ -417,6 +417,8 @@ def confirmar_pedido():
     delivery_type = request.form.get('delivery_type')
     delivery_cp = request.form.get('delivery_cp', '').strip()
 
+    print("📍 CP DESTINO RECIBIDO:", delivery_cp)
+
     delivery_selected = delivery_type == 'delivery'
     other_day_selected = delivery_type == 'other_day'
     urgent_selected = delivery_type == 'urgent'
