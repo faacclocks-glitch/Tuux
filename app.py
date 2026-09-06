@@ -321,6 +321,12 @@ def calculate_urgent_time_cost(minutes):
         2
     )
 
+def calculate_urgent_shipping_cost(distance_km, minutes):
+    distance_cost = calculate_urgent_distance_cost(distance_km)
+    time_cost = calculate_urgent_time_cost(minutes)
+
+    return round(distance_cost + time_cost, 2)
+
 
 def build_cart_items():
     cart = get_cart()
