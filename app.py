@@ -479,6 +479,9 @@ def confirmar_pedido():
 
         time_cost = calculate_urgent_time_cost(URGENT_ESTIMATED_MINUTES)
         print("⏱️ COSTO POR TIEMPO:", time_cost)
+
+        shipping_cost = round(distance_cost + time_cost, 2)
+        print("🚚 TARIFA URGENTE TOTAL:", shipping_cost)
     
     total_a_pagar = total + shipping_cost
 
