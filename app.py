@@ -569,7 +569,7 @@ def confirmar_pedido():
     if delivery_selected:
         mensaje += f"- Entrega programada: ${shipping_cost:.2f} MXN\n"
     if urgent_selected:
-        mensaje += "- Urgente (24-48hrs): $50 MXN\n"
+        mensaje += f"- Entrega urgente: ${shipping_cost:.2f} MXN\n"
         
     mensaje += SEPARADOR + "\n"
 
