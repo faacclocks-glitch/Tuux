@@ -284,21 +284,24 @@ def save_mercado(mercado, db_path=None):
         return c.lastrowid
 
 
-def save_tienda(tienda, mercado_id, db_path=None):
+def save_tienda(tienda, mercado_id, vendedor_username=None, db_path=None):
     with _connect(db_path) as conn:
         c = conn.cursor()
+
         c.execute('''
             INSERT INTO tiendas
-            (mercado_id, nombre, direccion, celular, giro, codigo_postal)
-            VALUES (?, ?, ?, ?, ?, ?)
+            (mercado_id, nombre, direccion, celular, giro, codigo_postal, vendedor_username)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         ''', (
             mercado_id,
             tienda.nombre,
             tienda.direccion,
             tienda.celular,
             tienda.giro,
-            tienda.codigo_postal
+            tienda.codigo_postal,
+            vendedor_username
         ))
+
         return c.lastrowid
 
 def save_producto(producto, tienda_id, vendedor_username=None, precio_proveedor=None, db_path=None):
