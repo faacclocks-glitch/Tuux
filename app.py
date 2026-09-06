@@ -1,5 +1,6 @@
 import importlib.util
 import os
+import sqlite3
 import sys
 import datetime
 import json
@@ -7,6 +8,7 @@ import smtplib
 
 import subprocess
 import sys
+import math
 subprocess.check_call([sys.executable, "-m", "pip", "install", "flask", "--ignore-installed"])
 
 from email.mime.text import MIMEText
@@ -292,6 +294,32 @@ def calculate_urgent_distance_cost(distance_km):
         raise ValueError("La distancia no puede ser negativa.")
 
     return round(distance_km * URGENT_KM_RATE, 2)
+
+URGENT_TIME_RATE = 100
+URGENT_TIME_BLOCK_MINUTES = 15
+
+
+def calculate_urgent_time_cost(minutes):
+    """
+    Calcula el costo del tiempo ocupado para una entrega urgente.
+
+    Tarifa:
+    $100 por hora
+    Cobro en bloques de 15 minutos.
+    """
+    if minutes < 0:
+        raise ValueError("El tiempo no puede ser negativo.")
+
+    if minutes == 0:
+        return 0.0
+
+    blocks = math.ceil(minutes / URGENT_TIME_BLOCK_MINUTES)
+    billed_minutes = blocks * URGENT_TIME_BLOCK_MINUTES
+
+    return round(
+        billed_minutes * (URGENT_TIME_RATE / 60),
+        2
+    )
 
 
 def build_cart_items():
