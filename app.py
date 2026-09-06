@@ -439,6 +439,79 @@ def register():
             return redirect(url_for('market'))
     return render_template('register.html')
 
+@app.route('/registrar-tienda-proveedor', methods=['POST'])
+def registrar_tienda_proveedor():
+
+    if not session.get('username'):
+        return redirect(url_for('login'))
+
+    if session.get('tipo_usuario') != 'vendedor':
+        flash('Acceso restringido a vendedores.')
+        return redirect(url_for('market'))
+
+    nombre_tienda = request.form.get('nombre_tienda', '').strip()
+    codigo_postal = request.form.get('codigo_postal', '').strip()
+
+    if not nombre_tienda:
+        flash('Ingresa el nombre de la tienda.')
+        return redirect(url_for('businesspeople'))
+
+    if not codigo_postal.isdigit() or len(codigo_postal) != 5:
+        flash('El código postal debe tener 5 dígitos.')
+        return redirect(url_for('businesspeople'))
+
+    try:
+        conn = proyecto._connect()
+        cursor = conn.cursor()
+
+        # Usamos el primer mercado existente como mercado de la tienda
+        cursor.execute('''
+            SELECT id
+            FROM mercados
+            ORDER BY id ASC
+            LIMIT 1
+        ''')
+
+        mercado = cursor.fetchone()
+
+        if not mercado:
+            conn.close()
+            flash('No existe ningún mercado registrado.')
+            return redirect(url_for('businesspeople'))
+
+        mercado_id = mercado['id']
+
+        tienda = proyecto.Tienda(
+            nombre_tienda,
+            '',
+            '',
+            'proveedor',
+            codigo_postal
+        )
+
+        tienda_id = proyecto.save_tienda(
+            tienda,
+            mercado_id
+        )
+
+        conn.close()
+
+        print(
+            "TIENDA REGISTRADA:",
+            nombre_tienda,
+            "| CP:",
+            codigo_postal,
+            "| ID:",
+            tienda_id
+        )
+
+        flash(f'✅ Tienda "{nombre_tienda}" registrada correctamente.')
+
+    except Exception as e:
+        print('ERROR REGISTRANDO TIENDA:', e)
+        flash(f'Error registrando la tienda: {e}')
+
+    return redirect(url_for('businesspeople'))
 
 @app.route('/businesspeople')
 def businesspeople():
