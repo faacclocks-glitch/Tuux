@@ -278,22 +278,30 @@ def confirmar_pedido():
     
     
     # Validar opciones enviadas desde el formulario
-    urgent_selected = bool(request.form.get('urgent'))
     delivery_type = request.form.get('delivery_type')
+
     delivery_selected = delivery_type == 'delivery'
-    pickup_selected = delivery_type == 'pickup'
-    if not delivery_selected and not pickup_selected:
-        flash('Selecciona una opción')
+    other_day_selected = delivery_type == 'other_day'
+    urgent_selected = delivery_type == 'urgent'
+
+    if not delivery_selected and not other_day_selected and not urgent_selected:
+        flash('Selecciona una opción de entrega.')
         return redirect(url_for('cart'))
 
-    extra_total = 0
-    
-    if urgent_selected:
-        extra_total += 50
-    
-    total_con_opciones = total + extra_total
+    # Por ahora:
+    # - Programada = $35
+    # - Otro día = $50
+    # - Urgente = todavía se calculará con su fórmula propia
+    shipping_cost = 0
 
-    total_a_pagar = total_con_opciones
+    if delivery_selected:
+        shipping_cost = 35
+    elif other_day_selected:
+        shipping_cost = 50
+    elif urgent_selected:
+        shipping_cost = 0
+    
+    total_a_pagar = total + shipping_cost
 
     # Agrupar items por tienda y dirección
     tiendas_dict = {}
