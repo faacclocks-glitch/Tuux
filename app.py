@@ -299,6 +299,7 @@ def calculate_urgent_distance_cost(distance_km):
 
 URGENT_TIME_RATE = 100
 URGENT_TIME_BLOCK_MINUTES = 15
+URGENT_ESTIMATED_MINUTES = 60
 
 
 def calculate_urgent_time_cost(minutes):
