@@ -389,6 +389,25 @@ def build_cart_items():
         })
     return items, total
 
+def get_origin_cps_from_cart(items):
+    origin_cps = set()
+
+    for item in items:
+        if item.get('custom'):
+            continue
+
+        tienda_obj = item.get('tienda')
+
+        if tienda_obj:
+            codigo_postal = getattr(tienda_obj, 'codigo_postal', None)
+
+            if codigo_postal:
+                codigo_postal = normalize_cp(codigo_postal)
+                if codigo_postal:
+                    origin_cps.add(codigo_postal)
+
+    return sorted(origin_cps)
+
 @app.route('/remove/<int:item_index>', methods=['POST'])
 def remove_from_cart(item_index):
     cart = get_cart()
