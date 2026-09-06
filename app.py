@@ -297,6 +297,12 @@ def calculate_urgent_distance_cost(distance_km):
 
     return round(distance_km * URGENT_KM_RATE, 2)
 
+def calculate_urgent_shipping_cost_from_operation(distance_km):
+    return calculate_urgent_shipping_cost(
+        distance_km,
+        URGENT_ESTIMATED_MINUTES
+    )
+
 URGENT_TIME_RATE = 100
 URGENT_TIME_BLOCK_MINUTES = 15
 URGENT_ESTIMATED_MINUTES = 60
