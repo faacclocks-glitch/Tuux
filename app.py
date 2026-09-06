@@ -476,6 +476,9 @@ def confirmar_pedido():
 
         distance_cost = calculate_urgent_distance_cost(distance_km)
         print("💰 COSTO POR DISTANCIA:", distance_cost)
+
+        time_cost = calculate_urgent_time_cost(URGENT_ESTIMATED_MINUTES)
+        print("⏱️ COSTO POR TIEMPO:", time_cost)
     
     total_a_pagar = total + shipping_cost
 
