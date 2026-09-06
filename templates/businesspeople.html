@@ -176,6 +176,47 @@
 
   <section class="product-form">
 
+    <section class="product-form" style="margin-bottom: 20px;">
+    <h2>🏪 Registrar mi tienda</h2>
+
+    <form method="post" action="{{ url_for('registrar_tienda_proveedor') }}">
+
+        <div class="form-group">
+            <label for="nombre_tienda">Nombre de la tienda</label>
+            <input
+                type="text"
+                id="nombre_tienda"
+                name="nombre_tienda"
+                placeholder="Ej. Mi tienda"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="codigo_postal">Código postal de origen</label>
+            <input
+                type="text"
+                id="codigo_postal"
+                name="codigo_postal"
+                placeholder="Ej. 97000"
+                inputmode="numeric"
+                pattern="[0-9]{5}"
+                maxlength="5"
+                required
+            >
+
+            <small>
+                Este código postal será el origen para calcular el envío.
+            </small>
+        </div>
+
+        <button type="submit" class="btn-primary">
+            🏪 Registrar tienda
+        </button>
+
+    </form>
+</section>
+
     <h2>Agregar producto</h2>
 
     <form method="post"
