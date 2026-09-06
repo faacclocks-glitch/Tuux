@@ -61,7 +61,7 @@ def get_store(store_id):
         cursor = conn.cursor()
 
         cursor.execute('''
-            SELECT id, nombre, direccion, celular, giro
+            SELECT id, nombre, direccion, celular, giro, codigo_postal
             FROM tiendas
             WHERE id = ?
         ''', (store_id,))
