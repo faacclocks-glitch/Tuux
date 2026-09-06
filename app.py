@@ -491,9 +491,9 @@ def registrar_tienda_proveedor():
 
         tienda_id = proyecto.save_tienda(
             tienda,
-            mercado_id
+            mercado_id,
+            session.get('username')
         )
-
         conn.close()
 
         print(
