@@ -593,6 +593,10 @@ def agregar_producto_proveedor():
 
     # Obtener datos del formulario
     tienda_id = request.form.get('tienda_id', '').strip()
+    
+    print("DEBUG tienda_id RECIBIDO:", tienda_id)
+    print("DEBUG formulario:", request.form.to_dict())
+    
     nombre = request.form.get('nombre', '').strip()
     presentacion = request.form.get('presentacion', '').strip()
     precio = request.form.get('precio', '').strip()
