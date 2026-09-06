@@ -280,6 +280,19 @@ def calculate_operation_distance_km(origin_cps, destination_cp):
 
     return round(total_km, 2)
 
+URGENT_KM_RATE = 4.20
+
+
+def calculate_urgent_distance_cost(distance_km):
+    """
+    Calcula el costo de la parte de distancia
+    de una entrega urgente.
+    """
+    if distance_km < 0:
+        raise ValueError("La distancia no puede ser negativa.")
+
+    return round(distance_km * URGENT_KM_RATE, 2)
+
 
 def build_cart_items():
     cart = get_cart()
