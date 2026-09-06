@@ -525,8 +525,6 @@ def confirmar_pedido():
     mensaje += f"- Subtotal de productos: ${total:.2f} MXN\n"
     if delivery_selected:
         mensaje += "- Entrega a domicilio: $50 MXN aprox\n"
-    if pickup_selected:
-        mensaje += "- Punto de entrega: incluido\n"
     if urgent_selected:
         mensaje += "- Urgente (24-48hrs): $50 MXN\n"
         
