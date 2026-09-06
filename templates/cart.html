@@ -873,10 +873,8 @@
       const productTotal = Number({{ product_total }});
       const urgentOption = document.getElementById('urgentOption');
       const deliveryOption = document.getElementById('deliveryOption');
-      const pickupOption = document.getElementById('pickupOption');
       const urgentCard = document.getElementById('urgentCard');
       const deliveryCard = document.getElementById('deliveryCard');
-      const pickupCard = document.getElementById('pickupCard');
       const totalWithOptionsEl = document.getElementById('totalWithOptions');
       const serviceFeeEl = document.getElementById('serviceFee');
       const totalPayableEl = document.getElementById('totalPayable');
@@ -889,36 +887,39 @@
         return 0;
       }
 
-      function updateTotalWithOptions() {
-        let shippingCost = 0;
-        let shippingOption = 'Selecciona una opción';
+      const otherDayOption = document.getElementById('otherDayOption');
+const otherDayCard = document.getElementById('otherDayCard');
 
-        if (deliveryOption.checked) {
-          shippingOption = 'Entrega a domicilio';
-          shippingCost = 50;
-        }
+function updateTotalWithOptions() {
+  let shippingCost = 0;
+  let shippingOption = 'Selecciona una opción';
 
-        if (pickupOption.checked) {
-          shippingOption = 'Punto de entrega';
-          shippingCost = 0;
-        }
+  if (deliveryOption.checked) {
+    shippingOption = 'Entrega programada (viernes)';
+    shippingCost = 35;
+  }
 
-        let newTotal = productTotal + shippingCost;
+  if (otherDayOption.checked) {
+    shippingOption = 'Entrega otro día';
+    shippingCost = 50;
+  }
 
-        if (urgentOption.checked) {
-          newTotal += 50;
-        }
-        
-        document.getElementById('shippingOption').textContent = shippingOption;
-        document.getElementById('shippingCost').textContent = shippingCost.toFixed(2);
-        totalWithOptionsEl.textContent = newTotal.toFixed(2);
-        }
+  let newTotal = productTotal + shippingCost;
+
+  if (urgentOption.checked) {
+    newTotal += 50;
+  }
+
+  document.getElementById('shippingOption').textContent = shippingOption;
+  document.getElementById('shippingCost').textContent = shippingCost.toFixed(2);
+  totalWithOptionsEl.textContent = newTotal.toFixed(2);
+}
       const tieneCustom = {{ 'true' if tiene_custom else 'false' }};
 
       function validateDeliveryOptions() {
-        if (!deliveryOption.checked && !pickupOption.checked) {
+        if (!deliveryOption.checked && !otherDayOption.checked) {
           if (urgentOption.checked) {
-            alert('Elige servicio a domicilio o punto de entrega');
+            alert('Selecciona una opción de entrega');
           } else {
             alert('Selecciona una opción de entrega');
           }
@@ -928,7 +929,7 @@
       }
       
       function canAutoSend() {
-        if (!deliveryOption.checked && !pickupOption.checked) {
+        if (!deliveryOption.checked && !otherDayOption.checked) {
           return false;
         }
         return true;
@@ -953,23 +954,23 @@
        toggleCardSelection(urgentCard, urgentOption.checked);
       });
 
-      deliveryOption.addEventListener('change', function() {
-       updateTotalWithOptions();
-       if (deliveryOption.checked) {
-      deliveryCard.classList.add('selected');
-      pickupCard.classList.remove('selected');
-       }
-      });
-
-      pickupOption.addEventListener('change', function() {
+     deliveryOption.addEventListener('change', function() {
   updateTotalWithOptions();
 
-  if (pickupOption.checked) {
-    pickupCard.classList.add('selected');
-    deliveryCard.classList.remove('selected');
+  if (deliveryOption.checked) {
+    deliveryCard.classList.add('selected');
+    otherDayCard.classList.remove('selected');
   }
 });
 
+otherDayOption.addEventListener('change', function() {
+  updateTotalWithOptions();
+
+  if (otherDayOption.checked) {
+    otherDayCard.classList.add('selected');
+    deliveryCard.classList.remove('selected');
+  }
+});
        function toggleCardSelection(card, isSelected) {
         if (isSelected) {
           card.classList.add('selected');
@@ -981,7 +982,7 @@
       updateTotalWithOptions();
       toggleCardSelection(urgentCard, urgentOption.checked);
       toggleCardSelection(deliveryCard, deliveryOption.checked);
-      toggleCardSelection(pickupCard, pickupOption.checked);
+      
 
       document.querySelectorAll('.remove-button').forEach(button => {
         button.addEventListener('click', function(event) {
@@ -999,7 +1000,6 @@
 
       toggleCardSelection(urgentCard, urgentOption.checked);
       toggleCardSelection(deliveryCard, deliveryOption.checked);
-      toggleCardSelection(pickupCard, pickupOption.checked);
       updateTotalWithOptions();
   
     </script>
