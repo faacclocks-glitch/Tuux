@@ -415,6 +415,7 @@ def confirmar_pedido():
     
     # Validar opciones enviadas desde el formulario
     delivery_type = request.form.get('delivery_type')
+    delivery_cp = request.form.get('delivery_cp', '').strip()
 
     delivery_selected = delivery_type == 'delivery'
     other_day_selected = delivery_type == 'other_day'
