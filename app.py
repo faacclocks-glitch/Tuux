@@ -473,6 +473,9 @@ def confirmar_pedido():
         )
 
         print("📍 DISTANCIA OPERATIVA:", distance_km, "km")
+
+        distance_cost = calculate_urgent_distance_cost(distance_km)
+        print("💰 COSTO POR DISTANCIA:", distance_cost)
     
     total_a_pagar = total + shipping_cost
 
