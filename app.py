@@ -464,8 +464,8 @@ def confirmar_pedido():
     elif other_day_selected:
         shipping_cost = 50
     elif urgent_selected:
-    origin_cps = get_origin_cps_from_cart(items)
-    print("📍 CPs DE ORIGEN:", origin_cps)
+        origin_cps = get_origin_cps_from_cart(items)
+        print("📍 CPs DE ORIGEN:", origin_cps)
     
     total_a_pagar = total + shipping_cost
 
