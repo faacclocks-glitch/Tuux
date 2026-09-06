@@ -811,30 +811,38 @@
 </div>
 
         <div class="card-grid">
-          <label class="option-card" for="urgentOption" id="urgentCard">
-            <input type="checkbox" name="urgent" value="1" id="urgentOption">
-            <span class="icon">⚡</span>
-            <div class="title">Entrega urgente</div>
-            <div class="description">Recíbelo en 24-48 horas. Ideal para aquello que necesitas de inmediato.</div>
-            <div class="price">+ $50</div>
-          </label>
 
-          <label class="option-card" for="deliveryOption" id="deliveryCard">
-            <input type="radio" name="delivery_type" value="delivery" id="deliveryOption">
-            <span class="icon">🏍️</span>
-            <div class="title">Entrega a domicilio</div>
-            <div class="description">Te llevamos tu pedido directo hasta la puerta. Comodidad total.</div>
-            <div class="price">+ $50 aprox</div>
-          </label>
+  <label class="option-card" for="deliveryOption" id="deliveryCard">
+    <input type="radio" name="delivery_type" value="delivery" id="deliveryOption">
+    <span class="icon">📅</span>
+    <div class="title">Entrega programada</div>
+    <div class="description">
+      Recibe tu pedido el viernes. Los pedidos se consolidan para realizar una sola ruta.
+    </div>
+    <div class="price">$35</div>
+  </label>
 
-          <label class="option-card" for="pickupOption" id="pickupCard">
-            <input type="radio" name="delivery_type" value="pickup" id="pickupOption">
-            <span class="icon">📍</span>
-            <div class="title">Punto de entrega</div>
-            <div class="description">Recoge tu pedido en el punto más cercano sin costo extra.</div>
-            <div class="price">Incluido</div>
-          </label>
-        </div>
+  <label class="option-card" for="otherDayOption" id="otherDayCard">
+    <input type="radio" name="delivery_type" value="other_day" id="otherDayOption">
+    <span class="icon">🚚</span>
+    <div class="title">Entrega otro día</div>
+    <div class="description">
+      Solicita tu entrega fuera de la ruta programada.
+    </div>
+    <div class="price">$50</div>
+  </label>
+
+  <label class="option-card" for="urgentOption" id="urgentCard">
+    <input type="checkbox" name="urgent" value="1" id="urgentOption">
+    <span class="icon">⚡</span>
+    <div class="title">Entrega urgente</div>
+    <div class="description">
+      Tu pedido tendrá prioridad.
+    </div>
+    <div class="price">+$50</div>
+  </label>
+
+</div>
 
         <div class="price-summary">
   <p>
