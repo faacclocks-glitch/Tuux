@@ -485,6 +485,50 @@ def confirmar_pedido():
     
     total_a_pagar = total + shipping_cost
 
+        # ==========================================
+    # 5B.2 — Persistir pedido antes de WhatsApp
+    # ==========================================
+    market_request = session.get('market_request', {}) or {}
+    username = session.get('username') or market_request.get('celular') or 'anonimo'
+
+    destination_context = proyecto.get_destination_context(delivery_cp)
+
+    if destination_context.get('context') == 'MUNICIPIOS_CALKINI':
+        shipping_initial = 50
+        logistics_status = 'PENDING_ASSESSMENT'
+    else:
+        shipping_initial = shipping_cost
+        logistics_status = 'NOT_APPLICABLE'
+
+    with proyecto._connect() as conn:
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            INSERT INTO pedidos (
+                username,
+                total,
+                created_at,
+                destination_context,
+                delivery_cp,
+                shipping_initial,
+                logistics_status
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            username,
+            total_a_pagar,
+            datetime.datetime.now().isoformat(),
+            destination_context.get('context'),
+            delivery_cp,
+            shipping_initial,
+            logistics_status
+        ))
+
+        pedido_id = cursor.lastrowid
+
+    print("🧾 PEDIDO PERSISTIDO:", pedido_id)
+    print("🔥 5B.2 EJECUTADO CORRECTAMENTE")
+
     # Agrupar items por tienda y dirección
     tiendas_dict = {}
     for item in items:
