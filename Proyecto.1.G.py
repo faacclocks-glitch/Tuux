@@ -252,7 +252,14 @@ def init_db(db_path=None):
             precio REAL, presentacion TEXT, imagen TEXT, FOREIGN KEY(tienda_id) REFERENCES tiendas(id)
         )''')
         c.execute('''CREATE TABLE IF NOT EXISTS pedidos (
-            id INTEGER PRIMARY KEY, username TEXT, total REAL, created_at TEXT
+            id INTEGER PRIMARY KEY,
+            username TEXT,
+            total REAL,
+            created_at TEXT,
+            destination_context TEXT,
+            delivery_cp TEXT,
+            shipping_initial REAL,
+            logistics_status TEXT
         )''')
         c.execute('''CREATE TABLE IF NOT EXISTS pedido_items (
             id INTEGER PRIMARY KEY, pedido_id INTEGER, producto_id INTEGER,
