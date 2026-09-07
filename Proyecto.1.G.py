@@ -275,6 +275,26 @@ def init_db(db_path=None):
         if 'username' not in existing_pedidos:
             conn.execute('ALTER TABLE pedidos ADD COLUMN username TEXT')
 
+        if 'destination_context' not in existing_pedidos:
+            conn.execute(
+                'ALTER TABLE pedidos ADD COLUMN destination_context TEXT'
+            )
+
+        if 'delivery_cp' not in existing_pedidos:
+            conn.execute(
+                'ALTER TABLE pedidos ADD COLUMN delivery_cp TEXT'
+            )
+
+        if 'shipping_initial' not in existing_pedidos:
+            conn.execute(
+                'ALTER TABLE pedidos ADD COLUMN shipping_initial REAL'
+            )
+
+        if 'logistics_status' not in existing_pedidos:
+            conn.execute(
+                'ALTER TABLE pedidos ADD COLUMN logistics_status TEXT'
+            )
+
 
 def existe_mercado(db_path=None) -> bool:
     with _connect(db_path) as conn:
