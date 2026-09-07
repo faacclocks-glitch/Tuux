@@ -249,7 +249,7 @@ def init_db(db_path=None):
         
         c.execute('''CREATE TABLE IF NOT EXISTS productos (
             id INTEGER PRIMARY KEY, tienda_id INTEGER, nombre TEXT, unidades INTEGER,
-            precio REAL, presentacion TEXT, imagen TEXT, FOREIGN KEY(tienda_id) REFERENCES tiendas(id)
+            precio REAL, presentacion TEXT, imagen TEXT, FOREIGN KEY(tienda_id) REFERENCES tiendas(id), logistics_size TEXT
         )''')
         c.execute('''CREATE TABLE IF NOT EXISTS pedidos (
             id INTEGER PRIMARY KEY,
@@ -269,6 +269,9 @@ def init_db(db_path=None):
         existing_product_columns = [row[1] for row in c.execute('PRAGMA table_info(productos)')]
         if 'vendedor_username' not in existing_product_columns:
             c.execute('ALTER TABLE productos ADD COLUMN vendedor_username TEXT')
+
+        if 'logistics_size' not in existing_product_columns:
+            c.execute('ALTER TABLE productos ADD COLUMN logistics_size TEXT')
         
         # Validación de la columna username
         existing_pedidos = [row[1] for row in conn.execute('PRAGMA table_info(pedidos)')]
