@@ -203,6 +203,45 @@ def calculate_store_switch_fee(cart):
 
 BASE_CP_TUUX = "97314"
 
+# ==========================================
+# CONTEXTO DE DESTINO
+# ==========================================
+
+DESTINATION_CONTEXTS = {
+    "LOCAL_MERIDA": {
+        "cps": {"97000", "97314"},
+    },
+    "MUNICIPIOS_CALKINI": {
+        "cps": {"24900"},
+    },
+}
+
+
+def get_destination_context(delivery_cp):
+    """
+    Identifica el contexto operativo a partir del código postal
+    de destino.
+    """
+    cp = normalize_cp(delivery_cp)
+
+    if not cp:
+        return {
+            "context": "UNSUPPORTED",
+            "delivery_cp": None,
+        }
+
+    for context_name, context_data in DESTINATION_CONTEXTS.items():
+        if cp in context_data["cps"]:
+            return {
+                "context": context_name,
+                "delivery_cp": cp,
+            }
+
+    return {
+        "context": "UNSUPPORTED",
+        "delivery_cp": cp,
+    }
+
 # Distancias estimadas entre códigos postales.
 # Se irán ampliando conforme validemos operaciones reales.
 CP_DISTANCES_KM = {
