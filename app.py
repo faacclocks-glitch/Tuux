@@ -565,8 +565,44 @@ def confirmar_pedido():
 
         pedido_id = cursor.lastrowid
 
+        # ==========================================
+        # 5B.3 — Persistir productos del pedido
+        # ==========================================
+        for item in items:
+            if item.get('custom'):
+                continue
+
+            producto_id = item.get('product_id')
+            unidades = item.get('cantidad', 0)
+
+            producto_data = item.get('producto')
+
+            if isinstance(producto_data, dict):
+                precio = producto_data.get('precio', 0)
+            else:
+                precio = getattr(producto_data, 'precio', 0)
+
+            if not producto_id or unidades <= 0:
+                continue
+
+            cursor.execute('''
+                INSERT INTO pedido_items (
+                    pedido_id,
+                    producto_id,
+                    unidades,
+                    precio
+                )
+                VALUES (?, ?, ?, ?)
+            ''', (
+                pedido_id,
+                producto_id,
+                unidades,
+                precio
+            ))
+
     print("🧾 PEDIDO PERSISTIDO:", pedido_id)
-    print("🔥 5B.2 EJECUTADO CORRECTAMENTE")
+    print("📦 ITEMS DEL PEDIDO PERSISTIDOS")
+    print("🔥 5B.3 EJECUTADO CORRECTAMENTE")
 
     # Agrupar items por tienda y dirección
     tiendas_dict = {}
