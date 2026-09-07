@@ -249,7 +249,8 @@ def init_db(db_path=None):
         
         c.execute('''CREATE TABLE IF NOT EXISTS productos (
             id INTEGER PRIMARY KEY, tienda_id INTEGER, nombre TEXT, unidades INTEGER,
-            precio REAL, presentacion TEXT, imagen TEXT, FOREIGN KEY(tienda_id) REFERENCES tiendas(id), logistics_size TEXT
+            precio REAL, presentacion TEXT, imagen TEXT, logistics_size TEXT,
+            FOREIGN KEY(tienda_id) REFERENCES tiendas(id)
         )''')
         c.execute('''CREATE TABLE IF NOT EXISTS pedidos (
             id INTEGER PRIMARY KEY,
