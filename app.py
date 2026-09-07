@@ -491,8 +491,8 @@ def confirmar_pedido():
     market_request = session.get('market_request', {}) or {}
     username = session.get('username') or market_request.get('celular') or 'anonimo'
 
-    destination_context = proyecto.get_destination_context(delivery_cp)
-
+    destination_context = get_destination_context(delivery_cp)
+    
     if destination_context.get('context') == 'MUNICIPIOS_CALKINI':
         shipping_initial = 50
         logistics_status = 'PENDING_ASSESSMENT'
