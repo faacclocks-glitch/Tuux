@@ -295,6 +295,58 @@ def determine_required_calkini_space(order_items):
         "assessment": assessment,
     }
 
+def estimate_calkini_packed_space(order_items):
+    """
+    Estima el espacio físico requerido para un pedido Calkiní
+    considerando compactación básica.
+
+    Esta primera versión usa reglas de capacidad validadas
+    con operaciones reales de TU'UX.
+    """
+
+    counts = {
+        "CHICO": 0,
+        "MEDIANO": 0,
+        "GRANDE": 0,
+        "SIN_CLASIFICAR": 0,
+    }
+
+    for item in order_items:
+        unidades = int(item.get("unidades", 0) or 0)
+        logistics_size = (item.get("logistics_size") or "").strip().upper()
+
+        if logistics_size not in counts:
+            counts["SIN_CLASIFICAR"] += unidades
+            continue
+
+        counts[logistics_size] += unidades
+
+    if counts["SIN_CLASIFICAR"] > 0:
+        return {
+            "required_space": None,
+            "reason": "SIN_CLASIFICAR",
+            "counts": counts,
+        }
+
+    # Un espacio MEDIANO puede contener varias presentaciones CHICO
+    if counts["GRANDE"] > 0:
+        required_space = "GRANDE"
+    elif counts["MEDIANO"] > 0:
+        required_space = "MEDIANO"
+    elif counts["CHICO"] > 0:
+        if counts["CHICO"] <= 8:
+            required_space = "MEDIANO"
+        else:
+            required_space = "GRANDE"
+    else:
+        required_space = None
+
+    return {
+        "required_space": required_space,
+        "reason": "COMPACTACION_BASICA",
+        "counts": counts,
+    }
+
 
 def get_destination_context(delivery_cp):
     """
