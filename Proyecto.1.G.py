@@ -260,7 +260,10 @@ def init_db(db_path=None):
             destination_context TEXT,
             delivery_cp TEXT,
             shipping_initial REAL,
-            logistics_status TEXT
+            logistics_status TEXT,
+            logistics_estimated_space TEXT,
+            logistics_actual_space TEXT,
+            logistics_assessment TEXT
         )''')
         c.execute('''CREATE TABLE IF NOT EXISTS pedido_items (
             id INTEGER PRIMARY KEY, pedido_id INTEGER, producto_id INTEGER,
@@ -297,6 +300,21 @@ def init_db(db_path=None):
         if 'logistics_status' not in existing_pedidos:
             conn.execute(
                 'ALTER TABLE pedidos ADD COLUMN logistics_status TEXT'
+            )
+
+        if 'logistics_estimated_space' not in existing_pedidos:
+            conn.execute(
+                'ALTER TABLE pedidos ADD COLUMN logistics_estimated_space TEXT'
+            )
+
+        if 'logistics_actual_space' not in existing_pedidos:
+            conn.execute(
+                'ALTER TABLE pedidos ADD COLUMN logistics_actual_space TEXT'
+            )
+
+        if 'logistics_assessment' not in existing_pedidos:
+            conn.execute(
+                'ALTER TABLE pedidos ADD COLUMN logistics_assessment TEXT'
             )
 
 
