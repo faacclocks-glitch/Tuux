@@ -216,6 +216,61 @@ DESTINATION_CONTEXTS = {
     },
 }
 
+# ==========================================
+# 5B.5D — EVALUACIÓN DE ESPACIO CALKINÍ
+# ==========================================
+
+LOGISTICS_SIZE_ORDER = {
+    "CHICO": 1,
+    "MEDIANO": 2,
+    "GRANDE": 3,
+}
+
+
+def assess_calkini_order_space(order_items):
+    """
+    Resume la composición logística de un pedido
+    para su posterior evaluación física en Calkiní.
+
+    No calcula todavía el precio del taxi ni convierte
+    automáticamente unidades entre tamaños.
+    """
+
+    counts = {
+        "CHICO": 0,
+        "MEDIANO": 0,
+        "GRANDE": 0,
+        "SIN_CLASIFICAR": 0,
+    }
+
+    max_size = None
+
+    for item in order_items:
+        unidades = int(item.get("unidades", 0) or 0)
+        logistics_size = (item.get("logistics_size") or "").strip().upper()
+
+        if logistics_size not in LOGISTICS_SIZE_ORDER:
+            counts["SIN_CLASIFICAR"] += unidades
+            continue
+
+        counts[logistics_size] += unidades
+
+        if (
+            max_size is None
+            or LOGISTICS_SIZE_ORDER[logistics_size]
+            > LOGISTICS_SIZE_ORDER[max_size]
+        ):
+            max_size = logistics_size
+
+    return {
+        "counts": counts,
+        "max_size": max_size,
+        "total_unidades": sum(counts.values()),
+        "requires_manual_assessment": (
+            counts["SIN_CLASIFICAR"] > 0
+        ),
+    }
+
 
 def get_destination_context(delivery_cp):
     """
