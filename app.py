@@ -595,7 +595,7 @@ def confirmar_pedido():
                     precio,
                     logistics_size
                 )
-                VALUES (?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?)
             ''', (
                 pedido_id,
                 producto_id,
