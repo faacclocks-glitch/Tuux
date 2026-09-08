@@ -1050,6 +1050,49 @@ def admin_pedidos_calkini():
     if not pedidos:
         html += '<p>No hay pedidos Calkiní registrados.</p>'
 
+        # ==========================================
+    # 5B.5D-3B.3 — RESUMEN DE APRENDIZAJE
+    # ==========================================
+
+    total_pedidos = len(pedidos)
+    pedidos_evaluados = 0
+    correctos = 0
+    diferencias = 0
+
+    for pedido in pedidos:
+        estimated = (pedido['logistics_estimated_space'] or '').strip().upper()
+        actual = (pedido['logistics_actual_space'] or '').strip().upper()
+
+        if actual in ('CHICO', 'MEDIANO', 'GRANDE'):
+            pedidos_evaluados += 1
+
+            if estimated == actual:
+                correctos += 1
+            else:
+                diferencias += 1
+
+    html += f'''
+    <div class="pedido">
+        <h2>📊 Resumen de aprendizaje</h2>
+
+        <div class="dato">
+            <strong>Pedidos Calkiní:</strong> {total_pedidos}
+        </div>
+
+        <div class="dato">
+            <strong>Pedidos evaluados:</strong> {pedidos_evaluados}
+        </div>
+
+        <div class="dato">
+            <strong>Estimaciones correctas:</strong> {correctos}
+        </div>
+
+        <div class="dato">
+            <strong>Diferencias:</strong> {diferencias}
+        </div>
+    </div>
+    '''
+
     for pedido in pedidos:
 
         pedido_id = pedido['id']
