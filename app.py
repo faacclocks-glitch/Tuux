@@ -618,27 +618,27 @@ def confirmar_pedido():
         shipping_initial = shipping_cost
         logistics_status = 'NOT_APPLICABLE'
 
-        logistics_estimated_space = None
-        logistics_assessment = None
+    logistics_estimated_space = None
+    logistics_assessment = None
 
-        if destination_context.get('context') == 'MUNICIPIOS_CALKINI':
-            logistics_items = []
+    if destination_context.get('context') == 'MUNICIPIOS_CALKINI':
+        logistics_items = []
 
-            for item in items:
-                if item.get('custom'):
-                    continue
+        for item in items:
+            if item.get('custom'):
+                continue
 
-                producto_data = item.get('producto')
+            producto_data = item.get('producto')
 
-                if isinstance(producto_data, dict):
-                    logistics_size = producto_data.get('logistics_size')
-                else:
-                    logistics_size = getattr(producto_data, 'logistics_size', None)
+            if isinstance(producto_data, dict):
+                logistics_size = producto_data.get('logistics_size')
+            else:
+                logistics_size = getattr(producto_data, 'logistics_size', None)
 
-                logistics_items.append({
-                    'unidades': item.get('cantidad', 0),
-                    'logistics_size': logistics_size
-                })
+            logistics_items.append({
+                'unidades': item.get('cantidad', 0),
+                'logistics_size': logistics_size
+            })
 
         logistics_result = determine_required_calkini_space(logistics_items)
 
