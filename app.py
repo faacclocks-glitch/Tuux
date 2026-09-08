@@ -1562,7 +1562,8 @@ def add_to_cart(store_id, product_id):
                 'precio': producto['precio'],
                 'presentacion': producto['presentacion'],
                 'imagen': producto['imagen'],
-                'unidades': producto['unidades']
+                'unidades': producto['unidades'],
+                'logistics_size': producto['logistics_size']
             }
         })
 
