@@ -1005,7 +1005,7 @@ def agregar_producto_proveedor():
             producto,
             tienda_id,
             vendedor_username,
-            precio_proveedor
+            precio_proveedor,
             logistics_size
         )
 
