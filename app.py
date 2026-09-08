@@ -579,8 +579,10 @@ def confirmar_pedido():
 
             if isinstance(producto_data, dict):
                 precio = producto_data.get('precio', 0)
+                logistics_size = producto_data.get('logistics_size')
             else:
                 precio = getattr(producto_data, 'precio', 0)
+                logistics_size = getattr(producto_data, 'logistics_size', None)
 
             if not producto_id or unidades <= 0:
                 continue
@@ -590,14 +592,16 @@ def confirmar_pedido():
                     pedido_id,
                     producto_id,
                     unidades,
-                    precio
+                    precio,
+                    logistics_size
                 )
                 VALUES (?, ?, ?, ?)
             ''', (
                 pedido_id,
                 producto_id,
                 unidades,
-                precio
+                precio,
+                logistics_size
             ))
 
     print("🧾 PEDIDO PERSISTIDO:", pedido_id)
