@@ -1088,13 +1088,19 @@ def admin_pedidos_calkini():
         '''
 
         if actual != 'PENDIENTE':
-            html += f'''
-            <div class="comparacion">
-                📊 Comparación:
-                <strong>Estimado {estimated}</strong>
-                → <strong>Real {actual}</strong>
-            </div>
-            '''
+            if estimated == actual:
+                resultado = '✅ CORRECTO'
+            else:
+                resultado = '⚠️ DIFERENCIA'
+                html += f'''
+                <div class="comparacion">
+                    📊 Comparación:
+                    <strong>Estimado {estimated}</strong>
+                    → <strong>Real {actual}</strong>
+                    <br>
+                    <strong>{resultado}</strong>
+                </div>
+                '''
 
         html += f'''
             <form method="POST">
