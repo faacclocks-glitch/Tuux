@@ -298,10 +298,15 @@ def determine_required_calkini_space(order_items):
 def estimate_calkini_packed_space(order_items):
     """
     Estima el espacio físico requerido para un pedido Calkiní
-    considerando compactación básica.
+    usando las capacidades de compactación validadas físicamente
+    por TU'UX.
 
-    Esta primera versión usa reglas de capacidad validadas
-    con operaciones reales de TU'UX.
+    Reglas actuales:
+    - 1 a 16 CHICO -> MEDIANO
+    - 17 o más CHICO -> GRANDE
+    - 1 MEDIANO + hasta 8 CHICO -> MEDIANO
+    - 2 o más MEDIANO -> GRANDE
+    - Cualquier GRANDE -> GRANDE
     """
 
     counts = {
@@ -328,22 +333,30 @@ def estimate_calkini_packed_space(order_items):
             "counts": counts,
         }
 
-    # Un espacio MEDIANO puede contener varias presentaciones CHICO
     if counts["GRANDE"] > 0:
         required_space = "GRANDE"
-    elif counts["MEDIANO"] > 0:
-        required_space = "MEDIANO"
-    elif counts["CHICO"] > 0:
+
+    elif counts["MEDIANO"] >= 2:
+        required_space = "GRANDE"
+
+    elif counts["MEDIANO"] == 1:
         if counts["CHICO"] <= 8:
             required_space = "MEDIANO"
         else:
             required_space = "GRANDE"
+
+    elif counts["CHICO"] > 0:
+        if counts["CHICO"] <= 16:
+            required_space = "MEDIANO"
+        else:
+            required_space = "GRANDE"
+
     else:
         required_space = None
 
     return {
         "required_space": required_space,
-        "reason": "COMPACTACION_BASICA",
+        "reason": "COMPACTACION_VALIDADA",
         "counts": counts,
     }
 
