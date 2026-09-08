@@ -1462,7 +1462,8 @@ def add_to_cart(store_id, product_id):
                 unidades,
                 precio,
                 presentacion,
-                imagen
+                imagen,
+                logistics_size
             FROM productos
             WHERE id = ?
               AND tienda_id = ?
