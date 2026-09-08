@@ -908,6 +908,234 @@ def confirmar_pedido():
 
     return redirect(url)
 
+# ==========================================
+# 5B.5D-3B — REGISTRO DE ESPACIO REAL CALKINÍ
+# ==========================================
+
+@app.route('/admin/pedidos-calkini', methods=['GET', 'POST'])
+def admin_pedidos_calkini():
+
+    if not session.get('username'):
+        return redirect(url_for('login'))
+
+    # Guardar espacio físico real después de preparar el pedido
+    if request.method == 'POST':
+
+        pedido_id = request.form.get('pedido_id', '').strip()
+        actual_space = request.form.get('actual_space', '').strip().upper()
+
+        if actual_space not in ('CHICO', 'MEDIANO', 'GRANDE'):
+            flash('Selecciona un espacio físico válido.')
+            return redirect(url_for('admin_pedidos_calkini'))
+
+        try:
+            pedido_id = int(pedido_id)
+        except ValueError:
+            flash('Pedido no válido.')
+            return redirect(url_for('admin_pedidos_calkini'))
+
+        try:
+            with proyecto._connect() as conn:
+                cursor = conn.cursor()
+
+                cursor.execute('''
+                    UPDATE pedidos
+                    SET
+                        logistics_actual_space = ?,
+                        logistics_status = 'ASSESSED'
+                    WHERE id = ?
+                      AND destination_context = 'MUNICIPIOS_CALKINI'
+                ''', (
+                    actual_space,
+                    pedido_id
+                ))
+
+                if cursor.rowcount == 0:
+                    flash('No se encontró el pedido Calkiní.')
+                    return redirect(url_for('admin_pedidos_calkini'))
+
+            flash(f'✅ Pedido #{pedido_id}: espacio real registrado como {actual_space}.')
+
+        except Exception as e:
+            print('ERROR REGISTRANDO ESPACIO REAL CALKINÍ:', e)
+            flash('Ocurrió un error al registrar el espacio real.')
+
+        return redirect(url_for('admin_pedidos_calkini'))
+
+    # Consultar pedidos Calkiní
+    try:
+        with proyecto._connect() as conn:
+            cursor = conn.cursor()
+
+            cursor.execute('''
+                SELECT
+                    id,
+                    created_at,
+                    total,
+                    shipping_initial,
+                    logistics_status,
+                    logistics_estimated_space,
+                    logistics_actual_space
+                FROM pedidos
+                WHERE destination_context = 'MUNICIPIOS_CALKINI'
+                ORDER BY id DESC
+            ''')
+
+            pedidos = cursor.fetchall()
+
+    except Exception as e:
+        print('ERROR CARGANDO PEDIDOS CALKINÍ:', e)
+        pedidos = []
+        flash('No fue posible cargar los pedidos.')
+
+    html = '''
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Pedidos Calkiní — Tu'ux</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                background: #f5f5f5;
+            }
+
+            h1 {
+                margin-bottom: 10px;
+            }
+
+            .pedido {
+                background: white;
+                padding: 18px;
+                margin-bottom: 15px;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0,0,0,.08);
+            }
+
+            .dato {
+                margin: 5px 0;
+            }
+
+            .estado {
+                font-weight: bold;
+            }
+
+            select, button {
+                padding: 10px;
+                margin-top: 8px;
+                font-size: 16px;
+            }
+
+            button {
+                cursor: pointer;
+            }
+
+            .comparacion {
+                margin-top: 10px;
+                padding: 8px;
+                background: #f0f0f0;
+                border-radius: 6px;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <h1>📦 Pedidos Calkiní</h1>
+        <p>Registro interno del espacio físico utilizado.</p>
+    '''
+
+    if not pedidos:
+        html += '<p>No hay pedidos Calkiní registrados.</p>'
+
+    for pedido in pedidos:
+
+        pedido_id = pedido['id']
+        estimated = pedido['logistics_estimated_space'] or 'SIN ESTIMAR'
+        actual = pedido['logistics_actual_space'] or 'PENDIENTE'
+        status = pedido['logistics_status'] or 'SIN ESTADO'
+
+        html += f'''
+        <div class="pedido">
+
+            <h2>Pedido #{pedido_id}</h2>
+
+            <div class="dato">
+                <strong>Fecha:</strong> {pedido['created_at']}
+            </div>
+
+            <div class="dato">
+                <strong>Total:</strong> ${pedido['total']:.2f}
+            </div>
+
+            <div class="dato">
+                <strong>Envío inicial:</strong> ${pedido['shipping_initial']:.2f}
+            </div>
+
+            <div class="dato">
+                <strong>Estimación:</strong> {estimated}
+            </div>
+
+            <div class="dato">
+                <strong>Espacio real:</strong> {actual}
+            </div>
+
+            <div class="dato estado">
+                Estado: {status}
+            </div>
+        '''
+
+        if actual != 'PENDIENTE':
+            html += f'''
+            <div class="comparacion">
+                📊 Comparación:
+                <strong>Estimado {estimated}</strong>
+                → <strong>Real {actual}</strong>
+            </div>
+            '''
+
+        html += f'''
+            <form method="POST">
+
+                <input
+                    type="hidden"
+                    name="pedido_id"
+                    value="{pedido_id}"
+                >
+
+                <label>
+                    <strong>Registrar espacio real:</strong>
+                </label>
+
+                <br>
+
+                <select name="actual_space" required>
+                    <option value="">Seleccionar...</option>
+                    <option value="CHICO">CHICO</option>
+                    <option value="MEDIANO">MEDIANO</option>
+                    <option value="GRANDE">GRANDE</option>
+                </select>
+
+                <br>
+
+                <button type="submit">
+                    Guardar espacio real
+                </button>
+
+            </form>
+
+        </div>
+        '''
+
+    html += '''
+    </body>
+    </html>
+    '''
+
+    return html
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
