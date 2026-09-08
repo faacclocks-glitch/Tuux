@@ -271,6 +271,30 @@ def assess_calkini_order_space(order_items):
         ),
     }
 
+def determine_required_calkini_space(order_items):
+    """
+    Determina el tamaño mínimo de espacio requerido
+    según el mayor tamaño logístico presente en el pedido.
+
+    No convierte unidades pequeñas en espacios mayores.
+    La compactación física se evaluará posteriormente.
+    """
+
+    assessment = assess_calkini_order_space(order_items)
+
+    if assessment["requires_manual_assessment"]:
+        return {
+            "required_space": None,
+            "reason": "SIN_CLASIFICAR",
+            "assessment": assessment,
+        }
+
+    return {
+        "required_space": assessment["max_size"],
+        "reason": "MAYOR_TAMANO_PRESENTE",
+        "assessment": assessment,
+    }
+
 
 def get_destination_context(delivery_cp):
     """
