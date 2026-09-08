@@ -906,8 +906,25 @@ def agregar_producto_proveedor():
     
     nombre = request.form.get('nombre', '').strip()
     presentacion = request.form.get('presentacion', '').strip()
+
+    <div class="form-group">
+        <label for="logistics_size">Tamaño logístico para Calkiní</label>
+
+        <select id="logistics_size" name="logistics_size">
+            <option value="">Sin clasificar</option>
+            <option value="CHICO">Chico</option>
+            <option value="MEDIANO">Mediano</option>
+            <option value="GRANDE">Grande</option>
+        </select>
+
+        <div class="help-text">
+            Se utilizará para evaluar el espacio físico del pedido en Calkiní.
+        </div>
+    </div>
+    
     precio = request.form.get('precio', '').strip()
     unidades = request.form.get('unidades', '').strip()
+    logistics_size = request.form.get('logistics_size', '').strip().upper()
 
     # Validar campos obligatorios
     if not tienda_id or not nombre or not presentacion or not precio or not unidades:
@@ -1005,6 +1022,7 @@ def agregar_producto_proveedor():
             tienda_id,
             vendedor_username,
             precio_proveedor
+            logistics_size
         )
 
         print(
