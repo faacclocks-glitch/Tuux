@@ -659,9 +659,11 @@ def confirmar_pedido():
                 destination_context,
                 delivery_cp,
                 shipping_initial,
-                logistics_status
+                logistics_status,
+                logistics_estimated_space,
+                logistics_assessment
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             username,
             total_a_pagar,
@@ -669,7 +671,9 @@ def confirmar_pedido():
             destination_context.get('context'),
             delivery_cp,
             shipping_initial,
-            logistics_status
+            logistics_status,
+            logistics_estimated_space,
+            logistics_assessment
         ))
 
         pedido_id = cursor.lastrowid
