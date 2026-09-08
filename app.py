@@ -1046,12 +1046,13 @@ def editar_producto_proveedor(producto_id):
         # Buscar únicamente un producto que pertenezca al vendedor
         cursor.execute('''
             SELECT
-                id,
-                nombre,
-                unidades,
-                precio,
-                presentacion,
-                imagen
+                id, 
+                nombre, 
+                unidades, 
+                precio, 
+                presentacion, 
+                imagen, 
+                logistics_size
             FROM productos
             WHERE id = ?
               AND vendedor_username = ?
@@ -1076,16 +1077,19 @@ def editar_producto_proveedor(producto_id):
                 SET nombre = ?,
                     presentacion = ?,
                     precio = ?,
-                    unidades = ?
+                    unidades = ?,
+                    logistics_size = ?
                 WHERE id = ?
-                  AND vendedor_username = ?
+                    AND vendedor_username = ?
             ''', (
                 nombre,
                 presentacion,
                 float(precio),
                 int(unidades),
+                logistics_size,
                 producto_id,
                 vendedor_username
+                
             ))
 
             conn.commit()
