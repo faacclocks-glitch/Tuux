@@ -317,6 +317,11 @@ def init_db(db_path=None):
                 'ALTER TABLE pedidos ADD COLUMN logistics_assessment TEXT'
             )
 
+        if 'calkini_locality' not in existing_pedidos:
+            conn.execute(
+                'ALTER TABLE pedidos ADD COLUMN calkini_locality TEXT'
+            )
+
 
 def existe_mercado(db_path=None) -> bool:
     with _connect(db_path) as conn:
