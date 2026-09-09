@@ -732,9 +732,11 @@ def confirmar_pedido():
                 shipping_initial,
                 logistics_status,
                 logistics_estimated_space,
-                logistics_assessment
+                logistics_assessment,
+                calkini_locality
+                
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             username,
             total_a_pagar,
@@ -745,6 +747,8 @@ def confirmar_pedido():
             logistics_status,
             logistics_estimated_space,
             logistics_assessment
+            request.form.get('calkini_locality', '').strip()
+           
         ))
 
         pedido_id = cursor.lastrowid
