@@ -735,6 +735,7 @@ def confirmar_pedido():
                 logistics_assessment,
                 calkini_locality
                 
+                
             )
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
@@ -746,7 +747,7 @@ def confirmar_pedido():
             shipping_initial,
             logistics_status,
             logistics_estimated_space,
-            logistics_assessment
+            logistics_assessment,
             request.form.get('calkini_locality', '').strip()
            
         ))
