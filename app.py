@@ -622,19 +622,72 @@ def confirmar_pedido():
     tiene_custom = any(item.get('custom') for item in cart)
     
     
-    # Validar opciones enviadas desde el formulario
-    delivery_type = request.form.get('delivery_type')
-    delivery_cp = request.form.get('delivery_cp', '').strip()
+# ==========================================
+# DESTINO DEL PEDIDO
+# ==========================================
 
-    print("📍 CP DESTINO RECIBIDO:", delivery_cp)
+destination_context_form = request.form.get(
+    'destination_context',
+    ''
+).strip().upper()
 
-    delivery_selected = delivery_type == 'delivery'
-    other_day_selected = delivery_type == 'other_day'
-    urgent_selected = delivery_type == 'urgent'
+delivery_cp = request.form.get(
+    'delivery_cp',
+    ''
+).strip()
 
-    if not delivery_selected and not other_day_selected and not urgent_selected:
-        flash('Selecciona una opción de entrega.')
+calkini_locality = request.form.get(
+    'calkini_locality',
+    ''
+).strip()
+
+print("🏠 DESTINO SELECCIONADO:", destination_context_form)
+print("📍 CP DESTINO RECIBIDO:", delivery_cp)
+print("📍 LOCALIDAD CALKINÍ:", calkini_locality)
+
+# Validar destino
+if destination_context_form not in (
+    'LOCAL_MERIDA',
+    'MUNICIPIOS_CALKINI'
+):
+    flash('Selecciona dónde quieres recibir tu pedido.')
+    return redirect(url_for('cart'))
+
+# Mérida:
+# usamos el CP que introdujo el cliente.
+if destination_context_form == 'LOCAL_MERIDA':
+
+    delivery_cp = normalize_cp(delivery_cp)
+
+    if not delivery_cp:
+        flash('Ingresa un código postal válido para Mérida.')
         return redirect(url_for('cart'))
+
+# Calkiní:
+# internamente usamos 24900 para activar el modelo
+# Mérida → Calkiní.
+elif destination_context_form == 'MUNICIPIOS_CALKINI':
+
+    if not calkini_locality:
+        flash('Selecciona tu localidad en Calkiní.')
+        return redirect(url_for('cart'))
+
+    delivery_cp = '24900'
+
+
+# ==========================================
+# OPCIÓN DE ENTREGA
+# ==========================================
+
+delivery_type = request.form.get('delivery_type')
+
+delivery_selected = delivery_type == 'delivery'
+other_day_selected = delivery_type == 'other_day'
+urgent_selected = delivery_type == 'urgent'
+
+if not delivery_selected and not other_day_selected and not urgent_selected:
+    flash('Selecciona una opción de entrega.')
+    return redirect(url_for('cart'))
 
     # Por ahora:
     # - Programada = $35
