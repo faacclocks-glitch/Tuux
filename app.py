@@ -1075,7 +1075,7 @@ def admin_pedidos_calkini():
             elif (
                 estimated in LOGISTICS_SIZE_ORDER
                 and actual in LOGISTICS_SIZE_ORDER
-            )
+            ):
                 diferencias += 1
 
                 if LOGISTICS_SIZE_ORDER[estimated] < LOGISTICS_SIZE_ORDER[actual]:
