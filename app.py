@@ -1130,8 +1130,7 @@ else:
 html += '''
     </div>
 '''
-    </div>
-    '''
+
 
     for pedido in pedidos:
 
