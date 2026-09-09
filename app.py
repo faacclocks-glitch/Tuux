@@ -1122,7 +1122,7 @@ def admin_pedidos_calkini():
             print('ERROR CARGANDO ITEMS PEDIDO CALKINÍ:', e)
             items_pedido = []
 
-        html += f'''
+                html += f'''
         <div class="pedido">
 
             <h2>Pedido #{pedido_id}</h2>
@@ -1147,7 +1147,8 @@ def admin_pedidos_calkini():
                         — {logistics_size}
                     </li>
             '''
-            html += f'''
+
+        html += f'''
                 </ul>
             </div>
 
