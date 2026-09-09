@@ -1064,6 +1064,7 @@ def admin_pedidos_calkini():
     precision_actual = 0
     pedidos_pendientes = 0
     transiciones = {}
+    resultados_tamano = {}
 
     for pedido in pedidos:
         estimated = (pedido['logistics_estimated_space'] or '').strip().upper()
@@ -1071,6 +1072,8 @@ def admin_pedidos_calkini():
         
         if actual in ('CHICO', 'MEDIANO', 'GRANDE'):
             pedidos_evaluados += 1
+            transicion = f"{estimated} → {actual}"
+            resultados_tamano[transicion] = resultados_tamano.get(transicion, 0) + 1
 
             if estimated == actual:
                 correctos += 1
