@@ -668,7 +668,7 @@ def confirmar_pedido():
     
     total_a_pagar = total + shipping_cost
 
-        # ==========================================
+    # ==========================================
     # 5B.2 — Persistir pedido antes de WhatsApp
     # ==========================================
     market_request = session.get('market_request', {}) or {}
@@ -1060,6 +1060,7 @@ def admin_pedidos_calkini():
     diferencias = 0
     subestimaciones = 0
     sobreestimaciones = 0
+    transiciones = {}
 
     for pedido in pedidos:
         estimated = (pedido['logistics_estimated_space'] or '').strip().upper()
