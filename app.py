@@ -1100,6 +1100,28 @@ def admin_pedidos_calkini():
         actual = pedido['logistics_actual_space'] or 'PENDIENTE'
         status = pedido['logistics_status'] or 'SIN ESTADO'
 
+                # Obtener productos del pedido para revisión interna
+        try:
+            with proyecto._connect() as conn_items:
+                cursor_items = conn_items.cursor()
+
+                cursor_items.execute('''
+                    SELECT
+                        pi.unidades,
+                        pi.precio,
+                        pi.logistics_size,
+                        p.nombre
+                    FROM pedido_items pi
+                    JOIN productos p ON p.id = pi.producto_id
+                    WHERE pi.pedido_id = ?
+                ''', (pedido_id,))
+
+                items_pedido = cursor_items.fetchall()
+
+        except Exception as e:
+            print('ERROR CARGANDO ITEMS PEDIDO CALKINÍ:', e)
+            items_pedido = []
+
         html += f'''
         <div class="pedido">
 
@@ -1107,6 +1129,26 @@ def admin_pedidos_calkini():
 
             <div class="dato">
                 <strong>Fecha:</strong> {pedido['created_at']}
+            </div>
+
+            <div class="dato">
+                <strong>Productos:</strong>
+                <ul>
+        '''
+
+        for item in items_pedido:
+            nombre = item['nombre'] or 'Producto'
+            unidades = item['unidades'] or 0
+            logistics_size = item['logistics_size'] or 'SIN CLASIFICAR'
+
+            html += f'''
+                    <li>
+                        {nombre} × {unidades}
+                        — {logistics_size}
+                    </li>
+            '''
+            html += f'''
+                </ul>
             </div>
 
             <div class="dato">
