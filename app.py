@@ -1097,8 +1097,9 @@ def admin_pedidos_calkini():
 
     if pedidos_evaluados > 0:
         precision_actual = (correctos / pedidos_evaluados) * 100
-        pedidos_pendientes = total_pedidos - pedidos_evaluados
 
+    pedidos_pendientes = total_pedidos - pedidos_evaluados
+    
     html += f'''
     <div class="pedido">
         <h2>📊 Resumen de aprendizaje</h2>
