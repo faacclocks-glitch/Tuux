@@ -1050,7 +1050,7 @@ def admin_pedidos_calkini():
     if not pedidos:
         html += '<p>No hay pedidos Calkiní registrados.</p>'
 
-        # ==========================================
+    # ==========================================
     # 5B.5D-3B.3 — RESUMEN DE APRENDIZAJE
     # ==========================================
 
@@ -1075,7 +1075,7 @@ def admin_pedidos_calkini():
             elif (
                 estimated in LOGISTICS_SIZE_ORDER
                 and actual in LOGISTICS_SIZE_ORDER
-            ):
+            )
                 diferencias += 1
 
                 if LOGISTICS_SIZE_ORDER[estimated] < LOGISTICS_SIZE_ORDER[actual]:
