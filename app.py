@@ -1058,18 +1058,29 @@ def admin_pedidos_calkini():
     pedidos_evaluados = 0
     correctos = 0
     diferencias = 0
+    subestimaciones = 0
+    sobreestimaciones = 0
 
     for pedido in pedidos:
         estimated = (pedido['logistics_estimated_space'] or '').strip().upper()
         actual = (pedido['logistics_actual_space'] or '').strip().upper()
-
+        
         if actual in ('CHICO', 'MEDIANO', 'GRANDE'):
             pedidos_evaluados += 1
 
             if estimated == actual:
                 correctos += 1
-            else:
+
+            elif (
+                estimated in LOGISTICS_SIZE_ORDER
+                and actual in LOGISTICS_SIZE_ORDER
+            ):
                 diferencias += 1
+
+                if LOGISTICS_SIZE_ORDER[estimated] < LOGISTICS_SIZE_ORDER[actual]:
+                    subestimaciones += 1
+                elif LOGISTICS_SIZE_ORDER[estimated] > LOGISTICS_SIZE_ORDER[actual]:
+                    sobreestimaciones += 1
 
     html += f'''
     <div class="pedido">
@@ -1088,7 +1099,11 @@ def admin_pedidos_calkini():
         </div>
 
         <div class="dato">
-            <strong>Diferencias:</strong> {diferencias}
+            <strong>Se quedó corto:</strong> {subestimaciones}
+        </div>
+
+        <div class="dato">
+            <strong>Se pasó:</strong> {sobreestimaciones}
         </div>
     </div>
     '''
