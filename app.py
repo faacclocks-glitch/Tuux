@@ -1089,7 +1089,7 @@ def admin_pedidos_calkini():
                     sobreestimaciones += 1
 
     if total_pedidos > 0:
-    cobertura_evaluacion = (pedidos_evaluados / total_pedidos) * 100
+        cobertura_evaluacion = (pedidos_evaluados / total_pedidos) * 100
 
     if pedidos_evaluados > 0:
         precision_actual = (correctos / pedidos_evaluados) * 100
