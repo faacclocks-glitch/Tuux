@@ -1109,6 +1109,27 @@ def admin_pedidos_calkini():
         <div class="dato">
             <strong>Se pasó:</strong> {sobreestimaciones}
         </div>
+
+        <div class="dato">
+            <strong>Detalle de diferencias:</strong>
+        </div>
+'''
+if transiciones:
+    for transicion, cantidad in sorted(transiciones.items()):
+        html += f'''
+        <div class="dato">
+            {transicion}: <strong>{cantidad}</strong>
+        </div>
+        '''
+else:
+    html += '''
+    <div class="dato">
+        Ninguna todavía.
+    </div>
+    '''
+html += '''
+    </div>
+'''
     </div>
     '''
 
