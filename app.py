@@ -1100,7 +1100,7 @@ def admin_pedidos_calkini():
         actual = pedido['logistics_actual_space'] or 'PENDIENTE'
         status = pedido['logistics_status'] or 'SIN ESTADO'
 
-                # Obtener productos del pedido para revisión interna
+        # Obtener productos del pedido para revisión interna
         try:
             with proyecto._connect() as conn_items:
                 cursor_items = conn_items.cursor()
@@ -1122,7 +1122,7 @@ def admin_pedidos_calkini():
             print('ERROR CARGANDO ITEMS PEDIDO CALKINÍ:', e)
             items_pedido = []
 
-                html += f'''
+        html += f'''
         <div class="pedido">
 
             <h2>Pedido #{pedido_id}</h2>
