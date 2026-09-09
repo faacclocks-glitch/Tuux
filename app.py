@@ -1114,22 +1114,22 @@ def admin_pedidos_calkini():
             <strong>Detalle de diferencias:</strong>
         </div>
 '''
-if transiciones:
-    for transicion, cantidad in sorted(transiciones.items()):
-        html += f'''
+    if transiciones:
+        for transicion, cantidad in sorted(transiciones.items()):
+            html += f'''
+            <div class="dato">
+                {transicion}: <strong>{cantidad}</strong>
+            </div>
+            '''
+    else:
+        html += '''
         <div class="dato">
-            {transicion}: <strong>{cantidad}</strong>
+            Ninguna todavía.
         </div>
         '''
-else:
     html += '''
-    <div class="dato">
-        Ninguna todavía.
-    </div>
+        </div>
     '''
-html += '''
-    </div>
-'''
 
 
     for pedido in pedidos:
