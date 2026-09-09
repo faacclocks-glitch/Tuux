@@ -1178,8 +1178,8 @@ def admin_pedidos_calkini():
                 resultado = '✅ CORRECTO'
             else:
                 resultado = '⚠️ DIFERENCIA'
-                html += f'''
-                <div class="comparacion">
+            html += f'''
+            <div class="comparacion">
                     📊 Comparación:
                     <strong>Estimado {estimated}</strong>
                     → <strong>Real {actual}</strong>
