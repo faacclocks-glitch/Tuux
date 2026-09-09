@@ -625,6 +625,7 @@ def confirmar_pedido():
     # Validar opciones enviadas desde el formulario
     delivery_type = request.form.get('delivery_type')
     delivery_cp = request.form.get('delivery_cp', '').strip()
+    destination_context_form = request.form.get('destination_context', '').strip().upper()
 
     print("📍 CP DESTINO RECIBIDO:", delivery_cp)
 
@@ -674,7 +675,12 @@ def confirmar_pedido():
     market_request = session.get('market_request', {}) or {}
     username = session.get('username') or market_request.get('celular') or 'anonimo'
 
-    destination_context = get_destination_context(delivery_cp)
+    if destination_context_form in ('LOCAL_MERIDA', 'MUNICIPIOS_CALKINI'):
+        destination_context = {
+            'context': destination_context_form
+        }
+    else:
+        destination_context = get_destination_context(delivery_cp)
     
     if destination_context.get('context') == 'MUNICIPIOS_CALKINI':
         shipping_initial = 50
