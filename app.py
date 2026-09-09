@@ -1,40 +1,104 @@
-import importlib.util
-import os
-import sqlite3
-import sys
-import datetime
-import json
-import smtplib
 
-import subprocess
-import sys
-import math
-subprocess.check_call([sys.executable, "-m", "pip", "install", "flask", "--ignore-installed"])
+<div class="location-fields">
 
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+  <label for="destination_context">
+  🏠 ¿Dónde quieres recibir tu pedido?
+</label>
 
-from flask import Flask, flash, redirect, render_template, request, session, url_for, jsonify
-from urllib.parse import quote
+<select
+  id="destination_context"
+  name="destination_context"
+  required
+>
+  <option value="">Selecciona tu destino</option>
+  <option value="LOCAL_MERIDA">Mérida</option>
+  <option value="MUNICIPIOS_CALKINI">Calkiní</option>
+</select>
 
-# Para poder importar user_account desde el directorio padre
-PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
+<div id="meridaFields" style="display: none;">
+<label for="delivery_cp">
+    🏠 ¿A dónde lo quieres recibir?
+    📍 Código postal de entrega
+</label>
 
-PRODUCT_IMAGES_DIR = os.environ.get(
-    'PRODUCT_IMAGES_DIR',
-    '/data/product_images'
-)
+<input
+type="text"
+id="delivery_cp"
+name="delivery_cp"
+    placeholder="Código postal"
+    placeholder="Ej. 97314"
+inputmode="numeric"
+pattern="[0-9]{5}"
+maxlength="5"
+    required
+autocomplete="postal-code"
+>
 
-os.makedirs(PRODUCT_IMAGES_DIR, exist_ok=True)
+  <p style="font-size: 0.95rem; color: #555;">
+    Usamos tu código postal para calcular la operación dentro de Mérida.
+  </p>
+</div>
 
-PARENT_DIR = os.path.abspath(os.path.join(PROJECT_DIR, '..'))
-sys.path.insert(0, PARENT_DIR)
+<div id="calkiniFields" style="display: none;">
+  <label for="calkini_locality">
+    📍 Localidad
+  </label>
 
-from user_account import create_account, init_db as init_user_db, verify_login, get_user_role, create_reset_token, reset_password as reset_user_password
+  <select
+    id="calkini_locality"
+    name="calkini_locality"
+  >
+    <option value="">Selecciona tu localidad</option>
+    <option value="Calkiní">Calkiní</option>
+    <option value="Dzitbalché">Dzitbalché</option>
+    <option value="Nunkiní">Nunkiní</option>
+    <option value="Tepakán">Tepakán</option>
+    <option value="Bécal">Bécal</option>
+  </select>
 
-# Importar Proyecto.1.G.py usando importlib porque el nombre de archivo no es un módulo válido
-PROYECT_PATH = os.path.join(PROJECT_DIR, 'Proyecto.1.G.py')
-spec = importlib.util.spec_from_file_location('proyecto_g', PROYECT_PATH)
+  <p style="font-size: 0.95rem; color: #555;">
+    Los pedidos a Calkiní se consolidan desde Mérida.
+    El punto de entrega se confirma al preparar tu pedido.
+  </p>
+</div>
+</div>
+
+<div class="card-grid">
+@@ -901,6 +942,34 @@ <h2>Opciones de entrega</h2>
+const otherDayOption = document.getElementById('otherDayOption');
+const otherDayCard = document.getElementById('otherDayCard');
+const deliveryCpInput = document.getElementById('delivery_cp');
+      const destinationContext = document.getElementById('destination_context');
+      const meridaFields = document.getElementById('meridaFields');
+      const calkiniFields = document.getElementById('calkiniFields');
+      const calkiniLocality = document.getElementById('calkini_locality');
+
+function updateDestinationContext() {
+  const destination = destinationContext.value;
+
+  meridaFields.style.display =
+    destination === 'LOCAL_MERIDA' ? 'block' : 'none';
+
+  calkiniFields.style.display =
+    destination === 'MUNICIPIOS_CALKINI' ? 'block' : 'none';
+
+  if (destination === 'LOCAL_MERIDA') {
+    deliveryCpInput.required = true;
+    calkiniLocality.required = false;
+  } else if (destination === 'MUNICIPIOS_CALKINI') {
+    deliveryCpInput.required = false;
+    calkiniLocality.required = true;
+  } else {
+    deliveryCpInput.required = false;
+    calkiniLocality.required = false;
+  }
+}
+
+destinationContext.addEventListener('change', updateDestinationContext);
+updateDestinationContext();
+
+function updateDeliveryContext() {
+const cp = deliveryCpInput.value.trim();spec = importlib.util.spec_from_file_location('proyecto_g', PROYECT_PATH)
 proyecto = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(proyecto)
 
