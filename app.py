@@ -1062,6 +1062,7 @@ def admin_pedidos_calkini():
     sobreestimaciones = 0
     cobertura_evaluacion = 0
     precision_actual = 0
+    pedidos_pendientes = 0
     transiciones = {}
 
     for pedido in pedidos:
@@ -1093,6 +1094,7 @@ def admin_pedidos_calkini():
 
     if pedidos_evaluados > 0:
         precision_actual = (correctos / pedidos_evaluados) * 100
+        pedidos_pendientes = total_pedidos - pedidos_evaluados
 
     html += f'''
     <div class="pedido">
@@ -1104,6 +1106,11 @@ def admin_pedidos_calkini():
 
         <div class="dato">
             <strong>Pedidos evaluados:</strong> {pedidos_evaluados}
+
+        <div class="dato">
+            <strong>Pedidos pendientes de evaluar:</strong> {pedidos_pendientes}
+        </div>
+        
         </div>
 
         <div class="dato">
