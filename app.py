@@ -1060,6 +1060,8 @@ def admin_pedidos_calkini():
     diferencias = 0
     subestimaciones = 0
     sobreestimaciones = 0
+    cobertura_evaluacion = 0
+    precision_actual = 0
     transiciones = {}
 
     for pedido in pedidos:
@@ -1086,6 +1088,12 @@ def admin_pedidos_calkini():
                 elif LOGISTICS_SIZE_ORDER[estimated] > LOGISTICS_SIZE_ORDER[actual]:
                     sobreestimaciones += 1
 
+    if total_pedidos > 0:
+    cobertura_evaluacion = (pedidos_evaluados / total_pedidos) * 100
+
+    if pedidos_evaluados > 0:
+        precision_actual = (correctos / pedidos_evaluados) * 100
+
     html += f'''
     <div class="pedido">
         <h2>📊 Resumen de aprendizaje</h2>
@@ -1096,6 +1104,14 @@ def admin_pedidos_calkini():
 
         <div class="dato">
             <strong>Pedidos evaluados:</strong> {pedidos_evaluados}
+        </div>
+
+        <div class="dato">
+            <strong>Cobertura de evaluación:</strong> {cobertura_evaluacion:.1f}%
+        </div>
+
+        <div class="dato">
+            <strong>Precisión actual:</strong> {precision_actual:.1f}%
         </div>
 
         <div class="dato">
