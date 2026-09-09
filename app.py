@@ -1137,6 +1137,30 @@ def admin_pedidos_calkini():
         </div>
 
         <div class="dato">
+            <strong>Resultados evaluados:</strong>
+        </div>
+'''
+
+        <div class="dato">
+            <strong>Resultados evaluados:</strong>
+        </div>
+'''
+    if resultados_tamano:
+        for resultado, cantidad in sorted(resultados_tamano.items()):
+            html += f'''
+            <div class="dato">
+                {resultado}: <strong>{cantidad}</strong>
+            </div>
+            '''
+    else:
+        html += '''
+        <div class="dato">
+            Ninguno todavía.
+        </div>
+        '''
+
+    html += '''
+        <div class="dato">
             <strong>Detalle de diferencias:</strong>
         </div>
 '''
