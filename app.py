@@ -1078,6 +1078,9 @@ def admin_pedidos_calkini():
             ):
                 diferencias += 1
 
+                transicion = f"{estimated} → {actual}"
+                transiciones[transicion] = transiciones.get(transicion, 0) + 1
+
                 if LOGISTICS_SIZE_ORDER[estimated] < LOGISTICS_SIZE_ORDER[actual]:
                     subestimaciones += 1
                 elif LOGISTICS_SIZE_ORDER[estimated] > LOGISTICS_SIZE_ORDER[actual]:
