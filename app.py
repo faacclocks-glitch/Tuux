@@ -684,7 +684,7 @@ def confirmar_pedido():
             shipping_cost = round(distance_cost + time_cost, 2)
             print("🚚 TARIFA URGENTE TOTAL:", shipping_cost)
     
-            total_a_pagar = total + shipping_cost
+    total_a_pagar = total + shipping_cost
 
     # ==========================================
     # 5B.2 — Persistir pedido antes de WhatsApp
