@@ -968,9 +968,13 @@ function updateDestinationContext() {
   }
 }
 
-destinationContext.addEventListener('change', updateDestinationContext);
-updateDestinationContext();
+destinationContext.addEventListener('change', function() {
+  updateDestinationContext();
+  updateDeliveryContext();
+});
 
+  updateDestinationContext();
+  updateDeliveryContext();
 function updateDeliveryContext() {
   const cp = deliveryCpInput.value.trim();
 
