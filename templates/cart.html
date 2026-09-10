@@ -1037,6 +1037,11 @@ function updateTotalWithOptions() {
     shippingCost = 95;
   }
 
+  if (urgentOption.checked) {
+    shippingOption = 'Entrega urgente';
+    shippingCost = 0;
+  }
+
   let newTotal = productTotal + shippingCost;
 
   
