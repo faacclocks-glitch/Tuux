@@ -465,19 +465,41 @@
    */
   const searchInput = document.getElementById("productSearch");
   const products = document.querySelectorAll(".product-card");
+
   searchInput.addEventListener("input", function () {
     const search = this.value.toLowerCase().trim();
+
     products.forEach(function (product) {
       const name = product
         .querySelector("h3")
         .textContent
         .toLowerCase();
+
       if (name.includes(search)) {
         product.style.display = "";
       } else {
         product.style.display = "none";
       }
     });
+  });
+
+  /*
+   * Mantener la posición de desplazamiento
+   * al cambiar de colección.
+   */
+  document.querySelectorAll(".category").forEach(function (category) {
+    category.addEventListener("click", function () {
+      sessionStorage.setItem("marketScrollY", window.scrollY);
+    });
+  });
+
+  window.addEventListener("load", function () {
+    const savedPosition = sessionStorage.getItem("marketScrollY");
+
+    if (savedPosition !== null) {
+      window.scrollTo(0, parseInt(savedPosition, 10));
+      sessionStorage.removeItem("marketScrollY");
+    }
   });
 </script>
 {% endblock %}
