@@ -1672,7 +1672,8 @@ def editar_producto_proveedor(producto_id):
                 precio, 
                 presentacion, 
                 imagen, 
-                logistics_size
+                logistics_size,
+                categoria
             FROM productos
             WHERE id = ?
               AND vendedor_username = ?
