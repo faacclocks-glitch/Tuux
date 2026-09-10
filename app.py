@@ -647,7 +647,7 @@ def confirmar_pedido():
         shipping_cost = 45
 
     elif other_day_selected:
-        shipping_cost = calculate_urgent_time_cost(URGENT_ESTIMATED_MINUTES)
+        shipping_cost = 95
     
     elif urgent_selected:
         
