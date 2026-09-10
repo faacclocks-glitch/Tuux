@@ -1028,8 +1028,11 @@ function updateTotalWithOptions() {
   let shippingOption = 'Selecciona una opción';
 
   if (deliveryOption.checked) {
-    shippingOption = 'Entrega programada (viernes)';
-    shippingCost = 45;
+    shippingOption = isCalkini
+        ? 'Servicio consolidado'
+        : 'Servicio de compra y entrega programada';
+
+    shippingCost = isCalkini ? 50 : 45;
   }
 
   if (otherDayOption.checked) {
