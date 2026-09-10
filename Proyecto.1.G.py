@@ -397,7 +397,8 @@ def save_producto(
             getattr(producto, 'imagen', None),
             vendedor_username,
             precio_proveedor,
-            logistics_size
+            logistics_size,
+            categoria
         ))
 
         return c.lastrowid
