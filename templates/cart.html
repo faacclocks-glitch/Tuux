@@ -1017,7 +1017,7 @@ function updateDeliveryContext() {
       'Si necesitas tu pedido en otra fecha (fuera de la ruta programada). Sujeto a disponibilidad.';
 
     document.getElementById('otherDayPrice').textContent =
-      '$100 Desde';
+      '$110 Desde';
 
   } else {
 
@@ -1058,8 +1058,11 @@ function updateTotalWithOptions() {
   }
 
   if (otherDayOption.checked) {
-    shippingOption = 'Entrega otro día';
-    shippingCost = 95;
+    shippingOption = isCalkiniDestination()
+        ? 'Servicio prioritario'
+        : 'Servicio de compra y entrega otro día';
+
+    shippingCost = isCalkiniDestination() ? 110 : 95;
   }
 
   if (urgentOption.checked) {
