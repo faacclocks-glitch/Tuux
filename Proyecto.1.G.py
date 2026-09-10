@@ -384,10 +384,10 @@ def save_producto(
                 imagen,
                 vendedor_username,
                 precio_proveedor,
-                logistics_size
+                logistics_size,
                 categoria
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             tienda_id,
             producto.nombre,
