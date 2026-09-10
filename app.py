@@ -637,17 +637,17 @@ def confirmar_pedido():
         flash('Selecciona una opción de entrega.')
         return redirect(url_for('cart'))
 
-    # Por ahora:
-    # - Programada = $35
-    # - Otro día = $50
-    # - Urgente = todavía se calculará con su fórmula propia
+    # Mérida:
+    # - Programada = tarifa local por tiempo
+    # - Otro día = tarifa local por tiempo
+    # - Urgente = fórmula propia por distancia + tiempo
     shipping_cost = 0
 
-    if delivery_selected:
-        shipping_cost = 35
-    elif other_day_selected:
-        shipping_cost = 50
+    if delivery_selected or other_day_selected:
+        shipping_cost = calculate_urgent_time_cost(URGENT_ESTIMATED_MINUTES)
+
     elif urgent_selected:
+        
         origin_cps = get_origin_cps_from_cart(items)
         print("📍 CPs DE ORIGEN:", origin_cps)
 
