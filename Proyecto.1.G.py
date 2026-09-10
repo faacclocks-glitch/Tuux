@@ -367,6 +367,7 @@ def save_producto(
     vendedor_username=None,
     precio_proveedor=None,
     logistics_size=None,
+    categoria=None,
     db_path=None
 ):
     with _connect(db_path) as conn:
