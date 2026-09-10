@@ -385,6 +385,7 @@ def save_producto(
                 vendedor_username,
                 precio_proveedor,
                 logistics_size
+                categoria
             )
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
