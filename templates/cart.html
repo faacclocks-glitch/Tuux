@@ -959,6 +959,10 @@ function updateUrgentVisibility() {
       const calkiniFields = document.getElementById('calkiniFields');
       const calkiniLocality = document.getElementById('calkini_locality');
 
+function isCalkiniDestination() {
+  return destinationContext.value === 'MUNICIPIOS_CALKINI';
+}
+
 function updateDestinationContext() {
   const destination = destinationContext.value;
 
@@ -1047,11 +1051,10 @@ function updateTotalWithOptions() {
   let shippingOption = 'Selecciona una opción';
 
   if (deliveryOption.checked) {
-    shippingOption = isCalkini
-        ? 'Servicio consolidado'
-        : 'Servicio de compra y entrega programada';
-
-    shippingCost = isCalkini ? 50 : 45;
+    shippingOption = isCalkiniDestination()
+    ? 'Servicio consolidado'
+    : 'Servicio de compra y entrega programada';
+    shippingCost = isCalkiniDestination() ? 50 : 45;
   }
 
   if (otherDayOption.checked) {
