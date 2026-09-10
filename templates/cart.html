@@ -937,6 +937,18 @@
       const urgentOption = document.getElementById('urgentOption');
       const deliveryOption = document.getElementById('deliveryOption');
       const urgentCard = document.getElementById('urgentCard');
+
+function updateUrgentVisibility() {
+  const isCalkini =
+    destinationContext.value === 'MUNICIPIOS_CALKINI';
+
+  urgentCard.style.display = isCalkini ? 'none' : 'block';
+
+  if (isCalkini && urgentOption.checked) {
+    urgentOption.checked = false;
+    updateTotalWithOptions();
+  }
+}
       const deliveryCard = document.getElementById('deliveryCard');
       const totalWithOptionsEl = document.getElementById('totalWithOptions');
       const otherDayOption = document.getElementById('otherDayOption');
@@ -971,10 +983,12 @@ function updateDestinationContext() {
 destinationContext.addEventListener('change', function() {
   updateDestinationContext();
   updateDeliveryContext();
+  updateUrgentVisibility();
 });
 
   updateDestinationContext();
   updateDeliveryContext();
+  updateUrgentVisibility();
 function updateDeliveryContext() {
   const cp = deliveryCpInput.value.trim();
 
