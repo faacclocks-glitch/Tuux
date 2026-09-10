@@ -1015,7 +1015,7 @@ function updateDeliveryContext() {
       'Solicita tu entrega fuera de la ruta programada.';
 
     document.getElementById('otherDayPrice').textContent =
-      'Tarifa calculada';
+      '$95 desde';
   }
 }
 
@@ -1034,7 +1034,7 @@ function updateTotalWithOptions() {
 
   if (otherDayOption.checked) {
     shippingOption = 'Entrega otro día';
-    shippingCost = 100;
+    shippingCost = 95;
   }
 
   let newTotal = productTotal + shippingCost;
