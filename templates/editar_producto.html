@@ -124,6 +124,33 @@
       </div>
 
       <div class="form-group">
+        <label for="categoria">Categoría</label>
+
+        <select
+          id="categoria"
+          name="categoria"
+          required
+          style="width: 100%; padding: 14px; border: 1px solid #d9e0e5; border-radius: 12px; font-size: 1rem; box-sizing: border-box;"
+        >
+          <option value="MOCHILAS" {% if producto['categoria'] == 'MOCHILAS' %}selected{% endif %}>
+            🎒 Mochilas
+          </option>
+
+          <option value="BOLSAS" {% if producto['categoria'] == 'BOLSAS' %}selected{% endif %}>
+            👜 Bolsas
+          </option>
+
+          <option value="CUIDADO_PERSONAL" {% if producto['categoria'] == 'CUIDADO_PERSONAL' %}selected{% endif %}>
+            🧴 Cuidado personal
+          </option>
+
+          <option value="OTROS" {% if producto['categoria'] == 'OTROS' %}selected{% endif %}>
+            📦 Otros
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
         <label for="logistics_size">Tamaño logístico para Calkiní</label>
 
         <select
