@@ -880,12 +880,17 @@ def confirmar_pedido():
     mensaje += SEPARADOR + "\n"
     
     
-    mensaje += f"- Subtotal de productos: ${total:.2f} MXN\n"
+    mensaje += f"🛍️ Subtotal de productos: ${total:.2f} MXN\n"
+    
     if delivery_selected:
-        mensaje += f"- Entrega programada: ${shipping_cost:.2f} MXN\n"
-    if urgent_selected:
-        mensaje += f"- Entrega urgente: ${shipping_cost:.2f} MXN\n"
-        
+        mensaje += f"🚚 Servicio de compra y entrega: ${shipping_cost:.2f} MXN\n"
+
+    if other_day_selected:
+        mensaje += f"🚚 Servicio de compra y entrega: ${shipping_cost:.2f} MXN\n"
+
+     if urgent_selected:
+        mensaje += f"🚨 Servicio de compra y entrega urgente: ${shipping_cost:.2f} MXN\n"
+
     mensaje += SEPARADOR + "\n"
 
     if tiene_custom:
