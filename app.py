@@ -643,13 +643,27 @@ def confirmar_pedido():
     # - Urgente = fórmula propia por distancia + tiempo
     shipping_cost = 0
 
+    if destination_context_form == 'MUNICIPIOS_CALKINI':
+
+    if delivery_selected:
+        shipping_cost = 50
+
+    elif other_day_selected:
+        shipping_cost = 110
+
+    elif urgent_selected:
+        shipping_cost = 0
+
+else:
+
     if delivery_selected:
         shipping_cost = 45
 
     elif other_day_selected:
         shipping_cost = 95
-    
+
     elif urgent_selected:
+        # aquí continúa el cálculo urgente que ya tienes
         
         origin_cps = get_origin_cps_from_cart(items)
         print("📍 CPs DE ORIGEN:", origin_cps)
