@@ -276,6 +276,9 @@ def init_db(db_path=None):
 
         if 'logistics_size' not in existing_product_columns:
             c.execute('ALTER TABLE productos ADD COLUMN logistics_size TEXT')
+
+        if 'categoria' not in existing_product_columns:
+            c.execute('ALTER TABLE productos ADD COLUMN categoria TEXT')
         
         # Validación de la columna username
         existing_pedidos = [row[1] for row in conn.execute('PRAGMA table_info(pedidos)')]
