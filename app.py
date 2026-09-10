@@ -643,9 +643,12 @@ def confirmar_pedido():
     # - Urgente = fórmula propia por distancia + tiempo
     shipping_cost = 0
 
-    if delivery_selected or other_day_selected:
-        shipping_cost = calculate_urgent_time_cost(URGENT_ESTIMATED_MINUTES)
+    if delivery_selected:
+        shipping_cost = 45
 
+    elif other_day_selected:
+        shipping_cost = calculate_urgent_time_cost(URGENT_ESTIMATED_MINUTES)
+    
     elif urgent_selected:
         
         origin_cps = get_origin_cps_from_cart(items)
