@@ -665,26 +665,26 @@ def confirmar_pedido():
         elif urgent_selected:
             # aquí continúa el cálculo urgente que ya tienes
         
-        origin_cps = get_origin_cps_from_cart(items)
-        print("📍 CPs DE ORIGEN:", origin_cps)
+            origin_cps = get_origin_cps_from_cart(items)
+            print("📍 CPs DE ORIGEN:", origin_cps)
 
-        distance_km = calculate_operation_distance_km(
-            origin_cps,
-            delivery_cp
-        )
+            distance_km = calculate_operation_distance_km(
+                 origin_cps,
+                delivery_cp
+            )
 
-        print("📍 DISTANCIA OPERATIVA:", distance_km, "km")
+            print("📍 DISTANCIA OPERATIVA:", distance_km, "km")
 
-        distance_cost = calculate_urgent_distance_cost(distance_km)
-        print("💰 COSTO POR DISTANCIA:", distance_cost)
+            distance_cost = calculate_urgent_distance_cost(distance_km)
+            print("💰 COSTO POR DISTANCIA:", distance_cost)
 
-        time_cost = calculate_urgent_time_cost(URGENT_ESTIMATED_MINUTES)
-        print("⏱️ COSTO POR TIEMPO:", time_cost)
+            time_cost = calculate_urgent_time_cost(URGENT_ESTIMATED_MINUTES)
+            print("⏱️ COSTO POR TIEMPO:", time_cost)
 
-        shipping_cost = round(distance_cost + time_cost, 2)
-        print("🚚 TARIFA URGENTE TOTAL:", shipping_cost)
+            shipping_cost = round(distance_cost + time_cost, 2)
+            print("🚚 TARIFA URGENTE TOTAL:", shipping_cost)
     
-    total_a_pagar = total + shipping_cost
+            total_a_pagar = total + shipping_cost
 
     # ==========================================
     # 5B.2 — Persistir pedido antes de WhatsApp
