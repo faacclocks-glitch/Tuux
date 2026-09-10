@@ -1701,7 +1701,8 @@ def editar_producto_proveedor(producto_id):
                     presentacion = ?,
                     precio = ?,
                     unidades = ?,
-                    logistics_size = ?
+                    logistics_size = ?,
+                    categoria = ?
                 WHERE id = ?
                     AND vendedor_username = ?
             ''', (
@@ -1710,6 +1711,7 @@ def editar_producto_proveedor(producto_id):
                 float(precio),
                 int(unidades),
                 logistics_size,
+                categoria,
                 producto_id,
                 vendedor_username
                 
