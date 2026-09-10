@@ -1996,21 +1996,62 @@ def market():
         conn = proyecto._connect()
         cursor = conn.cursor()
 
-        cursor.execute('''
-            SELECT
-                p.id AS producto_id,
-                p.tienda_id,
-                p.nombre,
-                p.unidades,
-                p.precio,
-                p.presentacion,
-                p.imagen,
-                p.vendedor_username,
-                t.nombre AS tienda_nombre
-            FROM productos p
-            LEFT JOIN tiendas t ON p.tienda_id = t.id
-            ORDER BY p.id DESC
-        ''')
+        categoria = request.args.get('categoria', '').strip().upper()
+
+        if categoria == 'OTROS':
+            cursor.execute('''
+                SELECT
+                    p.id AS producto_id,
+                    p.tienda_id,
+                    p.nombre,
+                    p.unidades,
+                    p.precio,
+                    p.presentacion,
+                    p.imagen,
+                    p.vendedor_username,
+                    t.nombre AS tienda_nombre
+                FROM productos p
+                LEFT JOIN tiendas t ON p.tienda_id = t.id
+                WHERE p.categoria = 'OTROS'
+                   OR p.categoria IS NULL
+                   OR TRIM(p.categoria) = ''
+                ORDER BY p.id DESC
+            ''')
+
+        elif categoria in ('MOCHILAS', 'BOLSAS', 'CUIDADO_PERSONAL'):
+            cursor.execute('''
+                SELECT
+                    p.id AS producto_id,
+                    p.tienda_id,
+                    p.nombre,
+                    p.unidades,
+                    p.precio,
+                    p.presentacion,
+                    p.imagen,
+                    p.vendedor_username,
+                    t.nombre AS tienda_nombre
+                FROM productos p
+                LEFT JOIN tiendas t ON p.tienda_id = t.id
+                WHERE p.categoria = ?
+                ORDER BY p.id DESC
+            ''', (categoria,))
+
+        else:
+            cursor.execute('''
+                SELECT
+                    p.id AS producto_id,
+                    p.tienda_id,
+                    p.nombre,
+                    p.unidades,
+                    p.precio,
+                    p.presentacion,
+                    p.imagen,
+                    p.vendedor_username,
+                    t.nombre AS tienda_nombre
+                FROM productos p
+                LEFT JOIN tiendas t ON p.tienda_id = t.id
+                ORDER BY p.id DESC
+            ''')
 
         productos = cursor.fetchall()
         conn.close()
