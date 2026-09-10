@@ -645,25 +645,25 @@ def confirmar_pedido():
 
     if destination_context_form == 'MUNICIPIOS_CALKINI':
 
-    if delivery_selected:
-        shipping_cost = 50
+        if delivery_selected:
+            shipping_cost = 50
 
-    elif other_day_selected:
-        shipping_cost = 110
+        elif other_day_selected:
+            shipping_cost = 110
 
-    elif urgent_selected:
-        shipping_cost = 0
+        elif urgent_selected:
+            shipping_cost = 0
 
-else:
+    else:
 
-    if delivery_selected:
-        shipping_cost = 45
+        if delivery_selected:
+            shipping_cost = 45
 
-    elif other_day_selected:
-        shipping_cost = 95
+        elif other_day_selected:
+            shipping_cost = 95
 
-    elif urgent_selected:
-        # aquí continúa el cálculo urgente que ya tienes
+        elif urgent_selected:
+            # aquí continúa el cálculo urgente que ya tienes
         
         origin_cps = get_origin_cps_from_cart(items)
         print("📍 CPs DE ORIGEN:", origin_cps)
