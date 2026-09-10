@@ -1625,7 +1625,8 @@ def agregar_producto_proveedor():
             tienda_id,
             vendedor_username,
             precio_proveedor,
-            logistics_size
+            logistics_size,
+            categoria
         )
 
         print(
