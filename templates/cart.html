@@ -974,7 +974,8 @@ updateDestinationContext();
 function updateDeliveryContext() {
   const cp = deliveryCpInput.value.trim();
 
-  const isCalkini = cp === '24900';
+  const isCalkini =
+  destinationContext.value === 'MUNICIPIOS_CALKINI';
 
   if (isCalkini) {
     document.getElementById('deliveryTitle').textContent =
