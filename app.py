@@ -1690,6 +1690,7 @@ def editar_producto_proveedor(producto_id):
             precio = request.form.get('precio', 0)
             unidades = request.form.get('unidades', 0)
             logistics_size = request.form.get('logistics_size', '').strip().upper()
+            categoria = request.form.get('categoria', '').strip().upper()
 
             cursor.execute('''
                 UPDATE productos
