@@ -1703,6 +1703,7 @@ def editar_producto_proveedor(producto_id):
                 SET nombre = ?,
                     presentacion = ?,
                     precio = ?,
+                    precio_proveedor = ?,
                     unidades = ?,
                     logistics_size = ?,
                     categoria = ?
@@ -1711,10 +1712,10 @@ def editar_producto_proveedor(producto_id):
             ''', (
                 nombre,
                 presentacion,
-                float(precio),
+                precio,
                 int(unidades),
                 logistics_size,
-                categoria,
+                categoriay,
                 producto_id,
                 vendedor_username
                 
