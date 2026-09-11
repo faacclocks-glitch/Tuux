@@ -1691,7 +1691,7 @@ def editar_producto_proveedor(producto_id):
 
             nombre = request.form.get('nombre', '').strip()
             presentacion = request.form.get('presentacion', '').strip()
-            precio_proveedor = request.form.get('precio', 0)
+            precio_proveedor = request.form.get('precio_proveedor', 0)
             precio_proveedor = float(precio_proveedor)
             precio = round(precio_proveedor * 1.20, 2)
             unidades = request.form.get('unidades', 0)
