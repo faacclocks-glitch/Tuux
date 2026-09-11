@@ -1713,6 +1713,7 @@ def editar_producto_proveedor(producto_id):
                 nombre,
                 presentacion,
                 precio,
+                precio_proveedor,
                 int(unidades),
                 logistics_size,
                 categoria,
