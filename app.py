@@ -1225,6 +1225,7 @@ def admin_pedidos_calkini():
                     SELECT
                         pi.unidades,
                         pi.precio,
+                        p.precio_proveedor,
                         pi.logistics_size,
                         p.nombre
                     FROM pedido_items pi
