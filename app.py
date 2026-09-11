@@ -669,26 +669,29 @@ def confirmar_pedido():
             shipping_cost = 95
 
         elif urgent_selected:
-            # aquí continúa el cálculo urgente que ya tienes
-        
             origin_cps = get_origin_cps_from_cart(items)
             print("📍 CPs DE ORIGEN:", origin_cps)
-
-            distance_km = calculate_operation_distance_km(
-                 origin_cps,
-                delivery_cp
-            )
-
-            print("📍 DISTANCIA OPERATIVA:", distance_km, "km")
-
-            distance_cost = calculate_urgent_distance_cost(distance_km)
-            print("💰 COSTO POR DISTANCIA:", distance_cost)
-
-            time_cost = calculate_urgent_time_cost(URGENT_ESTIMATED_MINUTES)
-            print("⏱️ COSTO POR TIEMPO:", time_cost)
-
-            shipping_cost = round(distance_cost + time_cost, 2)
-            print("🚚 TARIFA URGENTE TOTAL:", shipping_cost)
+            
+            try:
+                distance_km = calculate_operation_distance_km(
+                    origin_cps,
+                    delivery_cp
+                )
+                
+                print("📍 DISTANCIA OPERATIVA:", distance_km, "km")
+                
+                distance_cost = calculate_urgent_distance_cost(distance_km)
+                print("💰 COSTO POR DISTANCIA:", distance_cost)
+                
+                time_cost = calculate_urgent_time_cost(URGENT_ESTIMATED_MINUTES)
+                print("⏱️ COSTO POR TIEMPO:", time_cost)
+                
+                shipping_cost = round(distance_cost + time_cost, 2)
+                print("🚚 TARIFA URGENTE TOTAL:", shipping_cost)
+            
+            except ValueError as e:
+                print("⚠️ TARIFA URGENTE PENDIENTE DE VERIFICACIÓN:", e)
+                shipping_cost = 150
     
     total_a_pagar = total + shipping_cost
 
