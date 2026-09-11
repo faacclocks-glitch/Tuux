@@ -1854,6 +1854,26 @@ def eliminar_producto_proveedor(producto_id):
         conn = proyecto._connect()
         cursor = conn.cursor()
 
+        # Verificar si el producto ya forma parte de algún pedido
+        cursor.execute('''
+            SELECT COUNT(*)
+            FROM pedido_items
+            WHERE producto_id = ?
+        ''', (producto_id,))
+
+        producto_en_pedidos = cursor.fetchone()[0]
+
+        if producto_en_pedidos > 0:
+            conn.close()
+
+            flash(
+                '⚠️ Este producto ya forma parte de un pedido y no puede eliminarse. '
+                'Puedes marcarlo como agotado.'
+            )
+
+            return redirect(url_for('businesspeople'))
+
+        # Si nunca ha sido utilizado en un pedido, se puede eliminar
         cursor.execute('''
             DELETE FROM productos
             WHERE id = ?
