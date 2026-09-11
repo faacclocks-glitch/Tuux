@@ -648,6 +648,7 @@ def confirmar_pedido():
     # - Otro día = tarifa local por tiempo
     # - Urgente = fórmula propia por distancia + tiempo
     shipping_cost = 0
+    urgent_needs_verification = False
 
     if destination_context_form == 'MUNICIPIOS_CALKINI':
 
@@ -691,7 +692,9 @@ def confirmar_pedido():
             
             except ValueError as e:
                 print("⚠️ TARIFA URGENTE PENDIENTE DE VERIFICACIÓN:", e)
+                
                 shipping_cost = 150
+                urgent_needs_verification = True
     
     total_a_pagar = total + shipping_cost
 
@@ -911,7 +914,11 @@ def confirmar_pedido():
         mensaje += f"🚚 Servicio de compra y entrega otro día: ${shipping_cost:.2f} MXN\n"
 
     if urgent_selected:
-        mensaje += f"🚨 Servicio de compra y entrega urgente: ${shipping_cost:.2f} MXN\n"
+        if urgent_needs_verification:
+            mensaje += "🚨 Servicio de compra y entrega urgente: Desde $150.00 MXN\n"
+            mensaje += "⚠️ Costo total sujeto a verificación de distancia y tiempo.\n"
+        else:
+            mensaje += f"🚨 Servicio de compra y entrega urgente: ${shipping_cost:.2f} MXN\n"
         
     mensaje += SEPARADOR + "\n"
 
