@@ -389,6 +389,12 @@ def get_destination_context(delivery_cp):
 # Distancias estimadas entre códigos postales.
 # Se irán ampliando conforme validemos operaciones reales.
 CP_DISTANCES_KM = {
+    ("97314", "97110"): 13.0,
+    ("97110", "97314"): 13.0,
+
+    ("97110", "97226"): 8.2,
+    ("97226", "97110"): 8.2,
+
     ("97314", "97000"): 12.0,
     ("97000", "97314"): 12.0,
 }
