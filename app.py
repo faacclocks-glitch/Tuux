@@ -1715,7 +1715,7 @@ def editar_producto_proveedor(producto_id):
                 precio,
                 int(unidades),
                 logistics_size,
-                categoriay,
+                categoria,
                 producto_id,
                 vendedor_username
                 
