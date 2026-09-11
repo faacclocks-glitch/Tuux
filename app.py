@@ -1258,10 +1258,20 @@ def admin_pedidos_calkini():
             unidades = item['unidades'] or 0
             logistics_size = item['logistics_size'] or 'SIN CLASIFICAR'
 
+            precio_publico = float(item['precio'] or 0)
+            precio_proveedor = float(item['precio_proveedor'] or 0)
+
+            total_proveedor = unidades * precio_proveedor
+            margen_tuux = unidades * (precio_publico - precio_proveedor)
+
             html += f'''
                     <li>
-                        {nombre} × {unidades}
-                        — {logistics_size}
+                        <strong>{nombre} × {unidades}</strong>
+                        — {logistics_size}<br>
+
+                        Precio público: ${precio_publico:.2f}<br>
+                        Corresponde al proveedor: ${total_proveedor:.2f}<br>
+                        Margen TU'UX: ${margen_tuux:.2f}
                     </li>
             '''
 
