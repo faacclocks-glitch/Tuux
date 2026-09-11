@@ -1691,7 +1691,7 @@ def editar_producto_proveedor(producto_id):
 
             nombre = request.form.get('nombre', '').strip()
             presentacion = request.form.get('presentacion', '').strip()
-            precio = request.form.get('precio', 0)
+            precio_proveedor = request.form.get('precio', 0)
             unidades = request.form.get('unidades', 0)
             logistics_size = request.form.get('logistics_size', '').strip().upper()
             categoria = request.form.get('categoria', '').strip().upper()
