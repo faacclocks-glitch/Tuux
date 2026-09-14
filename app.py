@@ -2074,7 +2074,7 @@ def market():
                 ORDER BY p.id DESC
             ''')
 
-        elif categoria in ('MOCHILAS', 'BOLSAS', 'CUIDADO_PERSONAL'):
+        elif categoria in ('MOCHILAS', 'COSTCO', 'SAMS'):
             cursor.execute('''
                 SELECT
                     p.id AS producto_id,
