@@ -254,6 +254,14 @@
               form.closest('.product-detail-info')?.querySelector('h1')?.textContent.trim()
               || 'Producto';
 
+            gtag('event', 'add_to_cart', {
+              currency: 'MXN',
+              items: [{
+                item_name: productName,
+                quantity: Number(form.querySelector('[name="cantidad"]')?.value || 1)
+              }]
+            });
+
             // Crea la alerta
             const alerta = document.createElement('div');
             alerta.className = 'alert';
