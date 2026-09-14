@@ -953,7 +953,10 @@ def confirmar_pedido():
    # except Exception as e:
     #    print('Error enviando copia de pedido por email:', e)
 
-    return redirect(url)
+    return render_template(
+        'pedido_enviado.html',
+        whatsapp_url=url
+    )
 
 # ==========================================
 # 5B.5D-3B — REGISTRO DE ESPACIO REAL CALKINÍ
