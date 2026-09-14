@@ -855,11 +855,6 @@ def confirmar_pedido():
     SEPARADOR = "________________________\n"
     mensaje = ""
     
-    referencia = session.get('referencia')
-    
-    if referencia == 'HERMANO':
-        mensaje += "🔖 Referencia: HERMANO\n"
-    
     if nombre_cliente or celular_cliente or municipio_cliente:
         if nombre_cliente:
             mensaje += f"Nombre: {nombre_cliente}\n"
@@ -868,6 +863,11 @@ def confirmar_pedido():
         if municipio_cliente:
             mensaje += f"Municipio: {municipio_cliente}\n"
         mensaje += SEPARADOR + "\n"
+
+    referencia = session.get('referencia')
+    
+    if referencia == 'HERMANO':
+        mensaje += "🔖 Referencia: HERMANO\n"
     
     mensaje += "¡Hola! 👋\n\nTu'ux tengo un encargo para ti.\n" " \nPedido:\n\n"
     
