@@ -905,6 +905,10 @@ def confirmar_pedido():
     # Agregar servicios aceptados después del último producto
     mensaje += SEPARADOR + "\n"
     
+    referencia = session.get('referencia')
+    
+    if referencia == 'HERMANO':
+        mensaje += "🔖 Referencia: HERMANO\n"
     
     mensaje += f"- Subtotal de productos: ${total:.2f} MXN\n"
     if delivery_selected:
