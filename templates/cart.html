@@ -934,9 +934,10 @@
     </form>
     <script>
 
-      document.getElementById('confirmButton')?.addEventListener('click', function () {
+      document.querySelector('form[action*="confirmar_pedido"]')?.addEventListener('submit', function () {
         gtag('event', 'generate_lead', {
-          method: 'WhatsApp'
+          method: 'WhatsApp',
+          transport_type: 'beacon'
         });
       });
       
