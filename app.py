@@ -867,6 +867,7 @@ def confirmar_pedido():
             mensaje += f"Municipio: {municipio_cliente}\n"
         mensaje += SEPARADOR + "\n"
 
+    print("🔖 REFERENCIA EN PEDIDO:", session.get('referencia'))
     referencia = session.get('referencia')
     
     if referencia == 'HERMANO':
