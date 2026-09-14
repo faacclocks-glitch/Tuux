@@ -934,11 +934,28 @@
     </form>
     <script>
 
-      document.querySelector('form[action*="confirmar_pedido"]')?.addEventListener('submit', function () {
+      let leadTracked = false;
+      
+      document.querySelector('form[action*="confirmar_pedido"]')?.addEventListener('submit', function (event) {
+        if (leadTracked) {
+          return;
+        }
+        
+        event.preventDefault();
+        leadTracked = true;
+        
+        const form = this;
+        
         gtag('event', 'generate_lead', {
           method: 'WhatsApp',
-          transport_type: 'beacon'
+          event_callback: function () {
+            form.submit(); 
+          }
         });
+        
+        setTimeout(function () {
+          form.submit();
+        }, 1000);
       });
       
       const productTotal = Number({{ product_total }});
