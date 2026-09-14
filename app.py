@@ -619,6 +619,8 @@ def index():
 
 @app.route("/confirmar_pedido", methods=['POST'])
 def confirmar_pedido():
+    print("🔥 CONFIRMAR_PEDIDO EJECUTADO")
+    print("🔖 REFERENCIA AL ENTRAR:", session.get('referencia'))
     # Construir los items y total del carrito actual
     items, total = build_cart_items()
     
