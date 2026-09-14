@@ -2049,6 +2049,9 @@ def marketlist():
 
 @app.route('/market')
 def market():
+    
+    if request.args.get('utm_campaign', '').strip().lower() == 'hermano':
+        session['referencia'] = 'HERMANO'
     productos = []
 
     try:
