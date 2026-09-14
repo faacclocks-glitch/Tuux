@@ -611,6 +611,9 @@ def remove_from_cart(item_index):
 
 @app.route('/')
 def index():
+    if request.args.get('utm_campaign', '').strip().lower() == 'hermano':
+        session['referencia'] = 'HERMANO'
+
     return redirect(url_for('market'))
     
 
