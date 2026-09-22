@@ -873,7 +873,7 @@ def confirmar_pedido():
     referencia = session.get('referencia')
     
     if referencia == 'HERMANO':
-        mensaje += "🔖 Referencia: HERMANO\n"
+        mensaje += "🔖 Referencia: Lilyfran\n"
     
     mensaje += "¡Hola! 👋\n\nTu'ux tengo un encargo para ti.\n" " \nPedido:\n\n"
     
