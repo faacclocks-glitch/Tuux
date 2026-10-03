@@ -609,12 +609,14 @@ def remove_from_cart(item_index):
     return redirect(url_for('cart'))
 
 
+
 @app.route('/')
 def index():
     if request.args.get('utm_campaign', '').strip().lower() == 'hermano':
         session['referencia'] = 'HERMANO'
 
-    return redirect(url_for('market'))
+    return redirect(url_for('market', **request.args.to_dict()))
+
     
 
 @app.route("/confirmar_pedido", methods=['POST'])
