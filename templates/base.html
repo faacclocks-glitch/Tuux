@@ -248,19 +248,33 @@
                 duration: 300
               });
             });
-
-            // Obtiene el nombre del producto desde el formulario
+            
+            // Obtiene los datos del producto desde la página
             const productName =
               form.closest('.product-detail-info')?.querySelector('h1')?.textContent.trim()
               || 'Producto';
+            const productId = '{{ product_id }}';
+            const productPrice = Number(
+              '{{ producto.precio }}'.replace(',', '.')
+            );
+            const quantity = Number(
+              form.querySelector('[name="cantidad"]')?.value || 1
+            );
+            
+            // Envía el evento completo a Google Analytics
+            if (typeof gtag === 'function') {
+              gtag('event', 'add_to_cart', {
+                currency: 'MXN',
+                value: productPrice * quantity,
+                items: [{
+                  item_id: productId,
+                  item_name: productName,
+                  price: productPrice,
+                  quantity: quantity
+                }]
+              });
+            }
 
-            gtag('event', 'add_to_cart', {
-              currency: 'MXN',
-              items: [{
-                item_name: productName,
-                quantity: Number(form.querySelector('[name="cantidad"]')?.value || 1)
-              }]
-            });
 
             // Crea la alerta
             const alerta = document.createElement('div');
