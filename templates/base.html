@@ -250,16 +250,14 @@
             });
             
             // Obtiene los datos del producto
-            const productInfo = form.closest('.product-detail-info');
-            
             const productName =
-              productInfo?.querySelector('h1')?.textContent.trim() ||
-              'Producto';
+              form.closest('.product-detail-info')?.querySelector('h1')?.textContent.trim()
+              || 'Producto';
             
             const quantity = Number(
               form.querySelector('[name="cantidad"]')?.value || 1
             );
-            
+
             // Envía el evento a Google Analytics
             if (typeof gtag === 'function') {
               gtag('event', 'add_to_cart', {
@@ -270,7 +268,6 @@
                 }]
               });
             }
-
               
             // Crea la alerta
             const alerta = document.createElement('div');
