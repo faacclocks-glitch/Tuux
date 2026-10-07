@@ -2147,10 +2147,27 @@ def market():
     except Exception as e:
         print('ERROR CARGANDO PRODUCTOS DEL MARKET:', e)
 
+    referencia = session.get('referencia')
+    
+    if referencia == 'CUÑADA':
+        mensaje_whatsapp = "🔖 Referencia: Lilyfran\n¡Hola! 👋\n\nTu'ux tengo un encargo para ti."
+    elif referencia == 'JACKSON':
+        mensaje_whatsapp = "Hola, vi la publicación de Jackson y quiero cotizar un pedido."
+    else:
+        mensaje_whatsapp = "Hola 👋 Quiero cotizar un pedido con Tu'ux."
+        
+    from urllib.parse import quote
+    
+    whatsapp_url = (
+        'https://wa.me/5215588182650?text='
+        + quote(mensaje_whatsapp)
+    )
+    
     return render_template(
         'market.html',
         productos=productos,
-        market_request=session.get('market_request')
+        market_request=session.get('market_request'),
+        whatsapp_url=whatsapp_url
     )
 
 @app.route('/producto/<int:store_id>/<int:product_id>')
