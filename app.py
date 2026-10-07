@@ -612,8 +612,13 @@ def remove_from_cart(item_index):
 
 @app.route('/')
 def index():
-    if request.args.get('utm_campaign', '').strip().lower() == 'hermano':
-        session['referencia'] = 'HERMANO'
+    utm_campaign = request.args.get('utm_campaign', '').strip().lower()
+    utm_content = request.args.get('utm_content', '').strip().lower()
+    
+    if utm_content == 'jackson':
+        session['referencia'] = 'JACKSON'
+    elif utm_campaign == 'hermano':
+        session['referencia'] = 'CUÑADA'
 
     return redirect(url_for('market', **request.args.to_dict()))
 
@@ -2065,8 +2070,14 @@ def marketlist():
 @app.route('/market')
 def market():
     
-    if request.args.get('utm_campaign', '').strip().lower() == 'hermano':
-        session['referencia'] = 'HERMANO'
+    utm_campaign = request.args.get('utm_campaign', '').strip().lower()
+    utm_content = request.args.get('utm_content', '').strip().lower()
+    
+    if utm_content == 'jackson':
+        session['referencia'] = 'JACKSON'
+    elif utm_campaign == 'hermano':
+        session['referencia'] = 'CUÑADA'
+    
     productos = []
 
     try:
