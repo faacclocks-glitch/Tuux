@@ -887,6 +887,8 @@ def confirmar_pedido():
         mensaje += "🔖 Referencia: Lilyfran\n"
     elif referencia == 'JACKSON':
         mensaje += "🔖 Referencia: Jackson\n"
+    elif referencia == 'PROMO10':
+        mensaje += "🔖 Referencia: PROMO10\n"
     
     mensaje += "¡Hola! 👋\n\nTu'ux tengo un encargo para ti.\n" " \nPedido:\n\n"
     
