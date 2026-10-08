@@ -619,6 +619,8 @@ def index():
         session['referencia'] = 'JACKSON'
     elif utm_campaign == 'hermano':
         session['referencia'] = 'CUÑADA'
+    elif utm_campaign == 'promo_10_servicio':
+        session['referencia'] = 'PROMO10'
     else:
         session.pop('referencia', None)
 
@@ -2079,6 +2081,8 @@ def market():
         session['referencia'] = 'JACKSON'
     elif utm_campaign == 'hermano':
         session['referencia'] = 'CUÑADA'
+    elif utm_campaign == 'promo_10_servicio':
+        session['referencia'] = 'PROMO10'
     else:
         session.pop('referencia', None)
     
@@ -2157,6 +2161,8 @@ def market():
         mensaje_whatsapp = "🔖 Referencia: Lilyfran\n¡Hola! 👋\n\nTu'ux tengo un encargo para ti."
     elif referencia == 'JACKSON':
         mensaje_whatsapp = "Hola, vi la publicación de Jackson y quiero cotizar un pedido."
+    elif referencia == 'PROMO10':
+        mensaje_whatsapp = "Hola 👋 Quiero cotizar un pedido con Tu’ux.\nVengo de la promoción 10% de descuento en el servicio de su página web.\nQuiero solicitar: "
     else:
         mensaje_whatsapp = "Hola 👋 Quiero cotizar un pedido con Tu'ux."
         
