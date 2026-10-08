@@ -619,6 +619,8 @@ def index():
         session['referencia'] = 'JACKSON'
     elif utm_campaign == 'hermano':
         session['referencia'] = 'CUÑADA'
+    else:
+        session.pop('referencia', None)
 
     return redirect(url_for('market', **request.args.to_dict()))
 
@@ -2077,6 +2079,8 @@ def market():
         session['referencia'] = 'JACKSON'
     elif utm_campaign == 'hermano':
         session['referencia'] = 'CUÑADA'
+    else:
+        session.pop('referencia', None)
     
     productos = []
 
