@@ -270,6 +270,13 @@ def init_db(db_path=None):
             unidades INTEGER, precio REAL, FOREIGN KEY(pedido_id) REFERENCES pedidos(id),
             FOREIGN KEY(producto_id) REFERENCES productos(id)
         )''')
+
+        # Migración compatible: añadir logistics_size a bases ya existentes.
+        existing_pedido_items = [
+            row[1] for row in c.execute('PRAGMA table_info(pedido_items)')
+        ]
+        if 'logistics_size' not in existing_pedido_items:
+            c.execute('ALTER TABLE pedido_items ADD COLUMN logistics_size TEXT')
         existing_product_columns = [row[1] for row in c.execute('PRAGMA table_info(productos)')]
         if 'vendedor_username' not in existing_product_columns:
             c.execute('ALTER TABLE productos ADD COLUMN vendedor_username TEXT')
