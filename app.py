@@ -844,7 +844,7 @@ def calculate_urgent_shipping_cost_from_operation(distance_km):
         URGENT_ESTIMATED_MINUTES
     )
 
-URGENT_TIME_RATE = 100
+URGENT_TIME_RATE = 150
 URGENT_TIME_BLOCK_MINUTES = 15
 URGENT_ESTIMATED_MINUTES = 60
 
@@ -854,7 +854,7 @@ def calculate_urgent_time_cost(minutes):
     Calcula el costo del tiempo ocupado para una entrega urgente.
 
     Tarifa:
-    $100 por hora
+    $150 por hora
     Cobro en bloques de 15 minutos.
     """
     if minutes < 0:
