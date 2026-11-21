@@ -1287,7 +1287,7 @@ def confirmar_pedido():
     
     mensaje += f"- Subtotal de productos: ${total:.2f} MXN\n"
     if switch_fee > 0:
-        mensaje += f"- Cargo por tiendas adicionales: ${switch_fee:.2f} MXN\\n"
+        mensaje += f"- Cargo por tiendas adicionales: ${switch_fee:.2f} MXN\n"
     if delivery_selected:
         mensaje += f"🚚 Servicio de compra y entrega programada: ${shipping_cost:.2f} MXN\n"
 
