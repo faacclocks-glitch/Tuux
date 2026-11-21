@@ -2612,7 +2612,8 @@ def detalle_producto(store_id, product_id):
             tienda=producto['tienda_nombre'],
             producto=producto,
             store_id=store_id,
-            product_id=product_id
+            product_id=product_id,
+            return_categoria=request.args.get('categoria', '').strip().upper()
         )
 
     except Exception as e:
