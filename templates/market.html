@@ -462,7 +462,8 @@
           href="{{ url_for(
             'detalle_producto',
             store_id=producto['tienda_id'],
-            product_id=producto['producto_id']
+            product_id=producto['producto_id'],
+            categoria=request.args.get('categoria', '')
           ) }}"
           class="product-link"
         >
