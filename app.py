@@ -214,6 +214,187 @@ app.secret_key = os.environ.get('FLASK_SECRET', 'dev-flask-key')
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
+
+@app.route('/catalogo-imagenes', methods=['GET', 'POST'])
+def catalogo_imagenes():
+    """Transferencia temporal de imágenes del catálogo en lotes pequeños."""
+    from flask import Response, send_file
+    from werkzeug.utils import secure_filename
+
+    if CATALOG_TRANSFER_MODE not in ('export', 'import') or not CATALOG_TRANSFER_TOKEN:
+        return 'Transferencia temporal no habilitada.', 404
+
+    def authorized():
+        supplied = request.form.get('token', '')
+        return bool(supplied) and hmac.compare_digest(
+            supplied.encode('utf-8'), CATALOG_TRANSFER_TOKEN.encode('utf-8')
+        )
+
+    if request.method == 'GET':
+        if CATALOG_TRANSFER_MODE == 'export':
+            conn = proyecto._connect()
+            try:
+                rows = conn.execute(
+                    "SELECT DISTINCT imagen FROM productos WHERE imagen IS NOT NULL AND TRIM(imagen) != '' ORDER BY imagen"
+                ).fetchall()
+            finally:
+                conn.close()
+            files = []
+            missing = 0
+            for row in rows:
+                name = os.path.basename(row['imagen'] or '')
+                if not name or secure_filename(name) != name:
+                    missing += 1
+                    continue
+                path = os.path.join(PRODUCT_IMAGES_DIR, name)
+                if not os.path.isfile(path):
+                    missing += 1
+                    continue
+                size = os.path.getsize(path)
+                files.append((name, size))
+            batches = []
+            current, current_size = [], 0
+            max_batch_bytes = 12 * 1024 * 1024
+            for item in files:
+                if current and current_size + item[1] > max_batch_bytes:
+                    batches.append(current)
+                    current, current_size = [], 0
+                current.append(item)
+                current_size += item[1]
+            if current:
+                batches.append(current)
+            forms = ''.join(
+                f'<form method="post" style="margin:14px 0"><input type="hidden" name="lote" value="{i}">'
+                f'<label>Clave temporal <input type="password" name="token" required></label> '
+                f'<button type="submit">Descargar lote {i} ({len(batch)} imágenes, {sum(x[1] for x in batch)//1024} KB)</button></form>'
+                for i, batch in enumerate(batches, start=1)
+            ) or '<p>No hay imágenes referenciadas disponibles para exportar.</p>'
+            body = (
+                f'<h2>Exportar imágenes del catálogo</h2><p>Imágenes encontradas: {len(files)}. '
+                f'Referencias sin archivo o no válidas: {missing}. Lotes: {len(batches)}.</p>'
+                '<p>Cada lote pesa como máximo aproximadamente 12 MB.</p>' + forms
+            )
+        else:
+            body = (
+                '<h2>Importar imágenes en staging</h2>'
+                '<p>Selecciona un ZIP de imágenes descargado desde producción.</p>'
+                '<form method="post" enctype="multipart/form-data">'
+                '<label>Clave temporal <input type="password" name="token" required></label><br><br>'
+                '<label>Archivo ZIP <input type="file" name="imagenes" accept=".zip" required></label><br><br>'
+                '<button type="submit">Importar lote de imágenes</button></form>'
+            )
+        return Response(
+            '<!doctype html><html lang="es"><meta name="viewport" content="width=device-width,initial-scale=1">'
+            '<title>Transferencia de imágenes Tu’ux</title><body style="font-family:Arial;max-width:640px;margin:30px auto;padding:20px">'
+            + body + '</body></html>',
+            mimetype='text/html', headers={'Cache-Control': 'no-store'}
+        )
+
+    if not authorized():
+        return 'Clave incorrecta.', 403
+
+    if CATALOG_TRANSFER_MODE == 'export':
+        try:
+            batch_number = int(request.form.get('lote', '0'))
+            if batch_number < 1:
+                return 'Número de lote no válido.', 400
+            conn = proyecto._connect()
+            try:
+                rows = conn.execute(
+                    "SELECT DISTINCT imagen FROM productos WHERE imagen IS NOT NULL AND TRIM(imagen) != '' ORDER BY imagen"
+                ).fetchall()
+            finally:
+                conn.close()
+            files = []
+            for row in rows:
+                name = os.path.basename(row['imagen'] or '')
+                if name and secure_filename(name) == name:
+                    path = os.path.join(PRODUCT_IMAGES_DIR, name)
+                    if os.path.isfile(path):
+                        files.append((name, os.path.getsize(path), path))
+            batches, current, current_size = [], [], 0
+            max_batch_bytes = 12 * 1024 * 1024
+            for item in files:
+                if current and current_size + item[1] > max_batch_bytes:
+                    batches.append(current)
+                    current, current_size = [], 0
+                current.append(item)
+                current_size += item[1]
+            if current:
+                batches.append(current)
+            if batch_number > len(batches):
+                return 'Ese lote no existe.', 404
+            selected = batches[batch_number - 1]
+            buffer = io.BytesIO()
+            with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as archive:
+                for name, size, path in selected:
+                    archive.write(path, 'product_images/' + name)
+                archive.writestr('images_manifest.json', json.dumps({
+                    'format': 'tuux-images-v1', 'batch': batch_number,
+                    'total_batches': len(batches), 'images': len(selected)
+                }))
+            buffer.seek(0)
+            return send_file(
+                buffer, mimetype='application/zip', as_attachment=True,
+                download_name=f'tuux_imagenes_lote_{batch_number}.zip'
+            )
+        except Exception as e:
+            print('ERROR EXPORTANDO IMÁGENES DEL CATÁLOGO:', e)
+            return 'No se pudo generar el lote. Revisa los logs.', 500
+
+    uploaded = request.files.get('imagenes')
+    if not uploaded or not uploaded.filename or not uploaded.filename.lower().endswith('.zip'):
+        return 'Selecciona un archivo ZIP.', 400
+    raw = uploaded.read(20 * 1024 * 1024 + 1)
+    if len(raw) > 20 * 1024 * 1024:
+        return 'El lote supera el límite de 20 MB.', 413
+    try:
+        imported = []
+        with zipfile.ZipFile(io.BytesIO(raw), 'r') as archive:
+            names = archive.namelist()
+            if 'images_manifest.json' not in names:
+                return 'El ZIP no contiene un manifiesto válido.', 400
+            manifest = json.loads(archive.read('images_manifest.json').decode('utf-8'))
+            if manifest.get('format') != 'tuux-images-v1':
+                return 'Formato de imágenes no reconocido.', 400
+            for name in names:
+                if not name.startswith('product_images/') or '/' in name[len('product_images/'):]:
+                    continue
+                filename = name[len('product_images/'):]
+                if not filename or secure_filename(filename) != filename:
+                    return 'El ZIP contiene un nombre de archivo no permitido.', 400
+                info = archive.getinfo(name)
+                if info.file_size > 15 * 1024 * 1024:
+                    return 'Una imagen supera el límite permitido.', 413
+                destination = os.path.join(PRODUCT_IMAGES_DIR, filename)
+                if os.path.exists(destination):
+                    return f'El archivo {filename} ya existe; se cancela para no sobrescribir.', 409
+                imported.append((filename, archive.read(name)))
+        os.makedirs(PRODUCT_IMAGES_DIR, exist_ok=True)
+        written = []
+        try:
+            for filename, content in imported:
+                destination = os.path.join(PRODUCT_IMAGES_DIR, filename)
+                with open(destination, 'xb') as output:
+                    output.write(content)
+                written.append(destination)
+        except Exception:
+            for path in written:
+                try:
+                    os.remove(path)
+                except OSError:
+                    pass
+            raise
+        return jsonify({
+            'ok': True, 'mensaje': 'Lote de imágenes importado.',
+            'lote': manifest.get('batch'), 'total_lotes': manifest.get('total_batches'),
+            'imagenes_importadas': len(written)
+        })
+    except Exception as e:
+        print('ERROR IMPORTANDO IMÁGENES DEL CATÁLOGO:', e)
+        return 'No se pudo importar el lote. Revisa los logs.', 400
+
+
 @app.route('/product-images/<path:filename>')
 def product_image(filename):
     from flask import send_from_directory
