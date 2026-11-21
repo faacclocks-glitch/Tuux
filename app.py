@@ -2073,6 +2073,50 @@ def marketlist():
         cart_total=total
     )
 
+@app.route('/diagnostico-market')
+def diagnostico_market():
+    """Diagnóstico temporal de solo lectura para el catálogo en staging."""
+    conn = None
+    try:
+        db_path = proyecto._db_path()
+        conn = proyecto._connect()
+        cursor = conn.cursor()
+
+        total_productos = cursor.execute(
+            'SELECT COUNT(*) FROM productos'
+        ).fetchone()[0]
+        total_tiendas = cursor.execute(
+            'SELECT COUNT(*) FROM tiendas'
+        ).fetchone()[0]
+        categorias = cursor.execute('''
+            SELECT
+                COALESCE(NULLIF(UPPER(TRIM(categoria)), ''), 'SIN CATEGORIA') AS categoria,
+                COUNT(*) AS cantidad
+            FROM productos
+            GROUP BY COALESCE(NULLIF(UPPER(TRIM(categoria)), ''), 'SIN CATEGORIA')
+            ORDER BY categoria
+        ''').fetchall()
+
+        return jsonify({
+            'diagnostico': 'solo_lectura',
+            'base_de_datos': db_path,
+            'archivo_existe': os.path.exists(db_path),
+            'tamano_archivo_bytes': os.path.getsize(db_path) if os.path.exists(db_path) else 0,
+            'total_productos': total_productos,
+            'total_tiendas': total_tiendas,
+            'productos_por_categoria': [
+                {'categoria': row['categoria'], 'cantidad': row['cantidad']}
+                for row in categorias
+            ]
+        })
+    except Exception as e:
+        print('ERROR EN DIAGNOSTICO TEMPORAL DEL MARKET:', e)
+        return jsonify({'diagnostico': 'error', 'mensaje': str(e)}), 500
+    finally:
+        if conn is not None:
+            conn.close()
+
+
 @app.route('/market')
 def market():
     
