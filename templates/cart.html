@@ -1108,10 +1108,10 @@ function updateTotalWithOptions() {
   const totalLabelEl = document.getElementById('totalLabel');
 
   if (urgentOption.checked) {
-    shippingOption = 'Entrega urgente (cotización al confirmar)';
+    shippingOption = 'Entrega urgente (pendiente de cotización y confirmación)';
     document.getElementById('shippingOption').textContent = shippingOption;
     document.getElementById('shippingCost').textContent = 'Por cotizar';
-    totalLabelEl.textContent = 'Subtotal + tiendas (entrega pendiente):';
+    totalLabelEl.textContent = 'Subtotal + tiendas (sin costo de entrega):';
     totalWithOptionsEl.textContent =
       (productTotal + switchFee).toFixed(2) + ' + entrega por cotizar';
     return;
