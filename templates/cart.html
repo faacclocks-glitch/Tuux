@@ -916,23 +916,30 @@
 </div>
         <div class="price-summary">
   <p>
-    <strong>Subtotal:</strong>
+    <strong>Subtotal de productos:</strong>
     $<span id="subtotalAmount">{{ "%.2f"|format(product_total) }}</span>
   </p>
 
+  {% if switch_fee > 0 %}
   <p>
-    <strong>Envío:</strong>
+    <strong>Tiendas adicionales:</strong>
+    $<span id="switchFeeAmount">{{ "%.2f"|format(switch_fee) }}</span>
+  </p>
+  {% endif %}
+
+  <p>
+    <strong>Servicio seleccionado:</strong>
     <span id="shippingOption">Selecciona una opción</span>
   </p>
 
   <p>
-    <strong>Costo del servicio:</strong>
+    <strong>Costo de entrega:</strong>
     $<span id="shippingCost">0.00</span>
   </p>
 
   <p>
     <strong>Total:</strong>
-    $<span id="totalWithOptions">{{ "%.2f"|format(product_total) }}</span>
+    $<span id="totalWithOptions">{{ "%.2f"|format(product_total + switch_fee) }}</span>
   </p>
 </div>
 
