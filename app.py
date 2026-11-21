@@ -1220,18 +1220,31 @@ def confirmar_pedido():
     nombre_cliente = (market_request.get('nombre') or '').strip()
     celular_cliente = (market_request.get('celular') or '').strip()
     municipio_cliente = (market_request.get('municipio') or '').strip()
-    
-    SEPARADOR = "________________________\n"
+
+    # Destino de entrega seleccionado en el formulario del carrito
+    calkini_locality = request.form.get('calkini_locality', '').strip()
+    if destination_context_form == 'MUNICIPIOS_CALKINI':
+        destino_entrega = calkini_locality or 'Calkiní (localidad por confirmar)'
+    elif destination_context_form == 'LOCAL_MERIDA':
+        destino_entrega = 'Mérida'
+    else:
+        destino_entrega = 'Destino por confirmar'
+
+    SEPARADOR = "________________________\\n"
     mensaje = ""
-    
+
     if nombre_cliente or celular_cliente or municipio_cliente:
         if nombre_cliente:
-            mensaje += f"Nombre: {nombre_cliente}\n"
+            mensaje += f"Nombre: {nombre_cliente}\\n"
         if celular_cliente:
-            mensaje += f"Celular: {celular_cliente}\n"
+            mensaje += f"Celular: {celular_cliente}\\n"
         if municipio_cliente:
-            mensaje += f"Municipio: {municipio_cliente}\n"
-        mensaje += SEPARADOR + "\n"
+            mensaje += f"Municipio del cliente: {municipio_cliente}\\n"
+
+    mensaje += f"📦 Destino de entrega: {destino_entrega}\\n"
+    if delivery_cp:
+        mensaje += f"📮 Código postal: {delivery_cp}\\n"
+    mensaje += SEPARADOR + "\\n"
 
     print("🔖 REFERENCIA EN PEDIDO:", session.get('referencia'))
     referencia = session.get('referencia')
