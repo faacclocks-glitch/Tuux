@@ -253,7 +253,7 @@
       {% endif %}
 
       <a
-        href="{{ url_for('market') }}"
+        href="{{ url_for('market', categoria=return_categoria) if return_categoria else url_for('market') }}"
         class="back-button"
       >
         ← Volver a productos
