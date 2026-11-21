@@ -1064,7 +1064,8 @@ def confirmar_pedido():
                 shipping_cost = 150
                 urgent_needs_verification = True
     
-    total_a_pagar = total + shipping_cost
+    switch_fee = calculate_store_switch_fee(cart)
+    total_a_pagar = total + switch_fee + shipping_cost
 
     # ==========================================
     # 5B.2 — Persistir pedido antes de WhatsApp
@@ -1285,6 +1286,8 @@ def confirmar_pedido():
     mensaje += SEPARADOR + "\n"
     
     mensaje += f"- Subtotal de productos: ${total:.2f} MXN\n"
+    if switch_fee > 0:
+        mensaje += f"- Cargo por tiendas adicionales: ${switch_fee:.2f} MXN\\n"
     if delivery_selected:
         mensaje += f"🚚 Servicio de compra y entrega programada: ${shipping_cost:.2f} MXN\n"
 
@@ -2792,7 +2795,8 @@ def cart():
     grouped_items=grouped_items,
     total=total,
     product_total=product_total,
-    tiene_custom=tiene_custom
+    tiene_custom=tiene_custom,
+    switch_fee=switch_fee
 )
 
 
