@@ -112,21 +112,13 @@ def catalogo_transferencia():
                     'columns': columns,
                     'rows': [dict(row) for row in rows]
                 }
-            image_names = sorted({
-                os.path.basename(row.get('imagen') or '')
-                for row in payload['tables']['productos']['rows'] if row.get('imagen')
-            })
         finally:
             conn.close()
 
+        # Exportación ligera: solo datos del catálogo. Las imágenes se transferirán
+        # por separado para evitar superar el límite de carga desde móviles.
         with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as archive:
             archive.writestr('catalog.json', json.dumps(payload, ensure_ascii=False))
-            for image_name in image_names:
-                if not image_name or secure_filename(image_name) != image_name:
-                    continue
-                image_path = os.path.join(PRODUCT_IMAGES_DIR, image_name)
-                if os.path.isfile(image_path):
-                    archive.write(image_path, 'product_images/' + image_name)
         buffer.seek(0)
         return send_file(
             buffer, mimetype='application/zip', as_attachment=True,
