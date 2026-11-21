@@ -1038,31 +1038,11 @@ def confirmar_pedido():
             shipping_cost = 95
 
         elif urgent_selected:
-            origin_cps = get_origin_cps_from_cart(items)
-            print("📍 CPs DE ORIGEN:", origin_cps)
-            
-            try:
-                distance_km = calculate_operation_distance_km(
-                    origin_cps,
-                    delivery_cp
-                )
-                
-                print("📍 DISTANCIA OPERATIVA:", distance_km, "km")
-                
-                distance_cost = calculate_urgent_distance_cost(distance_km)
-                print("💰 COSTO POR DISTANCIA:", distance_cost)
-                
-                time_cost = calculate_urgent_time_cost(URGENT_ESTIMATED_MINUTES)
-                print("⏱️ COSTO POR TIEMPO:", time_cost)
-                
-                shipping_cost = round(distance_cost + time_cost, 2)
-                print("🚚 TARIFA URGENTE TOTAL:", shipping_cost)
-            
-            except ValueError as e:
-                print("⚠️ TARIFA URGENTE PENDIENTE DE VERIFICACIÓN:", e)
-                
-                shipping_cost = 150
-                urgent_needs_verification = True
+            # La entrega urgente siempre queda pendiente de cotización
+            # y confirmación manual de TU'UX antes de comunicar un total final.
+            shipping_cost = 0
+            urgent_needs_verification = True
+            print("⚠️ ENTREGA URGENTE PENDIENTE DE COTIZACIÓN Y CONFIRMACIÓN");
     
     switch_fee = calculate_store_switch_fee(cart)
     total_a_pagar = total + switch_fee + shipping_cost
@@ -1308,11 +1288,8 @@ def confirmar_pedido():
         mensaje += f"🚚 Servicio de compra y entrega otro día: ${shipping_cost:.2f} MXN\n"
 
     if urgent_selected:
-        if urgent_needs_verification:
-            mensaje += "🚨 Servicio de compra y entrega urgente: Desde $150.00 MXN\n"
-            mensaje += "⚠️ Costo total sujeto a verificación de distancia y tiempo.\n"
-        else:
-            mensaje += f"🚨 Servicio de compra y entrega urgente: ${shipping_cost:.2f} MXN\n"
+        mensaje += "🚨 Servicio de compra y entrega urgente: PENDIENTE DE COTIZACIÓN\n"
+        mensaje += "⚠️ TU'UX confirmará disponibilidad y costo antes de aceptar el servicio.\n"
         
     mensaje += SEPARADOR + "\n"
 
@@ -1320,14 +1297,14 @@ def confirmar_pedido():
         mensaje += f"⚠️ Nota: Falta anexar servicios pendientes y total de los productos personalizados.\n"
         mensaje += "* El TOTAL FINAL a pagar será confirmado una vez que Tu'ux verifique disponibilidad de productos."
     else:
-        if urgent_selected and urgent_needs_verification:
+        if urgent_selected:
             mensaje += (
                 f"💵 Subtotal de productos + tiendas adicionales: "
                 f"${(total + switch_fee):.2f} MXN\n"
             )
             mensaje += (
-                "⚠️ TOTAL FINAL PENDIENTE DE COTIZACIÓN. "
-                "El servicio urgente se confirma al verificar la distancia y el tiempo.\n"
+                "⚠️ TOTAL FINAL PENDIENTE DE CONFIRMACIÓN. "
+                "El pedido no incluye todavía el costo de la entrega urgente.\n"
             )
         else:
             mensaje += f"💵 TOTAL A PAGAR: ${total_a_pagar:.2f} MXN\n"
