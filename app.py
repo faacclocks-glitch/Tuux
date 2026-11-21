@@ -5,6 +5,9 @@ import sys
 import datetime
 import json
 import smtplib
+import io
+import zipfile
+import hmac
 
 import subprocess
 import sys
@@ -39,6 +42,174 @@ proyecto = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(proyecto)
 
 app = Flask(__name__, template_folder='templates')
+
+# Transferencia temporal y protegida del catálogo entre entornos Railway.
+# Solo exporta mercados/tiendas/productos e imágenes; nunca usuarios ni pedidos.
+CATALOG_TRANSFER_MODE = os.environ.get('CATALOG_TRANSFER_MODE', '').strip().lower()
+CATALOG_TRANSFER_TOKEN = os.environ.get('CATALOG_TRANSFER_TOKEN', '')
+
+def _catalog_transfer_authorized():
+    supplied = request.form.get('token', '')
+    return bool(CATALOG_TRANSFER_TOKEN) and hmac.compare_digest(
+        supplied.encode('utf-8'), CATALOG_TRANSFER_TOKEN.encode('utf-8')
+    )
+
+@app.route('/catalogo-transferencia', methods=['GET', 'POST'])
+def catalogo_transferencia():
+    from flask import Response, send_file
+    from werkzeug.utils import secure_filename
+
+    if CATALOG_TRANSFER_MODE not in ('export', 'import') or not CATALOG_TRANSFER_TOKEN:
+        return 'Transferencia temporal no habilitada.', 404
+
+    if request.method == 'GET':
+        if CATALOG_TRANSFER_MODE == 'export':
+            body = """
+            <h2>Exportar catálogo Tu’ux</h2>
+            <p>Genera una copia de mercados, tiendas, productos e imágenes. No incluye usuarios ni pedidos.</p>
+            <form method="post">
+              <label>Clave temporal <input type="password" name="token" required></label>
+              <button type="submit">Descargar copia del catálogo</button>
+            </form>"""
+        else:
+            body = """
+            <h2>Importar catálogo Tu’ux a staging</h2>
+            <p>Solo se permite importar si staging no tiene tiendas ni productos. No reemplaza cuentas ni pedidos.</p>
+            <form method="post" enctype="multipart/form-data">
+              <label>Clave temporal <input type="password" name="token" required></label><br><br>
+              <label>Archivo de catálogo <input type="file" name="catalogo" accept=".zip" required></label><br><br>
+              <button type="submit">Importar catálogo</button>
+            </form>"""
+        return Response(
+            '<!doctype html><html lang="es"><meta name="viewport" content="width=device-width,initial-scale=1">'
+            '<title>Transferencia de catálogo</title><body style="font-family:Arial;max-width:640px;margin:40px auto;padding:20px">'
+            + body + '</body></html>',
+            mimetype='text/html',
+            headers={'Cache-Control': 'no-store'}
+        )
+
+    if not _catalog_transfer_authorized():
+        return 'Clave incorrecta.', 403
+
+    db_path = proyecto._db_path()
+
+    if CATALOG_TRANSFER_MODE == 'export':
+        buffer = io.BytesIO()
+        conn = proyecto._connect()
+        try:
+            cur = conn.cursor()
+            # Lista explícita de columnas: excluye usuarios, pedidos y datos de cuenta.
+            tables = {
+                'mercados': ['id', 'nombre', 'direccion'],
+                'tiendas': ['id', 'mercado_id', 'nombre', 'direccion', 'giro', 'codigo_postal'],
+                'productos': ['id', 'tienda_id', 'nombre', 'unidades', 'precio', 'presentacion', 'imagen', 'logistics_size', 'categoria']
+            }
+            payload = {'format': 'tuux-catalog-v1', 'tables': {}}
+            for table, allowed in tables.items():
+                existing = {row[1] for row in cur.execute(f'PRAGMA table_info({table})')}
+                columns = [column for column in allowed if column in existing]
+                if not columns:
+                    payload['tables'][table] = {'columns': [], 'rows': []}
+                    continue
+                query = 'SELECT ' + ', '.join(columns) + ' FROM ' + table + ' ORDER BY id'
+                rows = cur.execute(query).fetchall()
+                payload['tables'][table] = {
+                    'columns': columns,
+                    'rows': [dict(row) for row in rows]
+                }
+            image_names = sorted({
+                os.path.basename(row.get('imagen') or '')
+                for row in payload['tables']['productos']['rows']
+                if row.get('imagen')
+            })
+        finally:
+            conn.close()
+
+        with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr('catalog.json', json.dumps(payload, ensure_ascii=False))
+            for image_name in image_names:
+                if not image_name or secure_filename(image_name) != image_name:
+                    continue
+                image_path = os.path.join(PRODUCT_IMAGES_DIR, image_name)
+                if os.path.isfile(image_path):
+                    archive.write(image_path, 'product_images/' + image_name)
+        buffer.seek(0)
+        return send_file(
+            buffer, mimetype='application/zip', as_attachment=True,
+            download_name='tuux_catalogo_staging.zip'
+        )
+
+    uploaded = request.files.get('catalogo')
+    if not uploaded or not uploaded.filename or not uploaded.filename.lower().endswith('.zip'):
+        return 'Selecciona el archivo ZIP del catálogo.', 400
+
+    raw = uploaded.read(50 * 1024 * 1024 + 1)
+    if len(raw) > 50 * 1024 * 1024:
+        return 'El archivo supera el límite de 50 MB.', 413
+
+    try:
+        archive_buffer = io.BytesIO(raw)
+        with zipfile.ZipFile(archive_buffer, 'r') as archive:
+            names = archive.namelist()
+            if 'catalog.json' not in names:
+                return 'El ZIP no contiene catalog.json.', 400
+            payload = json.loads(archive.read('catalog.json').decode('utf-8'))
+            if payload.get('format') != 'tuux-catalog-v1':
+                return 'Formato de catálogo no reconocido.', 400
+
+            conn = proyecto._connect()
+            try:
+                cur = conn.cursor()
+                current_products = cur.execute('SELECT COUNT(*) FROM productos').fetchone()[0]
+                current_stores = cur.execute('SELECT COUNT(*) FROM tiendas').fetchone()[0]
+                if current_products or current_stores:
+                    return 'Staging ya contiene tiendas o productos; se cancela para no sobrescribir datos.', 409
+
+                tables = payload.get('tables', {})
+                expected = {
+                    'mercados': {'id', 'nombre', 'direccion'},
+                    'tiendas': {'id', 'mercado_id', 'nombre', 'direccion', 'giro', 'codigo_postal'},
+                    'productos': {'id', 'tienda_id', 'nombre', 'unidades', 'precio', 'presentacion', 'imagen', 'logistics_size', 'categoria'}
+                }
+                for table in ('mercados', 'tiendas', 'productos'):
+                    data = tables.get(table, {})
+                    columns = data.get('columns', [])
+                    rows = data.get('rows', [])
+                    if not set(columns).issubset(expected[table]):
+                        return 'El archivo contiene columnas no permitidas.', 400
+                    if columns and rows:
+                        placeholders = ','.join(['?'] * len(columns))
+                        sql = f"INSERT INTO {table} ({','.join(columns)}) VALUES ({placeholders})"
+                        for row in rows:
+                            cur.execute(sql, [row.get(column) for column in columns])
+
+                conn.commit()
+            except Exception:
+                conn.rollback()
+                raise
+            finally:
+                conn.close()
+
+            os.makedirs(PRODUCT_IMAGES_DIR, exist_ok=True)
+            for name in names:
+                if name.startswith('product_images/') and '/' not in name[len('product_images/'):]:
+                    image_name = name[len('product_images/'):]
+                    if image_name and secure_filename(image_name) == image_name:
+                        image_path = os.path.join(PRODUCT_IMAGES_DIR, image_name)
+                        with open(image_path, 'wb') as image_file:
+                            image_file.write(archive.read(name))
+
+        return jsonify({
+            'ok': True,
+            'mensaje': 'Catálogo importado en staging.',
+            'mercados': len(payload['tables'].get('mercados', {}).get('rows', [])),
+            'tiendas': len(payload['tables'].get('tiendas', {}).get('rows', [])),
+            'productos': len(payload['tables'].get('productos', {}).get('rows', []))
+        })
+    except Exception as e:
+        print('ERROR EN TRANSFERENCIA TEMPORAL DE CATÁLOGO:', e)
+        return 'No se pudo importar el catálogo. Revisa el log de staging.', 400
+
 app.secret_key = os.environ.get('FLASK_SECRET', 'dev-flask-key')
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
@@ -624,7 +795,7 @@ def index():
     else:
         session.pop('referencia', None)
 
-    return redirect(url_for('market', **request.args.to_dict()))
+    return render_template('index.html')
 
     
 
@@ -2073,6 +2244,50 @@ def marketlist():
         cart_total=total
     )
 
+@app.route('/diagnostico-market')
+def diagnostico_market():
+    """Diagnóstico temporal de solo lectura para el catálogo en staging."""
+    conn = None
+    try:
+        db_path = proyecto._db_path()
+        conn = proyecto._connect()
+        cursor = conn.cursor()
+
+        total_productos = cursor.execute(
+            'SELECT COUNT(*) FROM productos'
+        ).fetchone()[0]
+        total_tiendas = cursor.execute(
+            'SELECT COUNT(*) FROM tiendas'
+        ).fetchone()[0]
+        categorias = cursor.execute('''
+            SELECT
+                COALESCE(NULLIF(UPPER(TRIM(categoria)), ''), 'SIN CATEGORIA') AS categoria,
+                COUNT(*) AS cantidad
+            FROM productos
+            GROUP BY COALESCE(NULLIF(UPPER(TRIM(categoria)), ''), 'SIN CATEGORIA')
+            ORDER BY categoria
+        ''').fetchall()
+
+        return jsonify({
+            'diagnostico': 'solo_lectura',
+            'base_de_datos': db_path,
+            'archivo_existe': os.path.exists(db_path),
+            'tamano_archivo_bytes': os.path.getsize(db_path) if os.path.exists(db_path) else 0,
+            'total_productos': total_productos,
+            'total_tiendas': total_tiendas,
+            'productos_por_categoria': [
+                {'categoria': row['categoria'], 'cantidad': row['cantidad']}
+                for row in categorias
+            ]
+        })
+    except Exception as e:
+        print('ERROR EN DIAGNOSTICO TEMPORAL DEL MARKET:', e)
+        return jsonify({'diagnostico': 'error', 'mensaje': str(e)}), 500
+    finally:
+        if conn is not None:
+            conn.close()
+
+
 @app.route('/market')
 def market():
     
@@ -2110,9 +2325,8 @@ def market():
                     t.nombre AS tienda_nombre
                 FROM productos p
                 LEFT JOIN tiendas t ON p.tienda_id = t.id
-                WHERE p.categoria = 'OTROS'
-                   OR p.categoria IS NULL
-                   OR TRIM(p.categoria) = ''
+                WHERE UPPER(TRIM(COALESCE(p.categoria, ''))) = 'OTROS'
+                   OR TRIM(COALESCE(p.categoria, '')) = ''
                 ORDER BY p.id DESC
             ''')
 
@@ -2130,7 +2344,7 @@ def market():
                     t.nombre AS tienda_nombre
                 FROM productos p
                 LEFT JOIN tiendas t ON p.tienda_id = t.id
-                WHERE p.categoria = ?
+                WHERE UPPER(TRIM(COALESCE(p.categoria, ''))) = ?
                 ORDER BY p.id DESC
             ''', (categoria,))
 
