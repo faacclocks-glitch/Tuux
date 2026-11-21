@@ -624,7 +624,7 @@ def index():
     else:
         session.pop('referencia', None)
 
-    return render_template('index.html', cart_count=len(get_cart()))
+    return render_template('index.html')
 
     
 
