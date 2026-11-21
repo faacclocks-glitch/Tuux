@@ -938,7 +938,7 @@
   </p>
 
   <p>
-    <strong>Total:</strong>
+    <strong id="totalLabel">Total:</strong>
     $<span id="totalWithOptions">{{ "%.2f"|format(product_total + switch_fee) }}</span>
   </p>
 </div>
@@ -1105,17 +1105,23 @@ function updateTotalWithOptions() {
     shippingCost = isCalkiniDestination() ? 110 : 95;
   }
 
+  const totalLabelEl = document.getElementById('totalLabel');
+
   if (urgentOption.checked) {
-    shippingOption = 'Entrega urgente';
-    shippingCost = 0;
+    shippingOption = 'Entrega urgente (cotización al confirmar)';
+    document.getElementById('shippingOption').textContent = shippingOption;
+    document.getElementById('shippingCost').textContent = 'Por cotizar';
+    totalLabelEl.textContent = 'Subtotal + tiendas (entrega pendiente):';
+    totalWithOptionsEl.textContent =
+      (productTotal + switchFee).toFixed(2) + ' + entrega por cotizar';
+    return;
   }
 
   let newTotal = productTotal + switchFee + shippingCost;
 
-  
-
   document.getElementById('shippingOption').textContent = shippingOption;
   document.getElementById('shippingCost').textContent = shippingCost.toFixed(2);
+  totalLabelEl.textContent = 'Total:';
   totalWithOptionsEl.textContent = newTotal.toFixed(2);
 }
       const tieneCustom = {{ 'true' if tiene_custom else 'false' }};
