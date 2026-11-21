@@ -2,7 +2,7 @@
 {% block content %}
 <style>
 :root{--navy:#092b49;--blue:#104e8b;--teal:#00aeb0;--ink:#183247;--muted:#607383;--pale:#f4f8fa}
-body{background:#fff;color:var(--ink)}.page-content{padding:0!important}.nav{display:none!important}
+body{background:#fff;color:var(--ink)}.page-content{padding:0!important}.nav,.mobile-header{display:none!important}
 .home{overflow:hidden}.top{max-width:1160px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}
 .brand{display:flex;align-items:center;gap:10px;color:var(--navy);font-weight:850;letter-spacing:.04em;text-decoration:none}.brand img{width:48px;height:48px;object-fit:contain}
 .links{display:flex;align-items:center;gap:22px}.links a{color:var(--ink);text-decoration:none;font-size:.94rem;font-weight:650}.links .cta{background:var(--teal);color:#fff;padding:11px 16px;border-radius:9px}
@@ -37,6 +37,6 @@ body{background:#fff;color:var(--ink)}.page-content{padding:0!important}.nav{dis
 <article class="audience-card"><h3>Para particulares</h3><p>Cuando necesitas resolver una tarea, coordinar un traslado o gestionar un encargo y no tienes tiempo para hacerlo todo.</p></article>
 <article class="audience-card"><h3>Para negocios</h3><p>Cuando necesitas apoyo para compras, recolecciones, entregas u otras tareas de tu operación.</p></article>
 </div></div></section>
-<section class="bottom"><h2>Cuéntanos qué necesitas resolver.</h2><p>Revisamos tu solicitud, confirmamos si podemos coordinarla y te compartimos una cotización antes de avanzar.</p><a class="primary" href="https://wa.me/5215588182650?text=Hola%20Tu%27ux%2C%20quiero%20consultar%20una%20necesidad." target="_blank" rel="noopener">Hablar con TU’UX</a></section></main>
+<section class="section"><div class="inner"><h2>¿Dónde coordinamos?</h2><p class="intro">Nuestra base de atención está en Mérida y evaluamos solicitudes de municipios cercanos según la distancia, el tiempo y la disponibilidad.</p></div></section>\n<section class="bottom"><h2>Cuéntanos qué necesitas resolver.</h2><p>Revisamos tu solicitud, confirmamos si podemos coordinarla y te compartimos una cotización antes de avanzar.</p><a class="primary" href="https://wa.me/5215588182650?text=Hola%20Tu%27ux%2C%20quiero%20consultar%20una%20necesidad." target="_blank" rel="noopener">Hablar con TU’UX</a></section></main>
 <footer class="footer"><span>© TU’UX · CONECTA LO QUE IMPORTA</span><span><a href="{{ url_for('market') }}">Explorar mercado</a></span></footer></div>
 {% endblock %}
