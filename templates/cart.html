@@ -784,6 +784,13 @@
     <span>${{ "%.2f"|format(product_total) }}</span>
   </div>
 
+  {% if switch_fee > 0 %}
+  <div class="summary-row">
+    <span>Tiendas adicionales</span>
+    <span>${{ "%.2f"|format(switch_fee) }}</span>
+  </div>
+  {% endif %}
+
   
     <form method="post" action="{{ url_for('confirmar_pedido') }}" onsubmit="return validateDeliveryOptions()">
       <div class="delivery-options">
@@ -959,6 +966,7 @@
       });
       
       const productTotal = Number({{ product_total }});
+      const switchFee = Number({{ switch_fee }});
       const urgentOption = document.getElementById('urgentOption');
       const deliveryOption = document.getElementById('deliveryOption');
       const urgentCard = document.getElementById('urgentCard');
@@ -1095,7 +1103,7 @@ function updateTotalWithOptions() {
     shippingCost = 0;
   }
 
-  let newTotal = productTotal + shippingCost;
+  let newTotal = productTotal + switchFee + shippingCost;
 
   
 
