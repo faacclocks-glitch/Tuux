@@ -2110,9 +2110,8 @@ def market():
                     t.nombre AS tienda_nombre
                 FROM productos p
                 LEFT JOIN tiendas t ON p.tienda_id = t.id
-                WHERE p.categoria = 'OTROS'
-                   OR p.categoria IS NULL
-                   OR TRIM(p.categoria) = ''
+                WHERE UPPER(TRIM(COALESCE(p.categoria, ''))) = 'OTROS'
+                   OR TRIM(COALESCE(p.categoria, '')) = ''
                 ORDER BY p.id DESC
             ''')
 
@@ -2130,7 +2129,7 @@ def market():
                     t.nombre AS tienda_nombre
                 FROM productos p
                 LEFT JOIN tiendas t ON p.tienda_id = t.id
-                WHERE p.categoria = ?
+                WHERE UPPER(TRIM(COALESCE(p.categoria, ''))) = ?
                 ORDER BY p.id DESC
             ''', (categoria,))
 
