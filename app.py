@@ -1320,7 +1320,17 @@ def confirmar_pedido():
         mensaje += f"⚠️ Nota: Falta anexar servicios pendientes y total de los productos personalizados.\n"
         mensaje += "* El TOTAL FINAL a pagar será confirmado una vez que Tu'ux verifique disponibilidad de productos."
     else:
-        mensaje += f"💵 TOTAL A PAGAR: ${total_a_pagar:.2f} MXN\n"
+        if urgent_selected and urgent_needs_verification:
+            mensaje += (
+                f"💵 Subtotal de productos + tiendas adicionales: "
+                f"${(total + switch_fee):.2f} MXN\n"
+            )
+            mensaje += (
+                "⚠️ TOTAL FINAL PENDIENTE DE COTIZACIÓN. "
+                "El servicio urgente se confirma al verificar la distancia y el tiempo.\n"
+            )
+        else:
+            mensaje += f"💵 TOTAL A PAGAR: ${total_a_pagar:.2f} MXN\n"
         if total_a_pagar > 2000:
             mensaje += "- Mi compra excede el límite permitido"
 
