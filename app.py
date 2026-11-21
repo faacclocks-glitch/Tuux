@@ -1230,21 +1230,21 @@ def confirmar_pedido():
     else:
         destino_entrega = 'Destino por confirmar'
 
-    SEPARADOR = "________________________\\n"
+    SEPARADOR = "________________________\n"
     mensaje = ""
 
     if nombre_cliente or celular_cliente or municipio_cliente:
         if nombre_cliente:
-            mensaje += f"Nombre: {nombre_cliente}\\n"
+            mensaje += f"Nombre: {nombre_cliente}\n"
         if celular_cliente:
-            mensaje += f"Celular: {celular_cliente}\\n"
+            mensaje += f"Celular: {celular_cliente}\n"
         if municipio_cliente:
-            mensaje += f"Municipio del cliente: {municipio_cliente}\\n"
+            mensaje += f"Municipio del cliente: {municipio_cliente}\n"
 
-    mensaje += f"📦 Destino de entrega: {destino_entrega}\\n"
+    mensaje += f"📦 Destino de entrega: {destino_entrega}\n"
     if delivery_cp:
-        mensaje += f"📮 Código postal: {delivery_cp}\\n"
-    mensaje += SEPARADOR + "\\n"
+        mensaje += f"📮 Código postal: {delivery_cp}\n"
+    mensaje += SEPARADOR + "\n"
 
     print("🔖 REFERENCIA EN PEDIDO:", session.get('referencia'))
     referencia = session.get('referencia')
