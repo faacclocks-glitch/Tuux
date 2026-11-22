@@ -951,7 +951,7 @@ def index():
     else:
         session.pop('referencia', None)
 
-    return redirect(url_for('market', **request.args.to_dict()))
+    return render_template('index.html')
 
     
 
